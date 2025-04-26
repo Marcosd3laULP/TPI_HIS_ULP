@@ -1,0 +1,17 @@
+[
+    {
+      "id": 1,
+      "nombre": "Juan Pérez",
+      "edad": 30,
+      "sexo": "Masculino",
+      "enfermedad": "Gripe"
+    },
+    {
+      "id": 2,
+      "nombre": "María Gómez",
+      "edad": 45,
+      "sexo": "Femenino",
+      "enfermedad": "Dolor de cabeza"
+    }
+  ]
+  
