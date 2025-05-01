@@ -1,3 +1,32 @@
 html 
+head 
+ title admision de paciente
 body 
- p ya voy a hacer el puto formulario 
+    include ./utilitario/barraDeNav.pug
+
+    h1 admision de nuevo paciente
+    form(action = "/pacientes/admision" method = "POST")
+        label(for="nombre") nombre
+        input(type="text" name = "nombre" id = "nombre")
+        br
+        
+        label(for="edad") edad 
+        input(type="number", name="edad" id = "edad")
+        
+        br
+        label sexo: 
+            br
+            input(type="radio", name  = "gen" value = "M" id = "sexoM")
+            label(for="sexoM") Masculino
+            input(type="radio", name = "gen" value = "F" id = "sexoF")
+            label(for="sexoF") Femenino 
+            br
+            label(for="dirección") dirección 
+            input(type="text", name = "domicilio" id = "domicilio")
+
+            br
+        label(for="telefono") telefono
+            input(type="number", name="telefono" id = "telefono") 
+            br
+        button(type = "submit") enviar 
+//FORMULARIO

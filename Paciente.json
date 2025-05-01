@@ -1,11 +1,22 @@
 [
-    {
-      "id": 1,
-      "nombre": "Juan Pérez",
-      "edad": 30,
-      "sexo": "Masculino",
-      "dirección": "San Fco",
-      "telefono": [123, 456, 789]
-    }
-  ]
-  
+  {
+    "id": 1,
+    "nombre": "Juan Pérez",
+    "edad": 30,
+    "sexo": "Masculino",
+    "dirección": "San Fco",
+    "telefono": [
+      123,
+      456,
+      789
+    ]
+  },
+  {
+    "id": 1746063549390,
+    "nombre": "branguer",
+    "edad": 91000,
+    "sexo": "Femenino",
+    "domicilio": "Jupiter",
+    "telefono": 1123984283
+  }
+]

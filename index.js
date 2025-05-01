@@ -4,6 +4,7 @@ const path = require("path");
 
 const app = express(); 
 app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
 
 const rutas = require('./rutas/rutaInicio'); //Importamos las rutas
 const pacientesRutas = require('./rutas/pacienteRuta');

@@ -6,4 +6,6 @@ router.get("/",pacienteControl.mostrarOpPaciente);
 
 router.get("/admision", pacienteControl.cargarPaciente);
 
+router.post("/admision", pacienteControl.insertarPaciente);
+
 module.exports = router;
