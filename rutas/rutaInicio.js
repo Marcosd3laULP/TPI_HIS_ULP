@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const inicioControl = require("../Control/inicioControl");
-const pacienteControl = require("../Control/pacienteControl");
 
 router.get("/",inicioControl.mostrarInicio);
 

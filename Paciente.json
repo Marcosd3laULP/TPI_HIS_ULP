@@ -12,11 +12,35 @@
     ]
   },
   {
-    "id": 1746063549390,
-    "nombre": "branguer",
-    "edad": 91000,
+    "id": 1746127685464,
+    "nombre": "filipina",
+    "edad": 21,
     "sexo": "Femenino",
-    "domicilio": "Jupiter",
-    "telefono": 1123984283
+    "domicilio": "Egipto",
+    "telefono": 2664557733
+  },
+  {
+    "id": 3,
+    "nombre": "Felipe",
+    "edad": 25,
+    "sexo": "Masculino",
+    "domicilio": "Mexico",
+    "telefono": 111111
+  },
+  {
+    "id": 4,
+    "nombre": "Vicentico",
+    "edad": "60",
+    "sexo": "Masculino",
+    "domicilio": "Buenos Aires",
+    "telefono": "1234"
+  },
+  {
+    "id": 1746128053811,
+    "nombre": "branguer",
+    "edad": "91000",
+    "sexo": "Masculino",
+    "domicilio": "Neptuno",
+    "telefono": "2664553401"
   }
 ]

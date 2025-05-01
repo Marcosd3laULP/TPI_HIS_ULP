@@ -1,11 +1,11 @@
 html 
 head 
- title admision de paciente
+ title edicion de paciente
 body 
     include ./utilitario/barraDeNav.pug
 
-    h1 admision de nuevo paciente
-    form(action = "/pacientes/admision" method = "POST")
+    h1 edicion de datos del paciente
+    form(action = `/pacientes/edicion/${elPaciente.id}` method = "POST")
         label(for="nombre") nombre
         input(type="text" name = "nombre" id = "nombre")
         br
@@ -28,5 +28,5 @@ body
         label(for="telefono") telefono
             input(type="number", name="telefono" id = "telefono") 
             br
-        button(type = "submit") enviar 
+        button(type = "submit") guardar Cambios 
 //FORMULARIO
