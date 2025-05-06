@@ -3,12 +3,7 @@ html
     title Listado de pacientes 
   body 
     include ./utilitario/barraDeNav.pug
-    if mensajeExito
-     div#alerta(style="background-color: #d4edda; color: #155724; padding: 10px; border: 1px solid #c3e6cb; border-radius: 5px; position: relative; margin-bottom: 20px;")
-      strong ¡Éxito! 
-      | Paciente actualizado correctamente.
-      button(onclick="document.getElementById('alerta').style.display='none'" style="position: absolute; top: 5px; right: 10px; background: none; border: none; font-weight: bold; color: #155724; cursor: pointer;") ✕
-
+    
     h1 Lista de pacientes
 
     table(border="1")

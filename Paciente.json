@@ -37,10 +37,18 @@
   },
   {
     "id": 1746128053811,
+    "nombre": "eed",
+    "edad": 999,
+    "sexo": "Femenino",
+    "domicilio": "Egipto",
+    "telefono": 1123984283
+  },
+  {
+    "id": 1746491301192,
     "nombre": "branguer",
-    "edad": "91000",
+    "edad": 91000,
     "sexo": "Masculino",
-    "domicilio": "Neptuno",
-    "telefono": "2664553401"
+    "domicilio": "Jupiter",
+    "telefono": 1123984283
   }
 ]

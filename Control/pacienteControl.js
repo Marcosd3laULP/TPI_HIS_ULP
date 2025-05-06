@@ -1,29 +1,29 @@
-const fs = require('fs');
-const path = require('path');
-const rutaAlJSON = path.join(__dirname, "../paciente.json");
+const modeloDePacientes = require("../Modelo/pacienteModelo");
 
 exports.mostrarOpPaciente = (req, res) => {
     res.render("paciente");
 };
 
+//LISTADO DE PACIENTES
+
+exports.listarPacientes = async (req, res) => {
+try {
+ const pacientes = await modeloDePacientes.obtenerPacientes(); 
+ res.render("listaPaciente", {"listadoDePacientes": pacientes});
+} catch (error) {
+  res.status(500).send("No se pudo cargar bien la lista");
+}
+  
+}
+
 exports.cargarPaciente = (req, res) => { //ESTE SOLO RENDERIZA EL FORMULARIO
     res.render("ingresoPaciente");
 }
 
-//LISTADO DE PACIENTES
-
-exports.listarPacientes = (req, res) => {
-    fs.readFile(rutaAlJSON, "utf8", (error, data) => {
-        if(error) return res.status(500).send("error al leer el JSON");
-
-        const listadoDePacientes = JSON.parse(data);
-        res.render("listaPaciente",{ listadoDePacientes });
-    })
-}
-
 //INSERCIÓN DE NUEVO PACIENTE
 
-exports.insertarPaciente = (req, res) => { //ESTE ES EL METODO QUE CARGA LO INGRESADO EN EL FORMULARIO
+exports.insertarPaciente = async (req, res) => { //ESTE ES EL METODO QUE CARGA LO INGRESADO EN EL FORMULARIO
+    
     let pacienteNuevo = {
         id: Date.now(),
         nombre: req.body.nombre,
@@ -32,74 +32,69 @@ exports.insertarPaciente = (req, res) => { //ESTE ES EL METODO QUE CARGA LO INGR
         domicilio: req.body.domicilio,
         telefono: parseInt(req.body.telefono)
     };
-
     
+    const errores = modeloDePacientes.validarDatos(pacienteNuevo);
 
-    //Leyendo el JSON
-    fs.readFile(rutaAlJSON, 'utf8', (error, data) => {
-        if(error)
-            return res.status(500).send("Error al leer el archivo JSON");
-        
-        let pacientes = [];
+    if(Object.keys(errores) > 0){
+        return res.status(404).render("ingresoPaciente",{ errores, paciente: pacienteNuevo});
+    }
 
-        try {
-            pacientes = JSON.parse(data);
-        } catch (parseError) {
-            return res.status(500).send("Error al convertir los datos a JSON");
-        }
-
-        pacientes.push(pacienteNuevo);
-
-        fs.writeFile(rutaAlJSON, JSON.stringify(pacientes, null, 2), (error) => {
-            if(error) 
-                return res.status(500).send("No se pudo cargar el nuevo paciente");
-
-            res.send("Cargado con exito el paciente :)");
-        });
-
-    });
-
+    try {
+        await modeloDePacientes.cargarPaciente(pacienteNuevo);
+        res.send("paciente cargado bien hecho :D");
+    } catch (error) {
+        res.status(500).send("No se pudo cargar el paciente");
+    }
 };
 
 //EDICION DE UN PACIENTE
 
-exports.cargarDatosAModificar = (req, res) => {
+exports.cargarDatosAModificar = async (req, res) => {
     const id = parseInt(req.params.id);
-
-    fs.readFile(rutaAlJSON, "utf8", (error, data) => {
-        if(error) return res.status(500).send("No se pudo leer el JSON");
-
-    const pacientes = JSON.parse(data);
+    let pacientes;
+    try {
+         pacientes = await modeloDePacientes.obtenerPacientes();
+    } catch (error) {
+        res.status(500).send("No se pudo leer la lista de pacientes");
+    
+    }
     const elPaciente = pacientes.find(p => p.id === id);    
 
     if(!elPaciente) return res.status(404).send("paciente no encontrado");
 
     res.render("editarPaciente", { elPaciente }); // Renderizamos el formulario ya con los datos para modificar.
-});
+
 }
 
 //GUARDAR LOS DATOS MODIFICADOS
 
-exports.guardarLosCambios = (req, res) => {
-    const id = parseInt(req.params.id)
+exports.guardarLosCambios = async (req, res) => {
+    const id = parseInt(req.params.id);
 
-    fs.readFile(rutaAlJSON, "utf8", (error, data) => {
-        if(error) return res.status(500).send("error al leer el JSON");
+    try {
+        // Obtener la lista actual de pacientes desde el modelo
+        const pacientes = await modeloDePacientes.obtenerPacientes();
 
-        const pacientes = JSON.parse(data);
+        // Buscar el índice del paciente a modificar
         const indice = pacientes.findIndex(p => p.id === id);
+        if (indice === -1) {
+            return res.status(404).send("No se encontró el paciente");
+        }
 
-        if(indice === -1) return res.status(404).send("No se encontro el paciente");
-
-        pacientes[indice].nombre = req.body.nombre
-        pacientes[indice].edad = req.body.edad
+        // Actualizar los datos del paciente
+        pacientes[indice].nombre = req.body.nombre;
+        pacientes[indice].edad = parseInt(req.body.edad);
         pacientes[indice].sexo = req.body.genero === 'M' ? 'Masculino' : 'Femenino';
-        pacientes[indice].domicilio = req.body.domicilio
-        pacientes[indice].telefono = req.body.telefono
+        pacientes[indice].domicilio = req.body.domicilio;
+        pacientes[indice].telefono = parseInt(req.body.telefono);
 
-        fs.writeFile(rutaAlJSON, JSON.stringify(pacientes, null, 2), (err) => {
-            if(err) return res.status(500).send("error al modificar los datos");
-            res.redirect("/pacientes/lista");
-        });
-    });
+        // Guardar la lista modificada
+        await modeloDePacientes.guardarPacientes(pacientes);
+
+        // Redirigir a la lista
+        res.redirect("/pacientes/lista");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("No se pudieron guardar los cambios");
+    }
 };
