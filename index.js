@@ -1,7 +1,7 @@
 const express = require("express"); 
 const PORT = 3000; 
 const path = require("path");
-
+const sequelize = require("./baseDatos/bd");
 const app = express(); 
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
@@ -21,6 +21,22 @@ app.use('/pacientes', pacientesRutas);
 app.listen(PORT, () => {
     console.log(`servidor escuchando en http://localhost:${PORT}`);
 });
+
+//PROBAMOS LA CONEXION A LA BASE
+sequelize.authenticate()
+    .then(() => {
+        console.log("Conexión a la base de datos establecida con éxito.");
+        return sequelize.sync(); // sincroniza modelos (opcional y cuidadoso en producción)
+    })
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Servidor escuchando en http://localhost:${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error("Error al conectar con la base de datos:", error);
+    });
+
 
 /*const express = require("express"); //Aqui invocamos el paquete express
 const app = express(); // pasamos el paquete express a una variable, para poder usar sus funciones

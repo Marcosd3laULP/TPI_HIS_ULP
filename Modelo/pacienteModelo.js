@@ -1,101 +1,156 @@
 const { error } = require('console');
-const fs = require('fs');
-const path = require('path');
-const rutaAlJSON = path.join(__dirname, '../Paciente.json');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../baseDatos/bd');
+
+//Vinculamos la tabla 'paciente' de la base de datos:
+const Paciente = sequelize.define('pacientes', {
+    ID_paciente: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+    },
+
+    Nombre: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+
+    Apellido: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+
+    DNI: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        unique: true
+    },
+
+    Sexo: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+
+    Seguro: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+
+    Domicilio: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+
+    Telefono: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }
+   
+});
 
 //Obtener todos los pacientes
 async function obtenerPacientes() {
     try {
-        const datos =  await fs.promises.readFile(rutaAlJSON, "utf-8");
-        return JSON.parse(datos);
+       const pacientes = await Paciente.findAll();
+       return pacientes.map(paciente => paciente.toJSON());
+        
     } catch (error) {
-        console.error("Error real al leer el JSON:", error.message);
-        throw Error ("No pudo leerse el JSON");
+        console.error("Error al querer obtener pacientes:", error.message);
+        throw new Error ("No se pudieron obtener los datos de los pacientes");
     }
-}
-
-//Actualizar cargando los nuevos pacientes a una lista
-async function guardarPacientes(pacientes) {
-    try {
-        await fs.promises.writeFile(rutaAlJSON, JSON.stringify(pacientes, null, 2));
-    } catch (error) {
-        throw new Error("No pudo guardarse los pacientes");
-    }
-}
-
-async function cargarPaciente(nuevoPaciente) {
-    try {
-        const pacientes = await obtenerPacientes();
-        pacientes.push(nuevoPaciente);
-        await guardarPacientes(pacientes);
-    } catch (error) {
-        console.error("Error al cargar paciente:", error.message);
-        throw new Error ("Hubo un error al cargar el nuevo paciente");
-    }
-}
-
-//VALIDAR DATOS DEL PACIENTE:
-function validarDatos(paciente){
-        if (!paciente) {
-          throw new Error("Se esperaba un objeto paciente y no se recibió ninguno");
-        }
-    
-    const errores = {}
-
-    if(!paciente.nombre || paciente.nombre.trim === ''){
-        errores.nombre = "Debe ingresar un nombre valido";
-    }
-
-    if(isNaN(paciente.edad) || paciente.edad < 0){
-        errores.edad = "Debe ingresar una edad valida";
-    }
-
-    if(paciente.sexo !== "masculino" || paciente.sexo !== "femenino"){
-        errores.sexo = "sexo no valido";
-    }
-
-    if(!paciente.domicilio === ''){
-        errores.domicilio = 'El domicilio no puede estar vacio';
-    }
-
-    if(!paciente.telefono || isNaN(paciente.telefono)){
-        errores.telefono = "Telefono no valido"
-    }
-
-    return errores
 }
 
 //Buscar paciente por id:
 async function buscarPacientePorId(id) {
     try {
-        const pacientes = await obtenerPacientes();
-        return pacientes.find(p => p.id === id);
+        const paciente = await Paciente.findOne({ where: {ID_paciente: id}
+        });
+
+        if (!paciente) {
+            throw new Error("Paciente no encontrado");
+        }
+
+        return paciente.toJSON();
     } catch (error) {
-        throw new Error ("No se pudo hallar el paciente");
+        console.error("Error al buscar el paciente:", error.message);
+        throw new Error("No se pudo hallar el paciente");
     }
 }
 
 //Actualizar datos de paciente:
+// Actualizar un paciente por su ID
 async function ActualizarPaciente(id, nuevosDatos) {
     try {
-        const pacientes = await obtenerPacientes();
-        const indice = pacientes.findIndex(p => p.id === id);
+        // Usamos Sequelize para actualizar el paciente
+        const [actualizado] = await Paciente.update(nuevosDatos, {
+            where: { ID_paciente: id }
+        });
 
-        if(indice === -1){
-            throw new error ("No se pudo hallar el paciente");
+        if (actualizado === 0) {
+            throw new Error("No se pudo hallar el paciente o no hubo cambios");
         }
 
-        pacientes[indice] = {...pacientes[indice], ...nuevosDatos}
-        await guardarPacientes();
+        return "Paciente actualizado exitosamente"; // Puedes devolver un mensaje o el paciente actualizado
     } catch (error) {
-        throw new error ("No se pudo guardar el paciente");
+        console.error("Error al actualizar el paciente:", error.message);
+        throw new Error("No se pudo guardar el paciente");
     }
 }
 
+//VALIDAR DATOS DEL PACIENTE:
+async function validarDatos(paciente) {
+    if (!paciente) {
+        throw new Error("Se esperaba un objeto paciente y no se recibió ninguno");
+    }
+
+    const errores = {};
+
+    // Validación de nombre
+    if (!paciente.nombre || paciente.nombre.trim() === '') {
+        errores.nombre = "Debe ingresar un nombre válido";
+    }
+
+    // Validación de edad
+    if (isNaN(paciente.edad) || paciente.edad < 0 || paciente.edad > 120) {
+        errores.edad = "Debe ingresar una edad válida (de 0 a 120)";
+    }
+
+    // Validación de sexo
+    if (paciente.sexo !== "masculino" && paciente.sexo !== "femenino") {
+        errores.sexo = "Sexo no válido. Debe ser 'masculino' o 'femenino'";
+    }
+
+    // Validación de domicilio
+    if (!paciente.domicilio || paciente.domicilio.trim() === '') {
+        errores.domicilio = 'El domicilio no puede estar vacío';
+    }
+
+    // Validación de teléfono
+    if (!paciente.telefono || isNaN(paciente.telefono) || paciente.telefono.toString().length < 10) {
+        errores.telefono = "Teléfono no válido. Debe ser un número con al menos 10 dígitos";
+    }
+
+    // Validación de DNI único
+    if (!paciente.dni || isNaN(paciente.dni)) {
+        errores.dni = "DNI no válido";
+    } else {
+        const pacienteExistente = await Paciente.findOne({
+            where: { DNI: paciente.dni }
+        });
+
+        if (pacienteExistente) {
+            errores.dni = "El DNI ingresado ya está registrado";
+        }
+    }
+
+    return errores;
+}
+
+
 module.exports = {
+    Paciente,
     obtenerPacientes,
-    guardarPacientes,
-    cargarPaciente,
     buscarPacientePorId,
     ActualizarPaciente,
     validarDatos
