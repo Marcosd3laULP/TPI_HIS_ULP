@@ -11,15 +11,16 @@ html
         tr 
           th ID 
           th Nombre 
-          th Edad 
+          th DNI  
           th Sexo 
           th acciones
       tbody 
-        each patient in listadoDePacientes
+        each patient in pacientes
           tr 
-            td= patient.id
-            td= patient.nombre 
-            td= patient.edad 
-            td= patient.sexo
+            td= patient.ID_paciente
+            td= patient.Nombre
+            td= patient.Apellido 
+            td= patient.DNI
+            td= patient.Sexo
             td 
-              a(href=`/pacientes/edicion/${patient.id}`) Editar 
+              a(href=`/pacientes/edicion/${patient.ID_paciente}`) Editar 

@@ -1,32 +1,42 @@
-html 
-head 
- title admision de paciente
-body 
+html
+  head 
+    title Admisión de Paciente
+  body 
     include ./utilitario/barraDeNav.pug
 
-    h1 admision de nuevo paciente
-    form(action = "/pacientes/admision" method = "POST")
-        label(for="nombre") nombre
-        input(type="text" name = "nombre" id = "nombre")
-        br
-        
-        label(for="edad") edad 
-        input(type="number", name="edad" id = "edad")
-        
-        br
-        label sexo: 
-            br
-            input(type="radio", name = "genero", value = "M" id = "sexoM")
-            label(for="sexoM") Masculino
-            input(type="radio", name = "genero", value = "F" id = "sexoF")
-            label(for="sexoF") Femenino 
-            br
-            label(for="dirección") dirección 
-            input(type="text", name = "domicilio" id = "domicilio")
+    h1 Admisión de nuevo paciente
 
-            br
-        label(for="telefono") telefono
-            input(type="number", name="telefono" id = "telefono") 
-            br
-        button(type = "submit") enviar 
-//FORMULARIO
+    form(action="/pacientes/admision" method="POST")
+      label(for="Nombre") Nombre:
+      input(type="text" name="Nombre" id="Nombre")
+      br
+
+      label(for="Apellido") Apellido:
+      input(type="text" name="Apellido" id="Apellido")
+      br
+
+      label(for="DNI") DNI:
+      input(type="number" name="DNI" id="DNI")
+      br
+
+      label Sexo:
+      br
+      input(type="radio" name="Sexo" value="masculino" id="sexoM")
+      label(for="sexoM") Masculino
+      input(type="radio" name="Sexo" value="femenino" id="sexoF")
+      label(for="sexoF") Femenino
+      br
+
+      label(for="Domicilio") Domicilio:
+      input(type="text" name="Domicilio" id="Domicilio")
+      br
+
+      label(for="Seguro") Seguro:
+      input(type="text" name="Seguro" id="Seguro")
+      br
+
+      label(for="Telefono") Teléfono:
+      input(type="number" name="Telefono" id="Telefono")
+      br
+
+      button(type="submit") Enviar

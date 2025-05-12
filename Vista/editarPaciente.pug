@@ -1,32 +1,42 @@
 html 
-head 
- title edicion de paciente
-body 
-    include ./utilitario/barraDeNav.pug
+    head 
+        title Edición de paciente
+    body 
+        include ./utilitario/barraDeNav.pug
 
-    h1 edicion de datos del paciente
-    form(action = `/pacientes/edicion/${elPaciente.id}` method = "POST")
-        label(for="nombre") nombre
-        input(type="text" name = "nombre" id = "nombre")
-        br
-        
-        label(for="edad") edad 
-        input(type="number", name="edad" id = "edad")
-        
-        br
-        label sexo: 
+        h1 Edición de datos del paciente
+
+        form(action=`/pacientes/edicion/${elPaciente.ID_paciente}` method="POST")
+            label(for="Nombre") Nombre:
+            input(type="text" name="Nombre" id="Nombre" value=elPaciente.Nombre)
             br
-            input(type="radio", name = "genero", value = "M" id = "sexoM")
+
+            label(for="Apellido") Apellido:
+            input(type="text" name="Apellido" id="Apellido" value=elPaciente.Apellido)
+            br
+
+            label(for="DNI") DNI:
+            input(type="number" name="DNI" id="DNI" value=elPaciente.DNI)
+            br
+
+            label Sexo:
+            br
+            input(type="radio" name="Sexo" value="masculino" id="sexoM" checked=elPaciente.Sexo==='masculino')
             label(for="sexoM") Masculino
-            input(type="radio", name = "genero", value = "F" id = "sexoF")
-            label(for="sexoF") Femenino 
+            input(type="radio" name="Sexo" value="femenino" id="sexoF" checked=elPaciente.Sexo==='femenino')
+            label(for="sexoF") Femenino
             br
-            label(for="dirección") dirección 
-            input(type="text", name = "domicilio" id = "domicilio")
 
+            label(for="Domicilio") Domicilio:
+            input(type="text" name="Domicilio" id="Domicilio" value=elPaciente.Domicilio)
             br
-        label(for="telefono") telefono
-            input(type="number", name="telefono" id = "telefono") 
+
+            label(for="Seguro") Seguro:
+            input(type="text" name="Seguro" id="Seguro" value=elPaciente.Seguro)
             br
-        button(type = "submit") guardar Cambios 
-//FORMULARIO
+
+            label(for="Telefono") Teléfono:
+            input(type="number" name="Telefono" id="Telefono" value=elPaciente.Telefono)
+            br
+
+            button(type="submit") Guardar Cambios

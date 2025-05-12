@@ -3,6 +3,8 @@ const PORT = 3000;
 const path = require("path");
 const sequelize = require("./baseDatos/bd");
 const app = express(); 
+
+
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
@@ -37,30 +39,14 @@ sequelize.authenticate()
         console.error("Error al conectar con la base de datos:", error);
     });
 
-
-/*const express = require("express"); //Aqui invocamos el paquete express
-const app = express(); // pasamos el paquete express a una variable, para poder usar sus funciones
-const PORT = 3000; //El puerto por defecto es "3000".
-const path = require("path");
-
-
-app.use(express.json()); //Con este codigo, podremos leer cualquier archivo JSON,
-//Se llama eso "middleware".
-
-//CONFIGURACIÓN PARA USAR PUG:
-app.set("view engine", "pug");
-//Añadimos la carptea "vista" a "index.js":
-app.set("views", path.join(__dirname, "./Vista"));
-
-
-//Levantamos e iniciamos el servidor:
-app.listen(PORT, () => {
-    console.log(`servidor escuchando en http://localhost:${PORT}`);
-});*/ 
-
-
-//Ruta de prueba:
-/*app.get("/", (req, res) =>{
-    res.send("Servidor funcionando exitosamente :D :D");
-   
-});*/
+    // Cerrar la conexión cuando el servidor se apaga
+process.on('SIGINT', async () => {
+    try {
+        await sequelize.close(); // Cierra la conexión de Sequelize
+        console.log("Conexión a la base de datos cerrada correctamente.");
+        process.exit(0); // Termina el proceso correctamente
+    } catch (error) {
+        console.error("Error al cerrar la conexión:", error);
+        process.exit(1); // Termina el proceso con error
+    }
+});
