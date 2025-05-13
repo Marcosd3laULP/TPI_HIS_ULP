@@ -7,7 +7,7 @@ router.get("/", pacienteControl.mostrarOpPaciente);
 
 // Mostrar formulario de admisión (vista pug)
 router.get("/admision", (req, res) => {
-    res.render("ingresoPaciente"); // Asegúrate de que exista esta vista
+    res.render("ingresoPaciente"); 
 });
 
 // Registrar nuevo paciente

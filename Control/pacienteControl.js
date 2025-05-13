@@ -1,7 +1,7 @@
 const {Paciente} = require('../Modelo/pacienteModelo');
 
 // Renderiza la vista inicial de pacientes
-function mostrarOpPaciente (req, res) { //ANOTAR ESTE ERROR ¡¡ACUERDATE!!! NO ES EXPORTS SI FUNCTION
+function mostrarOpPaciente (req, res) { //ANOTAR ESTE ERROR ¡¡ACUERDATE!!! NO ES EXPORTS SI, UNA FUNCTION
     res.render("pacientes");
 };
 

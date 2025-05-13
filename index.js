@@ -19,11 +19,6 @@ app.use('/',rutas);
 app.use('/pacientes', pacientesRutas);
 
 
-
-app.listen(PORT, () => {
-    console.log(`servidor escuchando en http://localhost:${PORT}`);
-});
-
 //PROBAMOS LA CONEXION A LA BASE
 sequelize.authenticate()
     .then(() => {
