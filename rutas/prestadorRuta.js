@@ -1,0 +1,12 @@
+const express = require("express");
+const router = express.Router();
+const prestadorControl = require("../Control/medicoControl");
+
+router.get("/", prestadorControl.mostrarOpPrestador); //Seccion de opciones
+//router.get("/listaPrestador", prestadorControl.listaDePrestadores); //listamos a los prestadores
+//ANOTATE ESTE ERROR EH, ES UN DETALLE MUY FACIL DE PASARLO DESAPERCIBIDO
+router.get("/listaPrestador", prestadorControl.buscarTodoPrestador);//Buscamos a los prestadores
+router.get("/insertar", prestadorControl.formularioNuevoPrestador);//Deriva a formulario
+router.post("/insertar", prestadorControl.insertarPrestador);//Capturamos y mandamos los datos a la bd
+
+module.exports = router;

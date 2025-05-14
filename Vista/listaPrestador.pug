@@ -1,0 +1,23 @@
+body
+    
+    include ./utilitario/barraDeNav.pug
+    h1 Lista de Médicos y Enfermeros
+    table
+      thead
+        tr
+          th Nombre
+          th Apellido
+          th Rol
+          th Especialidad
+      tbody
+        each profesional in medicos
+         
+          tr
+            td= profesional.ID_Profesional
+            td= profesional.Nombre
+            td= profesional.Apellido
+            td= profesional.Rol
+            td= profesional.Especialidad
+    div
+      a(href="insertar")
+        button Nuevo Prestador

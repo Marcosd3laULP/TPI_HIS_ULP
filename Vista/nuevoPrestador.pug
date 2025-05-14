@@ -1,0 +1,30 @@
+body
+    h1 Nuevo Prestador
+    form(action="insertar", method="POST")
+
+      if error
+      p.error= error
+     
+      div
+        label(for="nombre") Nombre:
+        input(type="text", id="nombre", name="Nombre", required value=datos && datos.Nombre)
+      div
+        label(for="apellido") Apellido:
+        input(type="text", id="apellido", name="Apellido", required value=datos && datos.Apellido)
+      div
+        label(for="rol") Rol:
+        select(id="rol", name="Rol", required)
+          option(value="") Seleccione un rol 
+          option(value="medico",selected=datos && datos.Rol=="medico") Médico
+          option(value="enfermero",selected=datos && datos.Rol=="enfermero") Enfermero
+      div
+        label(for="especialidad") Especialidad:
+        select(id="especialidad", name="Especialidad")
+          option(value="sin_especialidad") Sin especialidad
+          option(value="cardiologia") Cardiología
+          option(value="pediatria") Pediatría
+          option(value="neurologia") Neurología
+          option(value="traumatologia") Traumatología
+          // Añadir más especialidades según sea necesario
+      div
+        button(type="submit") Guardar Prestador
