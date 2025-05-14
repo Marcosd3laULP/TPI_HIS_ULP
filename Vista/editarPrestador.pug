@@ -1,6 +1,6 @@
 body
-    h1 Nuevo Prestador
-    form(action="insertar", method="POST")
+    h1 Editar Prestador
+    form(action=`prestador/editar/${profesional.ID_Profesional}`, method="POST")
 
       if error
       p.error= error
@@ -27,4 +27,4 @@ body
           option(value="traumatologia") Traumatología
           // Añadir más especialidades según sea necesario
       div
-        button(type="submit") Guardar Prestador
+        button(type="submit") Guardar cambios 

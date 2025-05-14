@@ -8,5 +8,7 @@ router.get("/", prestadorControl.mostrarOpPrestador); //Seccion de opciones
 router.get("/listaPrestador", prestadorControl.buscarTodoPrestador);//Buscamos a los prestadores
 router.get("/insertar", prestadorControl.formularioNuevoPrestador);//Deriva a formulario
 router.post("/insertar", prestadorControl.insertarPrestador);//Capturamos y mandamos los datos a la bd
+router.get("/editar/:id",prestadorControl.formularioEditarPrestador);
+router.post("/:id", prestadorControl.actualizarPrestador);
 
 module.exports = router;

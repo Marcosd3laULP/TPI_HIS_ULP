@@ -9,6 +9,7 @@ body
           th Apellido
           th Rol
           th Especialidad
+          th Acciones
       tbody
         each profesional in medicos
          
@@ -18,6 +19,8 @@ body
             td= profesional.Apellido
             td= profesional.Rol
             td= profesional.Especialidad
+            td
+              a(href=`editar/${profesional.ID_Profesional}`) Editar 
     div
       a(href="insertar")
         button Nuevo Prestador

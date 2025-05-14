@@ -4,12 +4,27 @@ exports.mostrarOpPrestador = function(req, res){
     res.render("prestadores");
 };
 
-/*exports.listaDePrestadores = function(req, res){
-    res.render("listaPrestador");
-}*/
 
 exports.formularioNuevoPrestador = function(req, res){
     res.render("nuevoPrestador");
+}
+
+exports.formularioEditarPrestador = async function (req, res) {
+    try {
+        const id = req.params.id
+        console.log("id recibido: " + id);
+        const profesional = await buscarPrestadorId(id);
+        console.log("prestador encontrado: " + profesional);
+        if(!profesional){
+            throw new Error("No se pudo hallar al prestador");
+            
+        }
+
+        res.render("editarPrestador", { profesional }); 
+    } catch (error) {
+        console.log("Ocurrio un error al buscar el prestador " + error.message);
+         throw new Error("Ocurrio un fallo en traer al prestador..." + error.message);
+    } 
 }
 
 //El metodo buscar todos los medicos y enfermeros:
@@ -26,10 +41,11 @@ exports.buscarTodoPrestador = async function (req, res) {
             }
 };
 
-exports.buscarPrestadorId = async function (id) {
+async function buscarPrestadorId (id) { //exports no puede ir aca ANOTA EL PORQUE
     try {
-        const prestador = await Prestador.findByPK(id);
-        if(!prestadores){
+        const prestador = await Prestador.findByPk(id);
+        console.log("buscando a prestador con id " + id);
+        if(!prestador){
             throw new Error("No se pudo hallar el prestador...");    
         }
         return prestador.toJSON();
@@ -67,8 +83,11 @@ exports.insertarPrestador = async function (req, res) {
     
 }
 
-exports.actualizarPrestador = async function (id, nuevosDatos) {
+exports.actualizarPrestador = async function (req, res) {
     try {
+        const id = req.params.id;
+        const nuevosDatos = req.body;
+        
         const [prestadorEditado] = await Prestador.update(nuevosDatos, {
             where: {ID_Profesional: id}
         });
@@ -78,7 +97,7 @@ exports.actualizarPrestador = async function (id, nuevosDatos) {
             
         }
 
-        return "prestador correctamente actualizado";
+        res.redirect("prestador/listaPrestador");
     } catch (error) {
         console.log ("Ocurrio un error y fue este: " + error.message);
         throw new Error("Hubo un error al querer actualizar los datos");
