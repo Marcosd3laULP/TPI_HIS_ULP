@@ -1,26 +1,28 @@
-body
-    
-    include ./utilitario/barraDeNav.pug
-    h1 Lista de Médicos y Enfermeros
-    table
+extends ./utilitario/layout
+
+block content
+  include ./utilitario/barraDeNav.pug
+
+  div.flex.justify-end.mx-8.mb-4
+    a(href="insertar")
+      button(class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md") Nuevo Prestador
+
+  div.overflow-x-auto.mx-8
+    table.table-auto.min-w-full.bg-white.rounded-xl.shadow-lg
       thead
-        tr
-          th Nombre
-          th Apellido
-          th Rol
-          th Especialidad
-          th Acciones
-      tbody
+        tr.bg-orange-400.text-gray-600.uppercase.text-sm.leading-normal
+          th.py-3.px-6 Nombre
+          th.py-3.px-6 Apellido
+          th.py-3.px-6 Rol
+          th.py-3.px-6 Especialidad
+          th.py-3.px-6.text-center Acciones
+
+      tbody.text-gray-600.text-sm.font-light
         each profesional in medicos
-         
-          tr
-            td= profesional.ID_Profesional
-            td= profesional.Nombre
-            td= profesional.Apellido
-            td= profesional.Rol
-            td= profesional.Especialidad
-            td
-              a(href=`editar/${profesional.ID_Profesional}`) Editar 
-    div
-      a(href="insertar")
-        button Nuevo Prestador
+          tr(class="border-b border-gray-200 hover:bg-red-50")
+            td.py-3.px-6= profesional.Nombre
+            td.py-3.px-6= profesional.Apellido
+            td.py-3.px-6= profesional.Rol
+            td.py-3.px-6= profesional.Especialidad
+            td.py-3.px-6.text-center
+              a(class="text-red-600 hover:text-red-800 font-semibold", href=`editar/${profesional.ID_Profesional}`) Editar

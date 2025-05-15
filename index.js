@@ -19,6 +19,7 @@ app.set("views", path.join(__dirname, "./Vista"));
 app.use('/',rutas);
 app.use('/pacientes', pacientesRutas);
 app.use('/prestador', prestadorRutas);
+app.use(express.static('public'));
 
 
 //PROBAMOS LA CONEXION A LA BASE
