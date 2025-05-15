@@ -1,42 +1,39 @@
-html 
-    head 
-        title Edición de paciente
-    body 
-        include ./utilitario/barraDeNav.pug
+html
+  head
+    title Edición de paciente
+  body
+    include ./utilitario/barraDeNav.pug
 
-        h1 Edición de datos del paciente
+    h1.text-2xl.font-bold.text-center.my-6 Edición de datos del paciente
 
-        form(action=`/pacientes/edicion/${elPaciente.ID_paciente}` method="POST")
-            label(for="Nombre") Nombre:
-            input(type="text" name="Nombre" id="Nombre" value=elPaciente.Nombre)
-            br
+    div(class="max-w-xl mx-auto bg-sky-200 p-6 rounded-lg shadow-md mt-10")
+      form(action=`/pacientes/edicion/${elPaciente.ID_paciente}` method="POST" class="flex flex-col space-y-4")
 
-            label(for="Apellido") Apellido:
-            input(type="text" name="Apellido" id="Apellido" value=elPaciente.Apellido)
-            br
+        label(for="Nombre" class="font-bold text-lg text-black") Nombre:
+        input(type="text" name="Nombre" id="Nombre" value=elPaciente.Nombre class="p-2 rounded border border-gray-300")
 
-            label(for="DNI") DNI:
-            input(type="number" name="DNI" id="DNI" value=elPaciente.DNI)
-            br
+        label(for="Apellido" class="font-bold text-lg text-black") Apellido:
+        input(type="text" name="Apellido" id="Apellido" value=elPaciente.Apellido class="p-2 rounded border border-gray-300")
 
-            label Sexo:
-            br
+        label(for="DNI" class="font-bold text-lg text-black") DNI:
+        input(type="number" name="DNI" id="DNI" value=elPaciente.DNI class="p-2 rounded border border-gray-300")
+
+        label(class="font-bold text-lg text-black") Sexo:
+        div(class="flex space-x-4")
+          label(for="sexoM" class="flex items-center space-x-1")
             input(type="radio" name="Sexo" value="masculino" id="sexoM" checked=elPaciente.Sexo==='masculino')
-            label(for="sexoM") Masculino
+            span Masculino
+          label(for="sexoF" class="flex items-center space-x-1")
             input(type="radio" name="Sexo" value="femenino" id="sexoF" checked=elPaciente.Sexo==='femenino')
-            label(for="sexoF") Femenino
-            br
+            span Femenino
 
-            label(for="Domicilio") Domicilio:
-            input(type="text" name="Domicilio" id="Domicilio" value=elPaciente.Domicilio)
-            br
+        label(for="Domicilio" class="font-bold text-lg text-black") Domicilio:
+        input(type="text" name="Domicilio" id="Domicilio" value=elPaciente.Domicilio class="p-2 rounded border border-gray-300")
 
-            label(for="Seguro") Seguro:
-            input(type="text" name="Seguro" id="Seguro" value=elPaciente.Seguro)
-            br
+        label(for="Seguro" class="font-bold text-lg text-black") Seguro:
+        input(type="text" name="Seguro" id="Seguro" value=elPaciente.Seguro class="p-2 rounded border border-gray-300")
 
-            label(for="Telefono") Teléfono:
-            input(type="number" name="Telefono" id="Telefono" value=elPaciente.Telefono)
-            br
+        label(for="Telefono" class="font-bold text-lg text-black") Teléfono:
+        input(type="number" name="Telefono" id="Telefono" value=elPaciente.Telefono class="p-2 rounded border border-gray-300")
 
-            button(type="submit") Guardar Cambios
+        button(type="submit" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300") Guardar Cambios

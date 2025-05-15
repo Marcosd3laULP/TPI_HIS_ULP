@@ -1,42 +1,48 @@
-html
-  head 
-    title Admisión de Paciente
-  body 
-    include ./utilitario/barraDeNav.pug
+extends ./utilitario/layout
 
-    h1 Admisión de nuevo paciente
+block content
+  include ./utilitario/barraDeNav.pug
 
-    form(action="/pacientes/admision" method="POST")
-      label(for="Nombre") Nombre:
-      input(type="text" name="Nombre" id="Nombre")
-      br
+  div.flex.items-center.justify-center.min-h-screen.bg-gray-100.mt-16
+    div.bg-sky-500.p-8.rounded-xl.shadow-lg.w-full.max-w-md
+      h1.text-3xl.font-bold.text-center.text-white.mb-6 Admisión de nuevo paciente
 
-      label(for="Apellido") Apellido:
-      input(type="text" name="Apellido" id="Apellido")
-      br
+      form(action="/pacientes/admision" method="POST" class="space-y-4")
+        div
+          label(for="Nombre" class="block text-lg font-bold text-white") Nombre:
+          input(type="text" name="Nombre" id="Nombre" class="w-full p-2 rounded border border-gray-300")
 
-      label(for="DNI") DNI:
-      input(type="number" name="DNI" id="DNI")
-      br
+        div
+          label(for="Apellido" class="block text-lg font-bold text-white") Apellido:
+          input(type="text" name="Apellido" id="Apellido" class="w-full p-2 rounded border border-gray-300")
 
-      label Sexo:
-      br
-      input(type="radio" name="Sexo" value="masculino" id="sexoM")
-      label(for="sexoM") Masculino
-      input(type="radio" name="Sexo" value="femenino" id="sexoF")
-      label(for="sexoF") Femenino
-      br
+        div
+          label(for="DNI" class="block text-lg font-bold text-white") DNI:
+          input(type="number" name="DNI" id="DNI" class="w-full p-2 rounded border border-gray-300")
 
-      label(for="Domicilio") Domicilio:
-      input(type="text" name="Domicilio" id="Domicilio")
-      br
+        div
+          label(class="block text-lg font-bold text-white mb-1") Sexo:
+          div.flex.items-center.space-x-4
+            div
+              input(type="radio" name="Sexo" value="masculino" id="sexoM" class="mr-1")
+              label(for="sexoM" class="text-white") Masculino
+            div
+              input(type="radio" name="Sexo" value="femenino" id="sexoF" class="mr-1")
+              label(for="sexoF" class="text-white") Femenino
 
-      label(for="Seguro") Seguro:
-      input(type="text" name="Seguro" id="Seguro")
-      br
+        div
+          label(for="Domicilio" class="block text-lg font-bold text-white") Domicilio:
+          input(type="text" name="Domicilio" id="Domicilio" class="w-full p-2 rounded border border-gray-300")
 
-      label(for="Telefono") Teléfono:
-      input(type="number" name="Telefono" id="Telefono")
-      br
+        div
+          label(for="Seguro" class="block text-lg font-bold text-white") Seguro:
+          input(type="text" name="Seguro" id="Seguro" class="w-full p-2 rounded border border-gray-300")
 
-      button(type="submit") Enviar
+        div
+          label(for="Telefono" class="block text-lg font-bold text-white") Teléfono:
+          input(type="number" name="Telefono" id="Telefono" class="w-full p-2 rounded border border-gray-300")
+
+        div.text-center.mt-4
+          button(type="submit" class="bg-white text-blue-700 font-bold px-6 py-2 rounded hover:bg-blue-100 transition") Enviar
+
+

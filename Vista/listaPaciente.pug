@@ -1,26 +1,28 @@
-html 
-  head 
-    title Listado de pacientes 
-  body 
+html
+  head
+    title Lista de pacientes
+  body
     include ./utilitario/barraDeNav.pug
-    
-    h1 Lista de pacientes
 
-    table(border="1")
-      thead 
-        tr 
-          th ID 
-          th Nombre 
-          th DNI  
-          th Sexo 
-          th acciones
-      tbody 
-        each patient in pacientes
-          tr 
-            td= patient.ID_paciente
-            td= patient.Nombre
-            td= patient.Apellido 
-            td= patient.DNI
-            td= patient.Sexo
-            td 
-              a(href=`/pacientes/edicion/${patient.ID_paciente}`) Editar 
+    h1.text-2xl.font-bold.text-center.my-6 Lista de pacientes
+
+    div(class="overflow-x-auto px-8")
+      table(class="min-w-full border border-gray-300 bg-white rounded shadow-md")
+        thead
+          tr(class="bg-sky-600 text-white text-left")
+            th(class="px-4 py-2") ID
+            th(class="px-4 py-2") Nombre
+            th(class="px-4 py-2") Apellido
+            th(class="px-4 py-2") DNI
+            th(class="px-4 py-2") Sexo
+            th(class="px-4 py-2") Acciones
+        tbody
+          each patient in pacientes
+            tr(class="border-b hover:bg-sky-50")
+              td(class="px-4 py-2")= patient.ID_paciente
+              td(class="px-4 py-2")= patient.Nombre
+              td(class="px-4 py-2")= patient.Apellido
+              td(class="px-4 py-2")= patient.DNI
+              td(class="px-4 py-2")= patient.Sexo
+              td(class="px-4 py-2")
+                a(href=`/pacientes/edicion/${patient.ID_paciente}` class="text-blue-600 hover:underline") Editar
