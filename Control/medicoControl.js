@@ -71,7 +71,7 @@ exports.insertarPrestador = async function (req, res) {
             throw new Error("Rol no valido");
         }
 
-        const prestadorNuevo = Prestador.create(datos);
+        await Prestador.create(datos);
         res.redirect("listaPrestador");
     } catch (error) {
         console.log("No se pudo insertar el nuevo prestador... " + error.message);
@@ -86,9 +86,21 @@ exports.insertarPrestador = async function (req, res) {
 exports.actualizarPrestador = async function (req, res) {
     try {
         const id = req.params.id;
-        const nuevosDatos = req.body;
+        const datos = req.body;
+
+        if(datos.Nombre.trim() === ""){
+            throw new Error("Nombre no valido");
+        }
+
+         if(datos.Apellido.trim() === ""){
+            throw new Error("Apellido no valido");
+        }
+         
+        if(datos.Rol.trim() === ""){
+            throw new Error("Debe definir un rol");
+        }
         
-        const [prestadorEditado] = await Prestador.update(nuevosDatos, {
+        const [prestadorEditado] = await Prestador.update(datos, {
             where: {ID_Profesional: id}
         });
 
@@ -97,10 +109,15 @@ exports.actualizarPrestador = async function (req, res) {
             
         }
 
-        res.redirect("prestador/listaPrestador");
+        res.redirect("/prestador/listaPrestador"); //Aqui antes era "prestador/listaPrestador"
     } catch (error) {
         console.log ("Ocurrio un error y fue este: " + error.message);
-        throw new Error("Hubo un error al querer actualizar los datos");
+        //throw new Error("Hubo un error al querer actualizar los datos");
+         res.render("editarPrestador", { //ANOTA EL PORQUE DE ESTO
+            error: error.message, //COMO TRABAJA CON EL IF DE LA VISTA
+            datos: req.body, //ESTO LO QUE HACE ES MANTENER LOS DATOS Y EVITAMOS VOLVERLOS A ESCRIBIR
+            profesional: { ID_Profesional: req.params.id } //ESTE ES IMPORATNTE PORQUE SINO CRASHEA
+        });
         
     }
-}
+};

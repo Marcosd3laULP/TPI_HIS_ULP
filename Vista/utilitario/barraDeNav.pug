@@ -1,6 +1,11 @@
-body 
-nav 
-    ul 
-    li: a(href="/") Principal 
-    li: a(href="/pacientes") pacientes 
-    li: a(href ="/prestador") prestadores
+extends layout
+
+block content
+  nav.bg-blue-600.w-full
+    ul.flex.space-x-6.p-4.mx-auto.max-w-full
+      li
+        a(href="/" class="font-bold text-white font-sans hover:underline hover:text-blue-200 transition duration-300") Principal
+      li
+        a(href="/pacientes" class="font-bold text-white font-sans hover:underline hover:text-blue-200 transition duration-300") Pacientes
+      li
+        a(href="/prestador" class="font-bold text-white font-sans hover:underline hover:text-blue-200 transition duration-300") Prestadores

@@ -1,6 +1,6 @@
 body
     h1 Editar Prestador
-    form(action=`prestador/editar/${profesional.ID_Profesional}`, method="POST")
+    form(action=`/prestador/${profesional.ID_Profesional}`, method="POST")
 
       if error
       p.error= error
@@ -13,7 +13,7 @@ body
         input(type="text", id="apellido", name="Apellido", value=datos && datos.Apellido)
       div
         label(for="rol") Rol:
-        select(id="rol", name="Rol", required)
+        select(id="rol", name="Rol")
           option(value="") Seleccione un rol 
           option(value="medico",selected=datos && datos.Rol=="medico") Médico
           option(value="enfermero",selected=datos && datos.Rol=="enfermero") Enfermero
