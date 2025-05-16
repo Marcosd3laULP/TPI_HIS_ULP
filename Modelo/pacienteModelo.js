@@ -52,6 +52,4 @@ const Paciente = sequelize.define('pacientes', {
    
 });
 
-module.exports = {
-    Paciente
-};
+module.exports = Paciente

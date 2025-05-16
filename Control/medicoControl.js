@@ -1,4 +1,4 @@
-const { Prestador } = require("../Modelo/prestadorModelo");
+const { Prestador } = require("../Modelo/relaciones/asociaciones");
 
 exports.mostrarOpPrestador = function(req, res){
     res.render("prestadores");

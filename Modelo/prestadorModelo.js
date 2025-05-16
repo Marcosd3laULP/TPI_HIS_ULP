@@ -1,5 +1,6 @@
 const {Sequelize, DataTypes} = require('sequelize');
 const sequelize = require("../baseDatos/bd");
+const Informe = require("./informeModelo");
 
 const Prestador = sequelize.define("Prestador", {
 
@@ -34,4 +35,6 @@ const Prestador = sequelize.define("Prestador", {
         tableName: "profesionalessalud"
 });
 
-module.exports = { Prestador };
+
+
+module.exports = Prestador;
