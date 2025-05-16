@@ -94,8 +94,10 @@ exports.cargarPaciente = async function(req, res) {
         }
 
 
-        await Paciente.create(datos);
-        res.redirect("turnosV2");
+        const paciente = await Paciente.create(datos);
+        console.log("Paciente insertado:", paciente.toJSON());
+        console.log("ID del paciente:", paciente.ID_paciente);
+        res.redirect(`/turnos/${paciente.ID_paciente}/turnosV2`);
     } catch (error) {
         console.error("Error al cargar paciente:", error.message);
         res.render("ingresoPaciente", {

@@ -1,0 +1,55 @@
+extends ./utilitario/layout
+
+block content
+  h1.text-2xl.font-bold.mb-6 Asignar turno a paciente
+
+  div.bg-sky-200.rounded-lg.p-6.max-w-md.mx-auto
+    // Mostrar datos del paciente (solo lectura)
+    div.mb-4
+      label.block.font-bold.text-lg.mb-1 Nombre:
+      input(
+        type="text" 
+        value=`${paciente.Nombre} ${paciente.Apellido}` 
+        readonly 
+        class="w-full border-0 outline-none bg-transparent pointer-events-none"
+      )
+
+    div.mb-4
+      label.block.font-bold.text-lg.mb-1 DNI:
+      input(
+        type="text" 
+        value=paciente.DNI 
+        readonly 
+        class="w-full border-0 outline-none bg-transparent pointer-events-none"
+      )
+
+    if error
+      p.text-red-600.font-semibold.mb-4= error
+
+    // Formulario para asignar turno
+    form(action=`/turnos/${paciente.ID_paciente}/turnosV2` method="POST")
+      // ID del paciente como campo oculto para la base de datos
+      input(type="hidden" name="ID_paciente" value=paciente.ID_paciente)
+
+      div.mb-4
+        label.block.font-bold.text-lg.mb-1(for="Fecha") Fecha del turno:
+        input(
+          type="date" 
+          name="Fecha" 
+          required
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+        )
+
+      div.mb-6
+        label.block.font-bold.text-lg.mb-1(for="Motivo") Motivo:
+        input(
+          type="text" 
+          name="Motivo" 
+          required 
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+        )
+
+      button(
+        type="submit" 
+        class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded transition-colors"
+      ) Guardar turno

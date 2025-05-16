@@ -1,0 +1,27 @@
+extends ./utilitario/layout
+
+block content
+  include ./utilitario/barraDeNav.pug
+  h1(class="text-2xl font-bold text-center text-gray-800 mb-6") Lista de Turnos
+
+  table(class="min-w-full border-collapse border border-gray-300 shadow-lg rounded-lg overflow-hidden")
+    thead(class="bg-blue-200")
+      tr
+        th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Nro
+        th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Paciente
+        th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Fecha
+        th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Motivo
+        th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Acciones
+    tbody
+      each turno, i in turnos
+        - const filaClase = i % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+        tr(class=filaClase)
+          td(class="border border-gray-300 px-4 py-2")= turno.Nro_turno
+          td(class="border border-gray-300 px-4 py-2")= turno.Paciente ? turno.Paciente.Nombre + ' ' + turno.Paciente.Apellido : 'Sin datos'
+          td(class="border border-gray-300 px-4 py-2")= turno.Fecha
+          td(class="border border-gray-300 px-4 py-2")= turno.Motivo
+          td(class="border border-gray-300 px-4 py-2 space-x-2")
+            form(action=`/turnos/${turno.Nro_turno}/anunciar`, method="POST", style="display:inline")
+              button(type="submit" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded") Anunciar
+            form(action=`/turnos/${turno.Nro_turno}/cancelar`, method="POST", style="display:inline")
+              button(type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded") Cancelar

@@ -22,11 +22,13 @@ const Turno = sequelize.define("Turno", {
     },
     Es_tomado: {
         type: DataTypes.BOOLEAN,
-        allowNull: false
+        allowNull: false,
+        defaultValue: false
     },
     Estado: {
         type: DataTypes.BOOLEAN,
-        allowNull: false
+        allowNull: false,
+        defaultValue: true
     }
 
 },{

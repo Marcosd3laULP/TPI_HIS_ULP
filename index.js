@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 const rutas = require('./rutas/rutaInicio'); //Importamos las rutas
 const pacientesRutas = require('./rutas/pacienteRuta');
 const prestadorRutas = require("./rutas/prestadorRuta");
+const turnoRutas = require("./rutas/turnoRuta");
 
 
 app.set("view engine", "pug");
@@ -19,6 +20,7 @@ app.set("views", path.join(__dirname, "./Vista"));
 app.use('/',rutas);
 app.use('/pacientes', pacientesRutas);
 app.use('/prestador', prestadorRutas);
+app.use('/turnos', turnoRutas);
 app.use(express.static('public'));
 
 
