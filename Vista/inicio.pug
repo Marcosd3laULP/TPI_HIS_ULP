@@ -1,7 +1,8 @@
-html 
-head
- title Buen inicio :D
-body
- include ./utilitario/barraDeNav.pug
- h1 pagina de inicio
- h2 ya hice la barra de menu 
+extends ./utilitario/layout
+
+block content
+  include ./utilitario/barraDeNav.pug
+
+  .flex.flex-col.items-center.justify-center.min-h-screen.bg-gray-100.p-8
+    h1.text-4xl.font-bold.text-gray-800.mb-4 Página de inicio
+    h2.text-2xl.text-gray-600 Ya hice la barra de menú 😄
