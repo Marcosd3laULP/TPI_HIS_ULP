@@ -28,7 +28,7 @@ block content
 
     // Formulario para asignar turno
     form(action=`/turnos/${paciente.ID_paciente}/turnosV2` method="POST")
-      // ID del paciente como campo oculto para la base de datos
+      // ID del paciente como campo oculto
       input(type="hidden" name="ID_paciente" value=paciente.ID_paciente)
 
       div.mb-4
@@ -36,20 +36,46 @@ block content
         input(
           type="date" 
           name="Fecha" 
-          required
           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
         )
 
-      div.mb-6
+      div.mb-4
         label.block.font-bold.text-lg.mb-1(for="Motivo") Motivo:
         input(
           type="text" 
-          name="Motivo" 
-          required 
+          name="Motivo"  
           class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
         )
+
+      // Checkbox para activar filtrado por ID
+      div.mb-2.flex.items-center.gap-2
+        input(type="checkbox" id="filtrarID" class="form-checkbox text-sky-500")
+        label(for="filtrarID" class="text-sm font-medium text-gray-700") Filtrar por ID
+
+      // Input de texto oculto inicialmente
+      div.mb-4.hidden(id="filtroIDContainer")
+        label.block.font-bold.text-lg.mb-1(for="inputIDMedico") ID del médico:
+        input#inputIDMedico(
+          type="text"
+          placeholder="Ingrese ID del médico"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+        )
+
+      // Select para elegir prestador
+      div.mb-6
+        label.block.font-bold.text-lg.mb-1(for="ID_Profesional") Seleccionar médico:
+        select#ID_prestador(name="ID_Profesional" required class="w-full border border-gray-300 rounded px-3 py-2")
+          option(value="") -- Seleccione un médico --
+          each profesional in prestadores
+            option(
+              value=profesional.ID_Profesional
+              data-id=profesional.ID_Profesional
+            )= `${profesional.Nombre} ${profesional.Apellido} ${profesional.Especialidad} (ID: ${profesional.ID_Profesional})`
 
       button(
         type="submit" 
         class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded transition-colors"
       ) Guardar turno
+
+    // Incluir script de filtrado
+    script(type="module" src="/js/filtroTurnoMedico.js")

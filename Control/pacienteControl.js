@@ -24,7 +24,6 @@ exports.formularioEdicionPaciente = async function (req, res) {
     try {
         const id = req.params.id
         const paciente = await buscarPacientePorId(id);
-        console.log("paciente completo", paciente);
         if(!paciente){
             throw new Error("No se pudo hallar al paciente");
             
@@ -54,9 +53,6 @@ async function buscarPacientePorId(id) {
 // Crear (cargar) un nuevo paciente
 exports.cargarPaciente = async function(req, res) {
     try {
-        /*console.log("BODY:", JSON.stringify(req.body, null, 2));
-        console.log("Campos recibidos:", Object.keys(req.body)); Estos son depuradores, perdon profe Igancio
-        ya le voy a agarrar la mano al debugger*/
         const datos = req.body
 
         if(!datos.Nombre || datos.Nombre.trim() === ""){
@@ -95,8 +91,7 @@ exports.cargarPaciente = async function(req, res) {
 
 
         const paciente = await Paciente.create(datos);
-        console.log("Paciente insertado:", paciente.toJSON());
-        console.log("ID del paciente:", paciente.ID_paciente);
+
         res.redirect(`/turnos/${paciente.ID_paciente}/turnosV2`);
     } catch (error) {
         console.error("Error al cargar paciente:", error.message);
@@ -145,8 +140,7 @@ exports.actualizarPaciente = async function(req, res) {
         const [actualizado] = await Paciente.update(datos, {
             where: { ID_paciente: id }
         });
-        console.log("estan bien los datos " ,actualizado);
-         console.log("ID recibido " + id);
+        
         if (actualizado === 0) {
             throw new Error("No se pudo hallar el paciente para hacer los cambios");
         }

@@ -9,19 +9,33 @@ block content
       tr
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Nro
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Paciente
+        th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Médico
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Fecha
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Motivo
+        th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Estado
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Acciones
+
     tbody
       each turno, i in turnos
-        - const filaClase = i % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+        - let filaClase = i % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+        - let estadoTexto = 'Activo';
+        if (!turno.Estado && turno.Es_tomado)
+          - filaClase = 'bg-green-100';
+          - estadoTexto = 'Consumido';
+        else if (!turno.Estado && !turno.Es_tomado)
+          - filaClase = 'bg-red-100';
+          - estadoTexto = 'Cancelado';
+
         tr(class=filaClase)
           td(class="border border-gray-300 px-4 py-2")= turno.Nro_turno
           td(class="border border-gray-300 px-4 py-2")= turno.Paciente ? turno.Paciente.Nombre + ' ' + turno.Paciente.Apellido : 'Sin datos'
+          td(class="border border-gray-300 px-4 py-2")= turno.Prestador ? turno.Prestador.Nombre + ' ' + turno.Prestador.Apellido + ' (' + turno.Prestador.Especialidad + ')' : 'Sin médico'
           td(class="border border-gray-300 px-4 py-2")= turno.Fecha
           td(class="border border-gray-300 px-4 py-2")= turno.Motivo
+          td(class="border border-gray-300 px-4 py-2 font-semibold text-sm")= estadoTexto
           td(class="border border-gray-300 px-4 py-2 space-x-2")
-            form(action=`/turnos/${turno.Nro_turno}/anunciar`, method="POST", style="display:inline")
-              button(type="submit" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded") Anunciar
-            form(action=`/turnos/${turno.Nro_turno}/cancelar`, method="POST", style="display:inline")
-              button(type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded") Cancelar
+            if turno.Estado
+              form(action=`/turnos/${turno.Nro_turno}/anunciar`, method="POST", style="display:inline")
+                button(type="submit" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded") Anunciar
+              form(action=`/turnos/${turno.Nro_turno}/cancelar`, method="POST", style="display:inline")
+                button(type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded") Cancelar

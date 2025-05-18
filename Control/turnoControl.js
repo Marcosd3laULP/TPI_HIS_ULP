@@ -1,5 +1,7 @@
+const { where } = require("sequelize");
 const { Turno } = require("../Modelo/relaciones/asociaciones");
 const { Paciente } = require("../Modelo/relaciones/asociaciones");
+const { Prestador } = require("../Modelo/relaciones/asociaciones");
 
 exports.mostrarOpTurnos = async function (req, res) {
     res.render("turnos");
@@ -9,7 +11,12 @@ exports.formTurnoAdmision = async function (req, res) {
     try {
         const idPaciente = req.params.id;
         const paciente = await Paciente.findByPk(idPaciente);
-        res.render("turnosV2", { paciente });
+        const prestadores = await Prestador.findAll({
+            where: {
+                Rol: 'Medico'
+            }
+        });
+        res.render("turnosV2", { paciente, prestadores });
     } catch (error) {
         console.log("Hubo un error y fue este: " + error.message);
         throw new Error("Error al cargar el formulario");
@@ -25,9 +32,10 @@ exports.formTurno = async function (req, res) {
 exports.buscarTodoTurno = async function(req, res){
     try {
         const turnos =  await Turno.findAll({
-            include: { model: Paciente, as: 'Paciente', attributes: ["Nombre", "Apellido"]}
+            include: [{ model: Paciente, as: 'Paciente', attributes: ["Nombre", "Apellido"]},
+            {model: Prestador, as: 'Prestador', attributes: ['Nombre', 'Apellido', 'Especialidad']}
+        ]
         });
-        console.log(JSON.stringify(turnos, null, 2));
         const turnosJson = turnos.map(t => t.toJSON());
         res.render("listaTurno", { turnos: turnosJson });
     } catch (error) {
@@ -56,7 +64,7 @@ async function buscarTurnoId(id) {
 exports.insertarTurnoV2 = async function (req, res) {
     try {
         const datos = req.body;
-        const {Fecha, Motivo} = datos;
+        const {Fecha, Motivo, ID_Profesional} = datos;
 
         if(!Fecha || Fecha.trim() === ""){
             throw new Error("Debe ingresar una fecha para el turno");
@@ -67,7 +75,7 @@ exports.insertarTurnoV2 = async function (req, res) {
             
         }
 
-        const hoy = new Date;
+        const hoy = new Date();
         hoy.setHours(0, 0, 0, 0); //Sacamos las horas, minutos y segundos para solo dejar la fecha.
 
         if(fechaIngresada < hoy){
@@ -77,6 +85,11 @@ exports.insertarTurnoV2 = async function (req, res) {
 
         if(!Motivo || Motivo.trim() === ""){
             throw new Error("Debe ingresar un motivo valido");
+            
+        }
+
+        if(!ID_Profesional || ID_Profesional === ""){
+            throw new Error("Debe seleccionar a un medico");
             
         }
 
@@ -90,3 +103,46 @@ exports.insertarTurnoV2 = async function (req, res) {
         });
     }
 }
+
+exports.anunciar = async function (req, res) {
+    console.log("PARAMS:", req.params)
+    const {Nro_turno} = req.params
+
+    try {
+        const turno = Turno.findByPk(Nro_turno);
+
+        if(!turno){
+            return res.status(404).send("Turno no encontrado.");
+        }
+        await Turno.update( 
+            {Es_tomado: true, Estado: false },
+            {where: { Nro_turno }}
+        );
+        res.redirect("/turnos/lista-turnos");
+    } catch (error) {
+        console.log("hubo un problema en anunciar y fue este: ", error.message);
+        res.status(500).send("No se pudo anunciar el turno");
+    }
+}
+
+exports.cancelar = async function (req, res) {
+    console.log("PARAMS:", req.params)
+    const {Nro_turno} = req.params
+
+    try {
+        const turno = Turno.findByPk(Nro_turno);
+
+        if(!turno){
+            return res.status(404).send("Turno no encontrado.");
+        }
+        await Turno.update( 
+            {Es_tomado: false, Estado: false },
+            {where: {Nro_turno}}
+        );
+        res.redirect("/turnos/listaTurno");
+    } catch (error) {
+        console.log("hubo un problema en anunciar y fue este: ", error.message);
+        res.status(500).send("No se pudo anunciar el turno");
+    }
+}
+
