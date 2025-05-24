@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-05-2025 a las 01:36:09
+-- Tiempo de generación: 24-05-2025 a las 02:58:36
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,20 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `his_bd`
 --
+CREATE DATABASE IF NOT EXISTS `his_bd` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `his_bd`;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ala`
+--
+
+CREATE TABLE `ala` (
+  `ID_ala` int(11) NOT NULL,
+  `Sector` varchar(200) NOT NULL,
+  `Ubicacion` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -37,6 +51,33 @@ CREATE TABLE `atenciones` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `camas`
+--
+
+CREATE TABLE `camas` (
+  `ID_hab` int(11) NOT NULL,
+  `ID_cama` int(11) NOT NULL,
+  `Numero` int(11) NOT NULL,
+  `Estado` varchar(200) NOT NULL,
+  `Sexo_ocupante` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `habitacion`
+--
+
+CREATE TABLE `habitacion` (
+  `ID_ala` int(11) NOT NULL,
+  `ID_hab` int(11) NOT NULL,
+  `numero` varchar(200) NOT NULL,
+  `capacidad` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `informes`
 --
 
@@ -45,8 +86,22 @@ CREATE TABLE `informes` (
   `ID_Profesional` int(11) NOT NULL,
   `ID_paciente` int(11) NOT NULL,
   `Diagnostico` varchar(200) DEFAULT NULL,
-  `Descripcion` varchar(200) DEFAULT NULL,
-  `Tratamiento` varchar(200) DEFAULT NULL
+  `Descripcion` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `internacion`
+--
+
+CREATE TABLE `internacion` (
+  `ID_paciente` int(11) NOT NULL,
+  `ID_internacion` int(11) NOT NULL,
+  `Fecha_ingreso` date NOT NULL,
+  `Diagnostico` varchar(200) DEFAULT NULL,
+  `Motivo` varchar(200) DEFAULT NULL,
+  `Alta` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -66,19 +121,6 @@ CREATE TABLE `pacientes` (
   `Telefono` int(8) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `pacientes`
---
-
-INSERT INTO `pacientes` (`ID_paciente`, `Nombre`, `Apellido`, `DNI`, `Sexo`, `Seguro`, `Domicilio`, `Telefono`) VALUES
-(1, 'zzz', 'zzzz', 777777777, 'masculino', 'zzzzzz', 'plisssss anda', 77777),
-(2, 'zzz', 'zzzz', 2147483647, 'masculino', 'zzzzzz', 'plisssss anda', 77777),
-(4, 'Martha', 'Chirino', 33333333, 'femenino', 'dosep', 'Lujan', 2147483647),
-(5, 'Roberto', 'Musso', 14800957, 'masculino', 'Sin seguro', 'Uruguay', 9999),
-(6, 'Jorge ', 'Lanata', 22880450, 'masculino', 'carozzio', 'BS Aires', 1123984283),
-(9, 'jaunjo', 'seaz', 65555555, 'masculino', 'Sin seguro', 'Lujan', 0),
-(11, 'tututututu', 'lalalalalla', 567768899, 'femenino', 'Sin seguro', 'peru', 77777788);
-
 -- --------------------------------------------------------
 
 --
@@ -93,12 +135,19 @@ CREATE TABLE `profesionalessalud` (
   `Especialidad` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
 --
--- Volcado de datos para la tabla `profesionalessalud`
+-- Estructura de tabla para la tabla `traslados`
 --
 
-INSERT INTO `profesionalessalud` (`ID_Profesional`, `Nombre`, `Apellido`, `Rol`, `Especialidad`) VALUES
-(1, 'Martha', 'Chirino', 'enfermero', 'sin_especialidad');
+CREATE TABLE `traslados` (
+  `ID_internacion` int(11) NOT NULL,
+  `ID_cama` int(11) NOT NULL,
+  `ID_traslado` int(11) NOT NULL,
+  `Fecha_traslado` date NOT NULL,
+  `Motivo` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -108,6 +157,7 @@ INSERT INTO `profesionalessalud` (`ID_Profesional`, `Nombre`, `Apellido`, `Rol`,
 
 CREATE TABLE `turnos` (
   `ID_paciente` int(11) NOT NULL,
+  `ID_Profesional` int(11) NOT NULL,
   `Nro_turno` int(11) NOT NULL,
   `Fecha` date NOT NULL,
   `Motivo` varchar(200) NOT NULL,
@@ -116,15 +166,14 @@ CREATE TABLE `turnos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `turnos`
---
-
-INSERT INTO `turnos` (`ID_paciente`, `Nro_turno`, `Fecha`, `Motivo`, `Es_tomado`, `Estado`) VALUES
-(11, 1, '2025-05-23', 'Consulta', 0, 1);
-
---
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `ala`
+--
+ALTER TABLE `ala`
+  ADD PRIMARY KEY (`ID_ala`);
 
 --
 -- Indices de la tabla `atenciones`
@@ -134,12 +183,33 @@ ALTER TABLE `atenciones`
   ADD KEY `ID_Profesional` (`ID_Profesional`);
 
 --
+-- Indices de la tabla `camas`
+--
+ALTER TABLE `camas`
+  ADD PRIMARY KEY (`ID_cama`),
+  ADD KEY `ID_hab` (`ID_hab`);
+
+--
+-- Indices de la tabla `habitacion`
+--
+ALTER TABLE `habitacion`
+  ADD PRIMARY KEY (`ID_hab`),
+  ADD KEY `ID_ala` (`ID_ala`);
+
+--
 -- Indices de la tabla `informes`
 --
 ALTER TABLE `informes`
   ADD PRIMARY KEY (`Nro_historial`),
   ADD KEY `ID_paciente` (`ID_paciente`),
   ADD KEY `ID_Profesional` (`ID_Profesional`);
+
+--
+-- Indices de la tabla `internacion`
+--
+ALTER TABLE `internacion`
+  ADD PRIMARY KEY (`ID_internacion`),
+  ADD KEY `ID_paciente` (`ID_paciente`);
 
 --
 -- Indices de la tabla `pacientes`
@@ -155,15 +225,42 @@ ALTER TABLE `profesionalessalud`
   ADD PRIMARY KEY (`ID_Profesional`);
 
 --
+-- Indices de la tabla `traslados`
+--
+ALTER TABLE `traslados`
+  ADD PRIMARY KEY (`ID_traslado`),
+  ADD KEY `ID_internacion` (`ID_internacion`),
+  ADD KEY `ID_cama` (`ID_cama`);
+
+--
 -- Indices de la tabla `turnos`
 --
 ALTER TABLE `turnos`
   ADD PRIMARY KEY (`Nro_turno`),
-  ADD KEY `ID_paciente` (`ID_paciente`);
+  ADD KEY `ID_paciente` (`ID_paciente`),
+  ADD KEY `ID_Profesional` (`ID_Profesional`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
+
+--
+-- AUTO_INCREMENT de la tabla `ala`
+--
+ALTER TABLE `ala`
+  MODIFY `ID_ala` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `camas`
+--
+ALTER TABLE `camas`
+  MODIFY `ID_cama` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `habitacion`
+--
+ALTER TABLE `habitacion`
+  MODIFY `ID_hab` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `informes`
@@ -172,22 +269,34 @@ ALTER TABLE `informes`
   MODIFY `Nro_historial` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `internacion`
+--
+ALTER TABLE `internacion`
+  MODIFY `ID_internacion` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `pacientes`
 --
 ALTER TABLE `pacientes`
-  MODIFY `ID_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `ID_paciente` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `profesionalessalud`
 --
 ALTER TABLE `profesionalessalud`
-  MODIFY `ID_Profesional` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID_Profesional` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `traslados`
+--
+ALTER TABLE `traslados`
+  MODIFY `ID_traslado` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `turnos`
 --
 ALTER TABLE `turnos`
-  MODIFY `Nro_turno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Nro_turno` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
@@ -201,6 +310,18 @@ ALTER TABLE `atenciones`
   ADD CONSTRAINT `atenciones_ibfk_2` FOREIGN KEY (`ID_Profesional`) REFERENCES `profesionalessalud` (`ID_Profesional`);
 
 --
+-- Filtros para la tabla `camas`
+--
+ALTER TABLE `camas`
+  ADD CONSTRAINT `camas_ibfk_1` FOREIGN KEY (`ID_hab`) REFERENCES `habitacion` (`ID_hab`);
+
+--
+-- Filtros para la tabla `habitacion`
+--
+ALTER TABLE `habitacion`
+  ADD CONSTRAINT `habitacion_ibfk_1` FOREIGN KEY (`ID_ala`) REFERENCES `ala` (`ID_ala`);
+
+--
 -- Filtros para la tabla `informes`
 --
 ALTER TABLE `informes`
@@ -208,10 +329,24 @@ ALTER TABLE `informes`
   ADD CONSTRAINT `informes_ibfk_2` FOREIGN KEY (`ID_Profesional`) REFERENCES `profesionalessalud` (`ID_Profesional`);
 
 --
+-- Filtros para la tabla `internacion`
+--
+ALTER TABLE `internacion`
+  ADD CONSTRAINT `internacion_ibfk_1` FOREIGN KEY (`ID_paciente`) REFERENCES `pacientes` (`ID_paciente`);
+
+--
+-- Filtros para la tabla `traslados`
+--
+ALTER TABLE `traslados`
+  ADD CONSTRAINT `traslados_ibfk_1` FOREIGN KEY (`ID_internacion`) REFERENCES `internacion` (`ID_internacion`),
+  ADD CONSTRAINT `traslados_ibfk_2` FOREIGN KEY (`ID_cama`) REFERENCES `camas` (`ID_cama`);
+
+--
 -- Filtros para la tabla `turnos`
 --
 ALTER TABLE `turnos`
-  ADD CONSTRAINT `turnos_ibfk_1` FOREIGN KEY (`ID_paciente`) REFERENCES `pacientes` (`ID_paciente`);
+  ADD CONSTRAINT `turnos_ibfk_1` FOREIGN KEY (`ID_paciente`) REFERENCES `pacientes` (`ID_paciente`),
+  ADD CONSTRAINT `turnos_ibfk_2` FOREIGN KEY (`ID_Profesional`) REFERENCES `profesionalessalud` (`ID_Profesional`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
