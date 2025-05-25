@@ -36,6 +36,13 @@ block content
           td(class="border border-gray-300 px-4 py-2 space-x-2")
             if turno.Estado
               form(action=`/turnos/${turno.Nro_turno}/anunciar`, method="POST", style="display:inline")
+                //- Campos ocultos con los datos necesarios
+                input(type="hidden" name="Motivo" value=turno.Motivo || "Consulta médica")
+                input(type="hidden" name="Fecha" value=turno.Fecha)
+                input(type="hidden" name="ID_paciente" value=turno.ID_paciente)
+                input(type="hidden" name="ID_Profesional" value=turno.ID_Profesional)
+      
                 button(type="submit" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded") Anunciar
               form(action=`/turnos/${turno.Nro_turno}/cancelar`, method="POST", style="display:inline")
                 button(type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded") Cancelar
+

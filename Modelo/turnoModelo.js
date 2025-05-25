@@ -20,6 +20,7 @@ const Turno = sequelize.define("Turno", {
         type: DataTypes.STRING,
         allowNull: false
     },
+
     Es_tomado: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

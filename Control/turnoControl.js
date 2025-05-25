@@ -2,6 +2,7 @@ const { where } = require("sequelize");
 const { Turno } = require("../Modelo/relaciones/asociaciones");
 const { Paciente } = require("../Modelo/relaciones/asociaciones");
 const { Prestador } = require("../Modelo/relaciones/asociaciones");
+const { Atenciones } = require("../Modelo/relaciones/asociaciones");
 
 exports.mostrarOpTurnos = async function (req, res) {
     res.render("turnos");
@@ -83,8 +84,8 @@ exports.insertarTurnoV2 = async function (req, res) {
             
         }
 
-        if(!Motivo || Motivo.trim() === ""){
-            throw new Error("Debe ingresar un motivo valido");
+         if(!Motivo || Motivo === ""){
+            throw new Error("Debe especificar un motivo");
             
         }
 
@@ -92,6 +93,7 @@ exports.insertarTurnoV2 = async function (req, res) {
             throw new Error("Debe seleccionar a un medico");
             
         }
+
 
         await Turno.create(datos);
         res.redirect("/turnos/lista-turnos");
@@ -105,15 +107,35 @@ exports.insertarTurnoV2 = async function (req, res) {
 }
 
 exports.anunciar = async function (req, res) {
-    console.log("PARAMS:", req.params)
     const {Nro_turno} = req.params
+    const {Fecha, Motivo, ID_Profesional, ID_paciente} = req.body
 
     try {
-        const turno = Turno.findByPk(Nro_turno);
+        if(!Fecha) throw new Error("Fecha no proporcionada");
+        if(!Motivo) throw new Error("Motivo no proporcionado");
+        if(!ID_paciente) throw new Error("Paciente no especificado");
+        if(!ID_Profesional) throw new Error("Profesional no especificado");
+
+        const turno = Turno.findByPk(Nro_turno, {
+            include: [ 
+                {model: Paciente, as: "Paciente"},
+                {model: Prestador, as: "Prestador"},
+            ]
+        });
 
         if(!turno){
             return res.status(404).send("Turno no encontrado.");
         }
+        //console.log('Datos del turno:', turno.toJSON());
+        console.log('Body recibido:', req.body);
+        await Atenciones.create({
+            Fecha,
+            Motivo,
+            ID_paciente,
+            ID_Profesional    
+        });
+        
+        
         await Turno.update( 
             {Es_tomado: true, Estado: false },
             {where: { Nro_turno }}

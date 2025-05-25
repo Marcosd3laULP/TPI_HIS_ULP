@@ -3,9 +3,8 @@ extends ./utilitario/layout
 block content
   include ./utilitario/barraDeNav.pug
 
-  //- Contenedor principal centrado
   div.flex.items-center.justify-center.min-h-screen.bg-gray-100
-    //- Caja naranja
+
     div.bg-red-400.p-8.rounded-xl.shadow-md.w-full.max-w-md
       h1.text-2xl.font-bold.mb-6.text-center Nuevo Prestador
 
@@ -30,12 +29,7 @@ block content
 
         div
           label(for="especialidad", class="block font-medium text-gray-700") Especialidad:
-          select#especialidad(name="Especialidad", class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400")
-            option(value="sin_especialidad") Sin especialidad
-            option(value="cardiologia") Cardiología
-            option(value="pediatria") Pediatría
-            option(value="neurologia") Neurología
-            option(value="traumatologia") Traumatología
+          input#especialidad(type="text", name="Especialidad", value=datos && datos.Especialidad, placeholder="Ej: Cardiología, Pediatría", class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400")
 
         div.text-center
           button(type="submit", class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md shadow-md") Guardar Prestador

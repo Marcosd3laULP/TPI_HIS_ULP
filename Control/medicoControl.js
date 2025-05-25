@@ -4,6 +4,9 @@ exports.mostrarOpPrestador = function(req, res){
     res.render("prestadores");
 };
 
+exports.seccionDeMedicos = function(req, res){
+    res.render("medicos/seccionMedicos");
+};
 
 exports.formularioNuevoPrestador = function(req, res){
     res.render("nuevoPrestador");

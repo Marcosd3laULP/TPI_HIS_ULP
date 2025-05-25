@@ -1,6 +1,5 @@
 const sequelize = require('../baseDatos/bd');
 const { DataTypes } = require('sequelize');
-const Prestador = require("./prestadorModelo");
 
 const Informe = sequelize.define("Informe", {
 
@@ -17,11 +16,6 @@ const Informe = sequelize.define("Informe", {
     },
 
     descripcion: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-
-    Tratamiento: {
         type: DataTypes.STRING,
         allowNull: true
     }
