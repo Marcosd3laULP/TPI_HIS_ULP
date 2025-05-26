@@ -15,7 +15,7 @@ const Informe = sequelize.define("Informe", {
         allowNull: true
     },
 
-    descripcion: {
+    Descripcion: {
         type: DataTypes.STRING,
         allowNull: true
     }

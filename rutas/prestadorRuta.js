@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const prestadorControl = require("../Control/medicoControl");
-const atencionesControl = require("../Control/atencionControl");
 
 router.get("/", prestadorControl.mostrarOpPrestador); //Seccion de opciones
 router.get("/medicos", prestadorControl.seccionDeMedicos);
-router.get("/medicos/pacientes", atencionesControl.obtenerAtencionesConPacientes);
+router.get("/medicos/pacientes", prestadorControl.PacientesConTurno);
+router.get("/medicos/informes/:id", prestadorControl.NuevoInforme);
+router.post("/medicos/informes/:id", prestadorControl.guardarInforme);
 //router.get("/listaPrestador", prestadorControl.listaDePrestadores); //listamos a los prestadores
 //ANOTATE ESTE ERROR EH, ES UN DETALLE MUY FACIL DE PASARLO DESAPERCIBIDO
 router.get("/listaPrestador", prestadorControl.buscarTodoPrestador);//Buscamos a los prestadores

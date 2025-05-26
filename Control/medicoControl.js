@@ -1,12 +1,65 @@
 const { Prestador } = require("../Modelo/relaciones/asociaciones");
+const { Paciente } = require("../Modelo/relaciones/asociaciones");
+const { Atenciones } = require('../Modelo/relaciones/asociaciones');
+const { Informe } = require("../Modelo/relaciones/asociaciones");
 
 exports.mostrarOpPrestador = function(req, res){
     res.render("prestadores");
 };
 
 exports.seccionDeMedicos = function(req, res){
-    res.render("medicos/seccionMedicos");
+    res.render("Medicos/seccionMedicos");
 };
+
+exports.NuevoInforme = async function(req, res){
+    try {
+        const id = req.params.id;
+        const paciente = await Paciente.findByPk(id);
+        if(!paciente){
+            res.status(404).send("No se hallo al paciente");
+        }
+
+        res.render("medicos/informes", { paciente });
+    } catch (error) {
+        console.log("Ocurrio al buscar al paciente y fue este " + error.message);
+         throw new Error("Ocurrio un fallo en traer al paciente..." + error.message);
+    }     
+};
+
+exports.guardarInforme = async (req, res) => {
+  try {
+    const idPaciente = req.params.id;
+    const { Diagnostico, Descripcion } = req.body;
+    console.log('req.body:', req.body);
+
+    // Buscar en Atenciones el prestador asociado al paciente
+    const atencion = await Atenciones.findOne({
+      where: { ID_paciente: idPaciente }
+    });
+
+    if (!atencion) {
+      return res.status(404).send('No se encontró prestador para este paciente.');
+    }
+
+    const idPrestador = atencion.ID_Profesional;
+
+    // Crear informe con ID de paciente y prestador
+    await Informe.create({
+      ID_paciente: idPaciente,
+      ID_Profesional: idPrestador,
+        Diagnostico,
+        Descripcion
+    });
+
+    res.redirect('/prestador/medicos/pacientes');
+
+  } catch (error) {
+    console.error('Error al guardar el informe:', error);
+    res.status(500).send('Error en el servidor');
+  }
+};
+
+
 
 exports.formularioNuevoPrestador = function(req, res){
     res.render("nuevoPrestador");
@@ -15,9 +68,7 @@ exports.formularioNuevoPrestador = function(req, res){
 exports.formularioEditarPrestador = async function (req, res) {
     try {
         const id = req.params.id
-        console.log("id recibido: " + id);
         const profesional = await buscarPrestadorId(id);
-        console.log("prestador encontrado: " + profesional);
         if(!profesional){
             throw new Error("No se pudo hallar al prestador");
             
@@ -123,4 +174,24 @@ exports.actualizarPrestador = async function (req, res) {
         });
         
     }
+};
+
+exports.PacientesConTurno = async function(req, res) {
+  try {
+    const pacientes = await Paciente.findAll({
+      include: {
+        model: Atenciones,
+        as: 'Atenciones',
+        required: true, // Solo los que tienen al menos una atención
+      },
+      attributes: ['ID_paciente', 'Nombre', 'Apellido', 'DNI']
+    });
+
+    console.log("Pacientes con atención:", pacientes.length);
+    res.render("medicos/pacienteTurnos", { pacientes });
+
+  } catch (error) {
+    console.error("Error al buscar pacientes con atenciones:", error);
+    res.status(500).send("Error interno del servidor");
+  }
 };
