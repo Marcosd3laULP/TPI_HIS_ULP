@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 24-05-2025 a las 02:58:36
+-- Tiempo de generación: 29-05-2025 a las 07:14:07
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -35,6 +35,16 @@ CREATE TABLE `ala` (
   `Ubicacion` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `ala`
+--
+
+INSERT INTO `ala` (`ID_ala`, `Sector`, `Ubicacion`) VALUES
+(1, 'Urgencias', 'ala este'),
+(2, 'Cirugias', 'ala norte'),
+(3, 'terapia intermedia', 'ala sur'),
+(4, 'terapia intensiva(UCI)', 'ala oeste');
+
 -- --------------------------------------------------------
 
 --
@@ -59,8 +69,26 @@ CREATE TABLE `camas` (
   `ID_cama` int(11) NOT NULL,
   `Numero` int(11) NOT NULL,
   `Estado` varchar(200) NOT NULL,
-  `Sexo_ocupante` varchar(200) NOT NULL
+  `Sexo_ocupante` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `camas`
+--
+
+INSERT INTO `camas` (`ID_hab`, `ID_cama`, `Numero`, `Estado`, `Sexo_ocupante`) VALUES
+(1, 1, 1, 'Libre', NULL),
+(1, 2, 2, 'Libre', NULL),
+(2, 3, 1, 'Libre', NULL),
+(3, 4, 1, 'Libre', NULL),
+(3, 5, 2, 'Libre', NULL),
+(4, 6, 1, 'Libre', NULL),
+(5, 7, 1, 'Libre', NULL),
+(5, 8, 2, 'Libre', NULL),
+(6, 9, 1, 'Libre', NULL),
+(6, 10, 2, 'Libre', NULL),
+(7, 11, 1, 'Libre', NULL),
+(7, 12, 2, 'Libre', NULL);
 
 -- --------------------------------------------------------
 
@@ -74,6 +102,20 @@ CREATE TABLE `habitacion` (
   `numero` varchar(200) NOT NULL,
   `capacidad` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `habitacion`
+--
+
+INSERT INTO `habitacion` (`ID_ala`, `ID_hab`, `numero`, `capacidad`) VALUES
+(1, 1, '101', '2'),
+(1, 2, '102', '1'),
+(2, 3, '201', '2'),
+(2, 4, '202', '1'),
+(3, 5, '301', '2'),
+(3, 6, '302', '2'),
+(4, 7, '401', '2'),
+(4, 8, '402', '2');
 
 -- --------------------------------------------------------
 
@@ -100,8 +142,7 @@ CREATE TABLE `internacion` (
   `ID_internacion` int(11) NOT NULL,
   `Fecha_ingreso` date NOT NULL,
   `Diagnostico` varchar(200) DEFAULT NULL,
-  `Motivo` varchar(200) DEFAULT NULL,
-  `Alta` tinyint(1) NOT NULL
+  `Motivo` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -118,8 +159,15 @@ CREATE TABLE `pacientes` (
   `Sexo` varchar(200) NOT NULL,
   `Seguro` varchar(200) NOT NULL,
   `Domicilio` varchar(200) NOT NULL,
-  `Telefono` int(8) NOT NULL
+  `Telefono` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pacientes`
+--
+
+INSERT INTO `pacientes` (`ID_paciente`, `Nombre`, `Apellido`, `DNI`, `Sexo`, `Seguro`, `Domicilio`, `Telefono`) VALUES
+(1, 'Mr Interno', 'Dolor', 46807958, 'Masculino', 'Dosep', 'Nogoli', 26645534);
 
 -- --------------------------------------------------------
 
@@ -248,19 +296,19 @@ ALTER TABLE `turnos`
 -- AUTO_INCREMENT de la tabla `ala`
 --
 ALTER TABLE `ala`
-  MODIFY `ID_ala` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_ala` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `camas`
 --
 ALTER TABLE `camas`
-  MODIFY `ID_cama` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_cama` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `habitacion`
 --
 ALTER TABLE `habitacion`
-  MODIFY `ID_hab` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_hab` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `informes`
@@ -278,7 +326,7 @@ ALTER TABLE `internacion`
 -- AUTO_INCREMENT de la tabla `pacientes`
 --
 ALTER TABLE `pacientes`
-  MODIFY `ID_paciente` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `profesionalessalud`
