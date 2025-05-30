@@ -1,0 +1,20 @@
+extends ../utilitario/layout
+
+block content
+  head
+    title Sección Pacientes
+
+  body
+    include ../utilitario/barraDeNav.pug
+
+    h1 Sección de internaciones
+
+    div
+      a(href="internaciones/internarPaciente")
+        img(src="/images/admitir.svg" alt="Admitir paciente" )
+        p Crear internacion
+
+      a(href="internacion/gestion")
+        img(src="/images/turnos.svg" alt="Gestionar turnos")
+        p Gestionar internaciones
+

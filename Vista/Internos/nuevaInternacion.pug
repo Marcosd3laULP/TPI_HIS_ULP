@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    title Lista de Pacientes
+  body
+    h1 Lista de Pacientes
+    table(border="1")
+      thead
+        tr
+          th ID
+          th Nombre
+          th Apellido
+          th DNI
+          th Sexo
+          th Seguro
+          th
+      tbody
+        each paciente in pacientes
+          tr
+            td=paciente.ID_paciente
+            td= paciente.Nombre
+            td= paciente.Apellido
+            td= paciente.Dni
+            td= paciente.Sexo
+            td= paciente.Seguro
+            td: a(href=`internar/${paciente.ID_paciente}`) Internar

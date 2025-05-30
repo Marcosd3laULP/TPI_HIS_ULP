@@ -127,7 +127,7 @@ exports.anunciar = async function (req, res) {
             return res.status(404).send("Turno no encontrado.");
         }
         //console.log('Datos del turno:', turno.toJSON());
-        console.log('Body recibido:', req.body);
+        //console.log('Body recibido:', req.body);
         await Atenciones.create({
             Fecha,
             Motivo,

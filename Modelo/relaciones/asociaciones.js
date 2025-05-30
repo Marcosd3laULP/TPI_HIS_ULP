@@ -3,6 +3,31 @@ const Turno = require("../turnoModelo");
 const Prestador = require("../prestadorModelo");
 const Informe = require("../informeModelo");
 const Atenciones = require("../atencionesModelo");
+const Habitacion = require("../habModelo");
+const Cama = require("../camasModelo");
+const Internacion = require("../internacionModelo");
+const Ala = require("../alaModelo");
+const Traslado = require("../trasladoModelo");
+
+// TRASLADO E INTERNACION:
+Internacion.hasMany(Traslado, { foreignKey: 'ID_internacion', as: "Traslados" });
+Traslado.belongsTo(Internacion, { foreignKey: 'ID_internacion', as: "Internacion" });
+
+// TRASLADO Y HABITACION:
+Cama.hasMany(Traslado, { foreignKey: 'ID_cama', as: "Traslados" });
+Traslado.belongsTo(Cama, { foreignKey: 'ID_cama', as: "Cama" });
+
+//ALA Y HABITACION:
+Ala.hasMany(Habitacion, { foreignKey: 'ID_ala', as: "Habs" });
+Habitacion.belongsTo(Ala, { foreignKey: 'ID_ala', as: "Ala" });
+
+//HABITACION Y CAMAS:
+Habitacion.hasMany(Cama, { foreignKey: 'ID_hab', as: "Camas" });
+Cama.belongsTo(Habitacion, { foreignKey: 'ID_hab', as: "Hab" });
+
+//PACIENTE E INTERNACION:
+Paciente.hasMany(Internacion, { foreignKey: 'ID_paciente', as: "Internaciones" });
+Internacion.belongsTo(Paciente, { foreignKey: 'ID_paciente', as: "Paciente" });
 
 //PACIENTE Y TURNO:
 Paciente.hasMany(Turno, {foreignKey: "ID_paciente", as: 'Turnos' }); //RELACION 1 A N PACIENTE LE PASA SU CLAVE A TURNO COMO FORANEA
@@ -47,5 +72,10 @@ module.exports ={
     Turno,
     Prestador,
     Informe,
-    Atenciones
+    Atenciones,
+    Ala,
+    Cama,
+    Internacion,
+    Traslado,
+    Habitacion
 }

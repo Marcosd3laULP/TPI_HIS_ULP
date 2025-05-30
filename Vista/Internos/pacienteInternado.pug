@@ -1,0 +1,26 @@
+extends ../Utilitario/layout
+
+block content
+  h1 Internar Paciente
+
+  h3 Datos del Paciente
+  .paciente-info(style="border:1px solid black; padding:10px; width:300px; margin-bottom:20px;")
+    p Nombre: #{paciente.Nombre}
+    p Apellido: #{paciente.Apellido}
+    p DNI: #{paciente.DNI}
+    p Sexo: #{paciente.Sexo}
+
+  h3 Selecciona un Ala
+  .ala-lista(style="display: flex; gap: 10px; margin-bottom: 20px;")
+    each ala in alas
+      button.ala-btn(
+        type="button",
+        data-id=ala.ID_ala,
+        title=`Seleccionar ala ${ala.Sector}`,
+        style="padding: 10px; background-color: lightblue; border: 1px solid #ccc; border-radius: 5px;"
+      )= ala.Sector
+
+  #habitaciones(style="margin-top: 20px;")
+    p(style="color: gray;") Selecciona un ala para ver sus habitaciones.
+
+  script(type="module" src="/js/logicaInter.js")

@@ -5,6 +5,20 @@ exports.mostrarOpPaciente = function (req, res) { //SI ERA EXPORTS AL FINAL JAJA
     res.render("pacientes");
 };
 
+exports.seccionInternados = function (req, res){
+    res.render("Internos/internados");
+}
+
+exports.listaPacientesInternar = async function (req, res) {
+    try{
+        const pacientes = await Paciente.findAll();
+        res.render("Internos/nuevaInternacion", { pacientes });
+    }catch(error) {
+        console.error("Error al obtener pacientes:", error.message);
+        throw new Error("No se pudieron obtener los datos de los pacientes");
+    }
+}
+
 // Obtener todos los pacientes
 exports.obtenerPacientes = async function(req, res) {
     try {
@@ -104,8 +118,6 @@ exports.cargarPaciente = async function(req, res) {
 
 // Actualizar un paciente por su ID
 exports.actualizarPaciente = async function(req, res) {
-    console.log("URL:", req.originalUrl);
-    console.log("req.params.id:", req.params.id);
     try {
         const id = req.params.id;
         const datos = req.body;
