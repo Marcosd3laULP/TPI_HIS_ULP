@@ -186,8 +186,6 @@ exports.PacientesConTurno = async function(req, res) {
       },
       attributes: ['ID_paciente', 'Nombre', 'Apellido', 'DNI']
     });
-
-    console.log("Pacientes con atención:", pacientes.length);
     res.render("medicos/pacienteTurnos", { pacientes });
 
   } catch (error) {

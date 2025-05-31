@@ -1,26 +1,26 @@
-doctype html
-html
-  head
-    title Lista de Pacientes
-  body
-    h1 Lista de Pacientes
-    table(border="1")
-      thead
-        tr
-          th ID
-          th Nombre
-          th Apellido
-          th DNI
-          th Sexo
-          th Seguro
-          th
-      tbody
-        each paciente in pacientes
-          tr
-            td=paciente.ID_paciente
-            td= paciente.Nombre
-            td= paciente.Apellido
-            td= paciente.Dni
-            td= paciente.Sexo
-            td= paciente.Seguro
-            td: a(href=`internar/${paciente.ID_paciente}`) Internar
+extends ../Utilitario/layout
+
+block content
+  h1.text-2xl.font-bold.mb-6 Lista de Pacientes
+
+  table.table-auto.w-full.border-collapse.border.border-gray-300
+    thead.bg-blue-600.text-white
+      tr
+        th.border.border-gray-300.px-4.py-2.text-left ID
+        th.border.border-gray-300.px-4.py-2.text-left Nombre
+        th.border.border-gray-300.px-4.py-2.text-left Apellido
+        th.border.border-gray-300.px-4.py-2.text-left DNI
+        th.border.border-gray-300.px-4.py-2.text-left Sexo
+        th.border.border-gray-300.px-4.py-2.text-left Seguro
+        th.border.border-gray-300.px-4.py-2.text-left
+    tbody
+      each paciente in pacientes
+        tr.hover(bg-gray-100)
+          td.border.border-gray-300.px-4.py-2= paciente.ID_paciente
+          td.border.border-gray-300.px-4.py-2= paciente.Nombre
+          td.border.border-gray-300.px-4.py-2= paciente.Apellido
+          td.border.border-gray-300.px-4.py-2= paciente.DNI
+          td.border.border-gray-300.px-4.py-2= paciente.Sexo
+          td.border.border-gray-300.px-4.py-2= paciente.Seguro
+          td.border.border-gray-300.px-4.py-2
+            a.text-blue-600.hover(underline.font-semibold, href=`internar/${paciente.ID_paciente}`) Internar

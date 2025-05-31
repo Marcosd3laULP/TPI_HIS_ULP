@@ -29,6 +29,10 @@ Cama.belongsTo(Habitacion, { foreignKey: 'ID_hab', as: "Hab" });
 Paciente.hasMany(Internacion, { foreignKey: 'ID_paciente', as: "Internaciones" });
 Internacion.belongsTo(Paciente, { foreignKey: 'ID_paciente', as: "Paciente" });
 
+//CAMAS E INTERNACION:
+Cama.hasMany(Internacion, { foreignKey: 'ID_cama', as: "Internaciones" });
+Internacion.belongsTo(Cama, { foreignKey: 'ID_cama', as: "Cama" });
+
 //PACIENTE Y TURNO:
 Paciente.hasMany(Turno, {foreignKey: "ID_paciente", as: 'Turnos' }); //RELACION 1 A N PACIENTE LE PASA SU CLAVE A TURNO COMO FORANEA
 Turno.belongsTo(Paciente,{ foreignKey: "ID_paciente",  as: 'Paciente'}); // RELACION 1 A N TURNOS LLEVA LA FORANEA

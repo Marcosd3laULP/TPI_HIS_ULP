@@ -34,16 +34,28 @@ exports.buscarTodoCamas = async function () {
     }
 }
 
-exports.cambiarEstadoCama = async function (id, sexo) {
+exports.cambiarEstadoCama = async function (idCama, sexo) {
     try {
-        const ID_cama = await Cama.findByPk(id);
 
         await Cama.update(
             {Estado: 'Ocupada', Sexo_ocupante: sexo},
-            {where: {ID_cama}}
-        )
+            {where: {ID_cama: idCama}}
+        );
     } catch (error) {
         console.error("No se pudo actualizar la cama por esto: ", error.message);
         throw new Error("No se pudo cambiar el estado de la cama");
     }
+}
+
+exports.liberarCama = async function (idCama) {
+    try {
+        await Cama.update(
+            {Estado: "Libre", Sexo_ocupante: null},
+            {where: {ID_cama: idCama}}
+        );
+    } catch (error) {
+         console.error("No se pudo actualizar la cama por esto: ", error.message);
+        throw new Error("No se pudo cambiar el estado de la cama");
+    }
+    
 }

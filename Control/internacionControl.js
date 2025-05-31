@@ -8,6 +8,23 @@ const {Cama} = require("../Modelo/relaciones/asociaciones");
     res.render("Internos/pacienteInternado")
 }*/
 
+exports.buscarTodoInternados = async function (req, res) {
+    try {
+        const internaciones = await Internacion.findAll({
+            where: {Activo: true},
+            include: [{model: Paciente, as: "Paciente"},
+            {model: Cama, as: "Cama", include: [{model: Habitacion, as: "Hab"}],
+            required: true,
+            attributes:['ID_hab', 'numero', 'ID_cama','Numero','Estado','Sexo_ocupante']}]  
+        });
+        
+        res.render("Internos/listaInternos", { internaciones });
+    } catch (error) {
+         console.error("Error al buscar los internados:", error.message);
+        throw new Error("No se pudo localizar los internados");
+    }   
+}
+
 exports.interfazInternacion = async function (req, res) {
     try {
         const id = req.params.id
@@ -52,4 +69,45 @@ exports.buscarCamaPorHabitacion =async function (req, res) {
         res.status(500).json({ error: "No se pudo localizar la cama" });
     }
     
+}
+
+exports.realizarInternacion = async function (req, res) {
+        const {idCama, idPaciente,motivo} = req.body;
+    try {
+        const paciente = await Paciente.findByPk(idPaciente);
+
+        if(!paciente) res.status(404).send("Paciente no encontrado");
+        
+        await Internacion.create({
+            ID_cama: idCama,
+            ID_paciente: idPaciente,
+            Fecha_ingreso: new Date(),
+            Motivo: motivo,
+            Activo: true
+        });
+
+        await internacionUtils.cambiarEstadoCama(idCama, paciente.Sexo);
+
+        res.redirect("lista-internados");
+    } catch (error) {
+        console.error("Error al asignar cama:", error);
+    res.status(500).send("Error al asignar cama");
+    }
+}
+
+exports.cancelarInternacion = async function (req, res) {
+    const {id} = req.params;
+    try {
+        const internado = await Internacion.findByPk(id);
+
+        if(!internado) res.status(404).send("No encontrado");
+        if(internado.ID_cama){
+            await internacionUtils.liberarCama(internado.ID_cama);
+        } 
+        await internado.destroy();
+        res.redirect('/pacientes/internaciones/lista-internados');
+    } catch (error) {
+         console.error("Error al eliminar:", error);
+    res.status(500).send("Error al eliminar");
+    }
 }

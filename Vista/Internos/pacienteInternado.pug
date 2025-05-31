@@ -1,26 +1,38 @@
 extends ../Utilitario/layout
 
 block content
-  h1 Internar Paciente
+  h1(style="font-size: 2.5rem; font-weight: 700; color: #1E40AF; margin-bottom: 30px;") Internar Paciente
 
-  h3 Datos del Paciente
-  .paciente-info(style="border:1px solid black; padding:10px; width:300px; margin-bottom:20px;")
-    p Nombre: #{paciente.Nombre}
-    p Apellido: #{paciente.Apellido}
-    p DNI: #{paciente.DNI}
-    p Sexo: #{paciente.Sexo}
+  .container(style="display: flex; gap: 30px; align-items: flex-start; margin-bottom: 20px;")
+    .paciente-info#paciente-info(style="background-color: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 20px; width: 320px;")
+      h3 Datos del Paciente
+      p Nombre: #{paciente.Nombre}
+      p Apellido: #{paciente.Apellido}
+      p DNI: #{paciente.DNI}
+      p Sexo: #{paciente.Sexo}
+      input(type="hidden", id="idPaciente", value=paciente.ID_paciente)
 
-  h3 Selecciona un Ala
-  .ala-lista(style="display: flex; gap: 10px; margin-bottom: 20px;")
-    each ala in alas
-      button.ala-btn(
-        type="button",
-        data-id=ala.ID_ala,
-        title=`Seleccionar ala ${ala.Sector}`,
-        style="padding: 10px; background-color: lightblue; border: 1px solid #ccc; border-radius: 5px;"
-      )= ala.Sector
+    .ala-lista(style="display: flex; flex-direction: column; gap: 15px;")
+      h3(style="font-size: 1.8rem; font-weight: 700; color: #1E40AF; margin-bottom: 10px;") Selecciona un Ala
+      .alas-buttons(style="display: flex; gap: 20px;")
+        each ala in alas
+          button.ala-btn(
+            type="button",
+            data-id=ala.ID_ala,
+            title=`Seleccionar ala ${ala.Sector}`,
+            style="padding: 20px 30px; font-size: 1.2rem; background-color: lightblue; border: 1px solid #ccc; border-radius: 10px; cursor: pointer;"
+          )= ala.Sector
 
   #habitaciones(style="margin-top: 20px;")
     p(style="color: gray;") Selecciona un ala para ver sus habitaciones.
+
+  #modalMotivo.hidden.fixed.inset-0.bg-black.bg-opacity-50.flex.items-center.justify-center.z-50
+    .bg-white.p-6.rounded.shadow-lg.w-96
+      h2.text-xl.font-bold.mb-4 Ingresar Motivo de Internación
+      form#formMotivo.flex.flex-col.gap-4
+        input#inputMotivo(type="text" placeholder="Motivo" required class="border rounded px-3 py-2")
+        .flex.justify-end.gap-2
+          button(type="button" id="cancelarBtn" class="bg-gray-400 text-white py-2 px-4 rounded hover:bg-gray-500") Cancelar
+          button(type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700") Confirmar
 
   script(type="module" src="/js/logicaInter.js")

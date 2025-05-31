@@ -15,5 +15,7 @@ router.get("/edicion/:id", pacienteControl.formularioEdicionPaciente);
 router.post("/:id", pacienteControl.actualizarPaciente);
 //LOGICA DE LA INTERNACION:
 router.get("/internaciones/internar/:id", internacionControl.interfazInternacion);
-
+router.post("/internaciones/realizar-internacion", internacionControl.realizarInternacion);
+router.get("/internaciones/lista-internados", internacionControl.buscarTodoInternados);
+router.post('/internaciones/cancelar/:id', internacionControl.cancelarInternacion);
 module.exports = router;
