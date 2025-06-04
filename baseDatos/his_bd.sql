@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-05-2025 a las 07:14:07
+-- Tiempo de generación: 04-06-2025 a las 03:02:05
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -44,6 +44,20 @@ INSERT INTO `ala` (`ID_ala`, `Sector`, `Ubicacion`) VALUES
 (2, 'Cirugias', 'ala norte'),
 (3, 'terapia intermedia', 'ala sur'),
 (4, 'terapia intensiva(UCI)', 'ala oeste');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `antecedentes_paciente`
+--
+
+CREATE TABLE `antecedentes_paciente` (
+  `ID` int(11) NOT NULL,
+  `ID_paciente` int(11) NOT NULL,
+  `Enfermedad` varchar(200) DEFAULT NULL,
+  `Tipo` varchar(200) DEFAULT NULL,
+  `Observaciones` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -89,6 +103,23 @@ INSERT INTO `camas` (`ID_hab`, `ID_cama`, `Numero`, `Estado`, `Sexo_ocupante`) V
 (6, 10, 2, 'Libre', NULL),
 (7, 11, 1, 'Libre', NULL),
 (7, 12, 2, 'Libre', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `evaluacion_enfermeria`
+--
+
+CREATE TABLE `evaluacion_enfermeria` (
+  `ID` int(11) NOT NULL,
+  `ID_internacion` int(11) NOT NULL,
+  `Fecha` date NOT NULL,
+  `Necesidades_basicas` varchar(200) DEFAULT NULL,
+  `Acciones_inm` varchar(200) NOT NULL,
+  `Medicacion_inicial` varchar(200) DEFAULT NULL,
+  `Observaciones` varchar(200) DEFAULT NULL,
+  `ID_Profesional` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -139,10 +170,40 @@ CREATE TABLE `informes` (
 
 CREATE TABLE `internacion` (
   `ID_paciente` int(11) NOT NULL,
+  `ID_cama` int(11) NOT NULL,
   `ID_internacion` int(11) NOT NULL,
   `Fecha_ingreso` date NOT NULL,
   `Diagnostico` varchar(200) DEFAULT NULL,
   `Motivo` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `medicina_paciente`
+--
+
+CREATE TABLE `medicina_paciente` (
+  `ID` int(11) NOT NULL,
+  `ID_paciente` int(11) NOT NULL,
+  `Medicina` varchar(200) DEFAULT NULL,
+  `Origen` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `observaciones_enfermeria`
+--
+
+CREATE TABLE `observaciones_enfermeria` (
+  `ID` int(11) NOT NULL,
+  `ID_internacion` int(11) NOT NULL,
+  `Fecha` date NOT NULL,
+  `Presion_arterial` varchar(200) NOT NULL,
+  `Frecuencia_cardiaca` varchar(200) NOT NULL,
+  `Temperatura` varchar(200) NOT NULL,
+  `Frecuencia_respiratoria` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -224,6 +285,13 @@ ALTER TABLE `ala`
   ADD PRIMARY KEY (`ID_ala`);
 
 --
+-- Indices de la tabla `antecedentes_paciente`
+--
+ALTER TABLE `antecedentes_paciente`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `ID_paciente` (`ID_paciente`);
+
+--
 -- Indices de la tabla `atenciones`
 --
 ALTER TABLE `atenciones`
@@ -236,6 +304,14 @@ ALTER TABLE `atenciones`
 ALTER TABLE `camas`
   ADD PRIMARY KEY (`ID_cama`),
   ADD KEY `ID_hab` (`ID_hab`);
+
+--
+-- Indices de la tabla `evaluacion_enfermeria`
+--
+ALTER TABLE `evaluacion_enfermeria`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `ID_internacion` (`ID_internacion`),
+  ADD KEY `ID_Profesional` (`ID_Profesional`);
 
 --
 -- Indices de la tabla `habitacion`
@@ -257,7 +333,22 @@ ALTER TABLE `informes`
 --
 ALTER TABLE `internacion`
   ADD PRIMARY KEY (`ID_internacion`),
+  ADD KEY `ID_paciente` (`ID_paciente`),
+  ADD KEY `ID_cama` (`ID_cama`);
+
+--
+-- Indices de la tabla `medicina_paciente`
+--
+ALTER TABLE `medicina_paciente`
+  ADD PRIMARY KEY (`ID`),
   ADD KEY `ID_paciente` (`ID_paciente`);
+
+--
+-- Indices de la tabla `observaciones_enfermeria`
+--
+ALTER TABLE `observaciones_enfermeria`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `ID_internacion` (`ID_internacion`);
 
 --
 -- Indices de la tabla `pacientes`
@@ -299,10 +390,22 @@ ALTER TABLE `ala`
   MODIFY `ID_ala` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT de la tabla `antecedentes_paciente`
+--
+ALTER TABLE `antecedentes_paciente`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `camas`
 --
 ALTER TABLE `camas`
   MODIFY `ID_cama` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT de la tabla `evaluacion_enfermeria`
+--
+ALTER TABLE `evaluacion_enfermeria`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `habitacion`
@@ -321,6 +424,18 @@ ALTER TABLE `informes`
 --
 ALTER TABLE `internacion`
   MODIFY `ID_internacion` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `medicina_paciente`
+--
+ALTER TABLE `medicina_paciente`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `observaciones_enfermeria`
+--
+ALTER TABLE `observaciones_enfermeria`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `pacientes`
@@ -351,6 +466,12 @@ ALTER TABLE `turnos`
 --
 
 --
+-- Filtros para la tabla `antecedentes_paciente`
+--
+ALTER TABLE `antecedentes_paciente`
+  ADD CONSTRAINT `antecedentes_paciente_ibfk_1` FOREIGN KEY (`ID_paciente`) REFERENCES `pacientes` (`ID_paciente`);
+
+--
 -- Filtros para la tabla `atenciones`
 --
 ALTER TABLE `atenciones`
@@ -362,6 +483,13 @@ ALTER TABLE `atenciones`
 --
 ALTER TABLE `camas`
   ADD CONSTRAINT `camas_ibfk_1` FOREIGN KEY (`ID_hab`) REFERENCES `habitacion` (`ID_hab`);
+
+--
+-- Filtros para la tabla `evaluacion_enfermeria`
+--
+ALTER TABLE `evaluacion_enfermeria`
+  ADD CONSTRAINT `evaluacion_enfermeria_ibfk_1` FOREIGN KEY (`ID_internacion`) REFERENCES `internacion` (`ID_internacion`),
+  ADD CONSTRAINT `evaluacion_enfermeria_ibfk_2` FOREIGN KEY (`ID_Profesional`) REFERENCES `profesionalessalud` (`ID_Profesional`);
 
 --
 -- Filtros para la tabla `habitacion`
@@ -380,7 +508,20 @@ ALTER TABLE `informes`
 -- Filtros para la tabla `internacion`
 --
 ALTER TABLE `internacion`
-  ADD CONSTRAINT `internacion_ibfk_1` FOREIGN KEY (`ID_paciente`) REFERENCES `pacientes` (`ID_paciente`);
+  ADD CONSTRAINT `internacion_ibfk_1` FOREIGN KEY (`ID_paciente`) REFERENCES `pacientes` (`ID_paciente`),
+  ADD CONSTRAINT `internacion_ibfk_2` FOREIGN KEY (`ID_cama`) REFERENCES `camas` (`ID_cama`);
+
+--
+-- Filtros para la tabla `medicina_paciente`
+--
+ALTER TABLE `medicina_paciente`
+  ADD CONSTRAINT `medicina_paciente_ibfk_1` FOREIGN KEY (`ID_paciente`) REFERENCES `pacientes` (`ID_paciente`);
+
+--
+-- Filtros para la tabla `observaciones_enfermeria`
+--
+ALTER TABLE `observaciones_enfermeria`
+  ADD CONSTRAINT `observaciones_enfermeria_ibfk_1` FOREIGN KEY (`ID_internacion`) REFERENCES `internacion` (`ID_internacion`);
 
 --
 -- Filtros para la tabla `traslados`
