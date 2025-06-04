@@ -8,6 +8,29 @@ const Cama = require("../camasModelo");
 const Internacion = require("../internacionModelo");
 const Ala = require("../alaModelo");
 const Traslado = require("../trasladoModelo");
+const EvaluacionEf = require("../evaEnfermeriaModelo");
+const Medicina = require("../medicinaPModelo");
+const ObservacionF = require("../obsEnfermeroModelo");
+const Antecedente = require("../antecedenteModelo");
+
+//EVALUACION E INTERNACION Y PROFESIONAL:
+Internacion.hasMany(EvaluacionEf, { foreignKey: 'ID_internacion', as: 'Evaluaciones' });
+EvaluacionEf.belongsTo(Internacion, { foreignKey: 'ID_internacion', as: 'Internacion' });
+
+Prestador.hasMany(EvaluacionEf, { foreignKey: 'ID_Profesional', as: 'EvaluacionesRealizadas' });
+EvaluacionEf.belongsTo(Prestador, { foreignKey: 'ID_Profesional', as: 'Profesional' });
+
+//MEDICINA Y PACIENTE:
+Paciente.hasMany(Medicina, {foreignKey: "ID_paciente", as: "Medicinas"});
+Medicina.belongsTo(Paciente, {foreignKey: "ID_paciente", as: "Paciente"});
+
+//ANTECEDENTES Y PACIENTE:
+Paciente.hasMany(Antecedente, {foreignKey: "ID_paciente", as: "Antecedentes"});
+Antecedente.belongsTo(Paciente, {foreignKey: "ID_paciente", as: "Paciente"});
+
+//OBSERVACIONES E INTERNACION:
+Internacion.hasMany(ObservacionF, {foreignKey: "ID_internacion", as: "Observaciones"});
+ObservacionF.belongsTo(Internacion, {foreignKey: "ID_internacion", as: "Internacion"});
 
 // TRASLADO E INTERNACION:
 Internacion.hasMany(Traslado, { foreignKey: 'ID_internacion', as: "Traslados" });
@@ -81,5 +104,9 @@ module.exports ={
     Cama,
     Internacion,
     Traslado,
-    Habitacion
+    Habitacion,
+    ObservacionF,
+    Medicina,
+    EvaluacionEf,
+    Antecedente
 }

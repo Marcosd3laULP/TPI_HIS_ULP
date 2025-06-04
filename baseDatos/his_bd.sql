@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-06-2025 a las 03:02:05
+-- Tiempo de generación: 04-06-2025 a las 03:53:32
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -111,7 +111,7 @@ INSERT INTO `camas` (`ID_hab`, `ID_cama`, `Numero`, `Estado`, `Sexo_ocupante`) V
 --
 
 CREATE TABLE `evaluacion_enfermeria` (
-  `ID` int(11) NOT NULL,
+  `ID_eva` int(11) NOT NULL,
   `ID_internacion` int(11) NOT NULL,
   `Fecha` date NOT NULL,
   `Necesidades_basicas` varchar(200) DEFAULT NULL,
@@ -184,7 +184,7 @@ CREATE TABLE `internacion` (
 --
 
 CREATE TABLE `medicina_paciente` (
-  `ID` int(11) NOT NULL,
+  `ID_med` int(11) NOT NULL,
   `ID_paciente` int(11) NOT NULL,
   `Medicina` varchar(200) DEFAULT NULL,
   `Origen` varchar(200) DEFAULT NULL
@@ -309,7 +309,7 @@ ALTER TABLE `camas`
 -- Indices de la tabla `evaluacion_enfermeria`
 --
 ALTER TABLE `evaluacion_enfermeria`
-  ADD PRIMARY KEY (`ID`),
+  ADD PRIMARY KEY (`ID_eva`),
   ADD KEY `ID_internacion` (`ID_internacion`),
   ADD KEY `ID_Profesional` (`ID_Profesional`);
 
@@ -340,7 +340,7 @@ ALTER TABLE `internacion`
 -- Indices de la tabla `medicina_paciente`
 --
 ALTER TABLE `medicina_paciente`
-  ADD PRIMARY KEY (`ID`),
+  ADD PRIMARY KEY (`ID_med`),
   ADD KEY `ID_paciente` (`ID_paciente`);
 
 --
@@ -405,7 +405,7 @@ ALTER TABLE `camas`
 -- AUTO_INCREMENT de la tabla `evaluacion_enfermeria`
 --
 ALTER TABLE `evaluacion_enfermeria`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_eva` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `habitacion`
@@ -429,7 +429,7 @@ ALTER TABLE `internacion`
 -- AUTO_INCREMENT de la tabla `medicina_paciente`
 --
 ALTER TABLE `medicina_paciente`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_med` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `observaciones_enfermeria`
