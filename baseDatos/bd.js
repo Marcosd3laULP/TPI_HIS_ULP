@@ -1,7 +1,21 @@
-const {Sequelize} = require('sequelize');
+const { Sequelize } = require('sequelize');
+require('dotenv').config(); // Carga las variables del .env
 
-const sequelize = new Sequelize('his_bd', 'root', '', {
-host: "localhost",
-dialect: "mysql",
-});
+const sequelize = new Sequelize(
+  process.env.DB_NAME || 'railway',     // Nombre de la BD
+  process.env.DB_USER || 'root',        // Usuario
+  process.env.DB_PASSWORD || '',        // Contraseña
+  {
+    host: process.env.DB_HOST || 'mysql.railway.internal',
+    port: process.env.DB_PORT || 3306,
+    dialect: 'mysql',
+    logging: false, // Opcional: desactiva logs de SQL en consola
+  }
+);
+
+// Verifica la conexión
+sequelize.authenticate()
+  .then(() => console.log('✅ Conectado a MySQL en Railway'))
+  .catch(err => console.error('❌ Error de conexión:', err));
+
 module.exports = sequelize;

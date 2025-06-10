@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-06-2025 a las 03:53:32
+-- Tiempo de generación: 10-06-2025 a las 20:35:21
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `his_bd`
 --
-CREATE DATABASE IF NOT EXISTS `his_bd` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `his_bd`;
 
 -- --------------------------------------------------------
 
@@ -62,6 +60,20 @@ CREATE TABLE `antecedentes_paciente` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `antecendentes_paciente`
+--
+
+CREATE TABLE `antecendentes_paciente` (
+  `ID` int(11) NOT NULL,
+  `Enfermedad` varchar(255) DEFAULT NULL,
+  `Tipo` varchar(255) DEFAULT NULL,
+  `Observaciones` varchar(255) DEFAULT NULL,
+  `ID_paciente` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `atenciones`
 --
 
@@ -91,8 +103,8 @@ CREATE TABLE `camas` (
 --
 
 INSERT INTO `camas` (`ID_hab`, `ID_cama`, `Numero`, `Estado`, `Sexo_ocupante`) VALUES
-(1, 1, 1, 'Libre', NULL),
-(1, 2, 2, 'Libre', NULL),
+(1, 1, 1, 'Ocupada', 'masculino'),
+(1, 2, 2, 'Ocupada', 'masculino'),
 (2, 3, 1, 'Libre', NULL),
 (3, 4, 1, 'Libre', NULL),
 (3, 5, 2, 'Libre', NULL),
@@ -173,9 +185,17 @@ CREATE TABLE `internacion` (
   `ID_cama` int(11) NOT NULL,
   `ID_internacion` int(11) NOT NULL,
   `Fecha_ingreso` date NOT NULL,
-  `Diagnostico` varchar(200) DEFAULT NULL,
-  `Motivo` varchar(200) DEFAULT NULL
+  `Motivo` varchar(200) DEFAULT NULL,
+  `Activo` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `internacion`
+--
+
+INSERT INTO `internacion` (`ID_paciente`, `ID_cama`, `ID_internacion`, `Fecha_ingreso`, `Motivo`, `Activo`) VALUES
+(1, 1, 1, '2025-06-13', 'Estres y paranoia severa', 1),
+(2, 2, 2, '2025-06-19', ' Accidente laboral', 1);
 
 -- --------------------------------------------------------
 
@@ -189,6 +209,26 @@ CREATE TABLE `medicina_paciente` (
   `Medicina` varchar(200) DEFAULT NULL,
   `Origen` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `obra_pacientes`
+--
+
+CREATE TABLE `obra_pacientes` (
+  `ID_obra` int(11) NOT NULL,
+  `ID_paciente` int(11) NOT NULL,
+  `Nombre` varchar(200) NOT NULL,
+  `NumSocial` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `obra_pacientes`
+--
+
+INSERT INTO `obra_pacientes` (`ID_obra`, `ID_paciente`, `Nombre`, `NumSocial`) VALUES
+(1, 2, 'DOSEP', 760910);
 
 -- --------------------------------------------------------
 
@@ -218,7 +258,6 @@ CREATE TABLE `pacientes` (
   `Apellido` varchar(200) NOT NULL,
   `DNI` int(8) NOT NULL,
   `Sexo` varchar(200) NOT NULL,
-  `Seguro` varchar(200) NOT NULL,
   `Domicilio` varchar(200) NOT NULL,
   `Telefono` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -227,8 +266,11 @@ CREATE TABLE `pacientes` (
 -- Volcado de datos para la tabla `pacientes`
 --
 
-INSERT INTO `pacientes` (`ID_paciente`, `Nombre`, `Apellido`, `DNI`, `Sexo`, `Seguro`, `Domicilio`, `Telefono`) VALUES
-(1, 'Mr Interno', 'Dolor', 46807958, 'Masculino', 'Dosep', 'Nogoli', 26645534);
+INSERT INTO `pacientes` (`ID_paciente`, `Nombre`, `Apellido`, `DNI`, `Sexo`, `Domicilio`, `Telefono`) VALUES
+(1, 'Branguer', '91000', 46807958, 'masculino', 'Pluton', 2147483647),
+(2, 'Paciente', 'Uno', 10000000, 'masculino', 'Domicilio falso', 12345678),
+(3, 'Paciente', 'Dos', 20000000, 'femenino', 'Domicilio falso', 12345678),
+(4, 'Paciente', 'tres', 30000000, 'masculino', 'Domicilio falso2', 246810);
 
 -- --------------------------------------------------------
 
@@ -243,6 +285,13 @@ CREATE TABLE `profesionalessalud` (
   `Rol` varchar(200) NOT NULL,
   `Especialidad` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `profesionalessalud`
+--
+
+INSERT INTO `profesionalessalud` (`ID_Profesional`, `Nombre`, `Apellido`, `Rol`, `Especialidad`) VALUES
+(1, 'medico', 'numero uno', 'medico', 'cardiologia');
 
 -- --------------------------------------------------------
 
@@ -268,11 +317,21 @@ CREATE TABLE `turnos` (
   `ID_paciente` int(11) NOT NULL,
   `ID_Profesional` int(11) NOT NULL,
   `Nro_turno` int(11) NOT NULL,
+  `ObraSocial` varchar(200) NOT NULL DEFAULT 'Particular',
+  `NumSocial` int(11) DEFAULT NULL,
   `Fecha` date NOT NULL,
   `Motivo` varchar(200) NOT NULL,
   `Es_tomado` tinyint(1) NOT NULL,
   `Estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `turnos`
+--
+
+INSERT INTO `turnos` (`ID_paciente`, `ID_Profesional`, `Nro_turno`, `ObraSocial`, `NumSocial`, `Fecha`, `Motivo`, `Es_tomado`, `Estado`) VALUES
+(2, 1, 1, 'DOSEP', 760910, '2025-06-12', 'Consulta', 0, 1),
+(4, 1, 2, '', 0, '2025-07-18', 'Evaluación pre-cirugia', 0, 1);
 
 --
 -- Índices para tablas volcadas
@@ -292,9 +351,17 @@ ALTER TABLE `antecedentes_paciente`
   ADD KEY `ID_paciente` (`ID_paciente`);
 
 --
+-- Indices de la tabla `antecendentes_paciente`
+--
+ALTER TABLE `antecendentes_paciente`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `ID_paciente` (`ID_paciente`);
+
+--
 -- Indices de la tabla `atenciones`
 --
 ALTER TABLE `atenciones`
+  ADD PRIMARY KEY (`ID_paciente`,`ID_Profesional`),
   ADD KEY `ID_paciente` (`ID_paciente`),
   ADD KEY `ID_Profesional` (`ID_Profesional`);
 
@@ -341,6 +408,13 @@ ALTER TABLE `internacion`
 --
 ALTER TABLE `medicina_paciente`
   ADD PRIMARY KEY (`ID_med`),
+  ADD KEY `ID_paciente` (`ID_paciente`);
+
+--
+-- Indices de la tabla `obra_pacientes`
+--
+ALTER TABLE `obra_pacientes`
+  ADD PRIMARY KEY (`ID_obra`),
   ADD KEY `ID_paciente` (`ID_paciente`);
 
 --
@@ -396,6 +470,12 @@ ALTER TABLE `antecedentes_paciente`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `antecendentes_paciente`
+--
+ALTER TABLE `antecendentes_paciente`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `camas`
 --
 ALTER TABLE `camas`
@@ -423,13 +503,19 @@ ALTER TABLE `informes`
 -- AUTO_INCREMENT de la tabla `internacion`
 --
 ALTER TABLE `internacion`
-  MODIFY `ID_internacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_internacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `medicina_paciente`
 --
 ALTER TABLE `medicina_paciente`
   MODIFY `ID_med` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `obra_pacientes`
+--
+ALTER TABLE `obra_pacientes`
+  MODIFY `ID_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `observaciones_enfermeria`
@@ -441,13 +527,13 @@ ALTER TABLE `observaciones_enfermeria`
 -- AUTO_INCREMENT de la tabla `pacientes`
 --
 ALTER TABLE `pacientes`
-  MODIFY `ID_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID_paciente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `profesionalessalud`
 --
 ALTER TABLE `profesionalessalud`
-  MODIFY `ID_Profesional` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Profesional` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `traslados`
@@ -459,7 +545,7 @@ ALTER TABLE `traslados`
 -- AUTO_INCREMENT de la tabla `turnos`
 --
 ALTER TABLE `turnos`
-  MODIFY `Nro_turno` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Nro_turno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas
@@ -470,6 +556,12 @@ ALTER TABLE `turnos`
 --
 ALTER TABLE `antecedentes_paciente`
   ADD CONSTRAINT `antecedentes_paciente_ibfk_1` FOREIGN KEY (`ID_paciente`) REFERENCES `pacientes` (`ID_paciente`);
+
+--
+-- Filtros para la tabla `antecendentes_paciente`
+--
+ALTER TABLE `antecendentes_paciente`
+  ADD CONSTRAINT `antecendentes_paciente_ibfk_1` FOREIGN KEY (`ID_paciente`) REFERENCES `pacientes` (`ID_paciente`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `atenciones`
@@ -516,6 +608,12 @@ ALTER TABLE `internacion`
 --
 ALTER TABLE `medicina_paciente`
   ADD CONSTRAINT `medicina_paciente_ibfk_1` FOREIGN KEY (`ID_paciente`) REFERENCES `pacientes` (`ID_paciente`);
+
+--
+-- Filtros para la tabla `obra_pacientes`
+--
+ALTER TABLE `obra_pacientes`
+  ADD CONSTRAINT `obra_pacientes_ibfk_1` FOREIGN KEY (`ID_paciente`) REFERENCES `pacientes` (`ID_paciente`);
 
 --
 -- Filtros para la tabla `observaciones_enfermeria`

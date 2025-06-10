@@ -4,6 +4,12 @@ const Paciente  = require("./pacienteModelo");
 
 const Turno = sequelize.define("Turno", {
 
+     ID_paciente: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        field: 'ID_paciente',
+    },
+
     Nro_turno: {
         type: DataTypes.INTEGER,
         primaryKey: true,
