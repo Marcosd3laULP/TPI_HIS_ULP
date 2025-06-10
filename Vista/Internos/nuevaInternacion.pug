@@ -14,8 +14,7 @@ block content
         th.border.border-gray-300.px-4.py-2.text-left Apellido
         th.border.border-gray-300.px-4.py-2.text-left DNI
         th.border.border-gray-300.px-4.py-2.text-left Sexo
-        th.border.border-gray-300.px-4.py-2.text-left Seguro
-        th.border.border-gray-300.px-4.py-2.text-left
+        th.border.border-gray-300.px-4.py-2.text-left Acciones
     tbody
       each paciente in pacientes
         tr.hover(bg-gray-100)
@@ -24,6 +23,5 @@ block content
           td.border.border-gray-300.px-4.py-2= paciente.Apellido
           td.border.border-gray-300.px-4.py-2= paciente.DNI
           td.border.border-gray-300.px-4.py-2= paciente.Sexo
-          td.border.border-gray-300.px-4.py-2= paciente.Seguro
           td.border.border-gray-300.px-4.py-2
             a.text-blue-600.hover(underline.font-semibold, href=`internar/${paciente.ID_paciente}`) Internar

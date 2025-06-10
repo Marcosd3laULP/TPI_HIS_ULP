@@ -3,6 +3,7 @@ const { Turno } = require("../Modelo/relaciones/asociaciones");
 const { Paciente } = require("../Modelo/relaciones/asociaciones");
 const { Prestador } = require("../Modelo/relaciones/asociaciones");
 const { Atenciones } = require("../Modelo/relaciones/asociaciones");
+const { ObraPaciente } = require("../Modelo/relaciones/asociaciones");
 
 exports.mostrarOpTurnos = async function (req, res) {
     res.render("turnos");
@@ -75,10 +76,10 @@ async function buscarTurnoId(id) {
 }
 
 exports.insertarTurnoV2 = async function (req, res) {
-    try {
         const datos = req.body;
-        const {Fecha, Motivo, ID_Profesional} = datos;
-
+        const {Fecha, Motivo, ID_Profesional, Obra, NumObra, ID_paciente} = datos;
+    try {
+       
         if(!Fecha || Fecha.trim() === ""){
             throw new Error("Debe ingresar una fecha para el turno");
         }
@@ -105,9 +106,31 @@ exports.insertarTurnoV2 = async function (req, res) {
             throw new Error("Debe seleccionar a un medico");
             
         }
+        if(Obra || NumObra){
+            if(!Obra || Obra.trim() === ''){
+                throw new Error("Debe ingresar el numero de la obra social");
+            }
+            if(!NumObra || NumObra.trim() === ''){
+                throw new Error("Debe ingresar una obra social primero");
+            }
+
+            await ObraPaciente.create({
+                ID_paciente,
+                Nombre: Obra,
+                NumSocial: NumObra
+            });
+        }
 
 
-        await Turno.create(datos);
+        await Turno.create({
+            ID_paciente,
+            ID_Profesional,
+            ObraSocial: Obra,
+            NumSocial: NumObra,
+            Fecha,
+            Motivo
+            
+        });
         res.redirect("/turnos");
     } catch (error) {
         console.log("Hubo un error al insertar el turno: " + error.message);
@@ -171,7 +194,7 @@ exports.cancelar = async function (req, res) {
             {Es_tomado: false, Estado: false },
             {where: {Nro_turno}}
         );
-        res.redirect("/turnos/listaTurno");
+        res.redirect("/turnos/lista-turnos");
     } catch (error) {
         console.log("hubo un problema en anunciar y fue este: ", error.message);
         res.status(500).send("No se pudo anunciar el turno");

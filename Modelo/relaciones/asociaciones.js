@@ -12,6 +12,7 @@ const EvaluacionEf = require("../evaEnfermeriaModelo");
 const Medicina = require("../medicinaPModelo");
 const ObservacionF = require("../obsEnfermeroModelo");
 const Antecedente = require("../antecedenteModelo");
+const ObraPaciente = require("../obraModelo");
 
 //EVALUACION E INTERNACION Y PROFESIONAL:
 Internacion.hasMany(EvaluacionEf, { foreignKey: 'ID_internacion', as: 'Evaluaciones' });
@@ -47,6 +48,10 @@ Habitacion.belongsTo(Ala, { foreignKey: 'ID_ala', as: "Ala" });
 //HABITACION Y CAMAS:
 Habitacion.hasMany(Cama, { foreignKey: 'ID_hab', as: "Camas" });
 Cama.belongsTo(Habitacion, { foreignKey: 'ID_hab', as: "Hab" });
+
+//PACIENTE Y OBRA SOCIAL:
+Paciente.hasMany(ObraPaciente, {foreignKey: 'ID_paciente', as: 'obSociales'});
+ObraPaciente.belongsTo(Paciente, {foreignKey: 'ID_paciente', as: "Paciente"});
 
 //PACIENTE E INTERNACION:
 Paciente.hasMany(Internacion, { foreignKey: 'ID_paciente', as: "Internaciones" });
@@ -108,5 +113,6 @@ module.exports ={
     ObservacionF,
     Medicina,
     EvaluacionEf,
-    Antecedente
+    Antecedente,
+    ObraPaciente
 }

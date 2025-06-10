@@ -10,6 +10,7 @@ block content
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Nro
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Paciente
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Médico
+        th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Obra Social 
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Fecha
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Motivo
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Estado
@@ -18,7 +19,7 @@ block content
     tbody
     if turnos.length === 0
         tr
-            td(colspan="6", class="text-center py-4 text-gray-500") No hay turnos cargados actualmente.
+            td(colspan="8", class="text-center py-4 text-gray-500") No hay turnos cargados actualmente.
     else
       each turno, i in turnos
         - let filaClase = i % 2 === 0 ? 'bg-white' : 'bg-gray-50';
@@ -34,19 +35,21 @@ block content
           td(class="border border-gray-300 px-4 py-2")= turno.Nro_turno
           td(class="border border-gray-300 px-4 py-2")= turno.Paciente ? turno.Paciente.Nombre + ' ' + turno.Paciente.Apellido : 'Sin datos'
           td(class="border border-gray-300 px-4 py-2")= turno.Prestador ? turno.Prestador.Nombre + ' ' + turno.Prestador.Apellido + ' (' + turno.Prestador.Especialidad + ')' : 'Sin médico'
+          td(class="border border-gray-300 px-4 py-2")= turno.ObraSocial ? turno.ObraSocial : 'Particular'
           td(class="border border-gray-300 px-4 py-2")= turno.Fecha
           td(class="border border-gray-300 px-4 py-2")= turno.Motivo
           td(class="border border-gray-300 px-4 py-2 font-semibold text-sm")= estadoTexto
-          td(class="border border-gray-300 px-4 py-2 space-x-2")
-            if turno.Estado
-              form(action=`/turnos/${turno.Nro_turno}/anunciar`, method="POST", style="display:inline")
-                //- Campos ocultos con los datos necesarios
-                input(type="hidden" name="Motivo" value=turno.Motivo || "Consulta médica")
-                input(type="hidden" name="Fecha" value=turno.Fecha)
-                input(type="hidden" name="ID_paciente" value=turno.ID_paciente)
-                input(type="hidden" name="ID_Profesional" value=turno.ID_Profesional)
-      
-                button(type="submit" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded") Anunciar
-              form(action=`/turnos/${turno.Nro_turno}/cancelar`, method="POST", style="display:inline")
-                button(type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded") Cancelar
+          td(class="border border-gray-300 px-4 py-2")
+            div(class="flex flex-col sm:flex-row gap-1 justify-center items-center")
+              if turno.Estado
+                form(action=`/turnos/${turno.Nro_turno}/anunciar`, method="POST", class="inline")
+                  input(type="hidden" name="Motivo" value=turno.Motivo || "Consulta médica")
+                  input(type="hidden" name="Fecha" value=turno.Fecha)
+                  input(type="hidden" name="ID_paciente" value=turno.ID_paciente)
+                  input(type="hidden" name="ID_Profesional" value=turno.ID_Profesional)
+                  button(type="submit" class="p-1 hover:bg-gray-200 rounded transition-colors" title="Anunciar turno")
+                    img(src="/images/anunciar.png" alt="Anunciar turno" class="w-6 h-6 hover:scale-110 transition-transform")
 
+                form(action=`/turnos/${turno.Nro_turno}/cancelar`, method="POST", class="inline")
+                  button(type="submit" class="p-1 hover:bg-gray-200 rounded transition-colors" title="Cancelar turno")
+                    img(src="/images/cancelar.png" alt="Cancelar turno" class="w-6 h-6 hover:scale-110 transition-transform")

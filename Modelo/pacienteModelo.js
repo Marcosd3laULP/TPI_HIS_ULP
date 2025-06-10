@@ -33,11 +33,6 @@ const Paciente = sequelize.define('pacientes', {
         allowNull: false
     },
 
-    Seguro: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-
     Domicilio: {
         type: DataTypes.STRING,
         allowNull: false

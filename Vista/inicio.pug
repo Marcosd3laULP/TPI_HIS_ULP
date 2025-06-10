@@ -2,7 +2,16 @@ extends ./utilitario/layout
 
 block content
   include ./utilitario/barraDeNav.pug
-
-  .flex.flex-col.items-center.justify-center.min-h-screen.bg-gray-100.p-8
-    h1.text-4xl.font-bold.text-gray-800.mb-4 Página de inicio
-
+  h1(class="text-6xl font-extrabold text-center underline decoration-8 decoration-sky-500") PRINCIPAL
+  div(class="bg-gray-100 p-6 rounded-lg shadow-md max-w-2xl mx-auto mt-8")
+    h2(class="text-xl font-bold text-gray-800 mb-4") Información del Sistema
+      ul(class="list-disc pl-6 space-y-2 text-gray-700")
+        li Proyecto realizado por el alumno Sosa Chirino Marcos Antonio
+        li DNI: 46807958
+        li(class="font-semibold mt-4") Que se puede hacer en este sistema:
+      
+      ul(class="list-[circle] pl-6 mt-2 space-y-2")
+        li Cargar un nuevo paciente y editar sus datos
+        li Cargar un nuevo prestador y editar sus datos
+        li Asignarle un turno a un paciente, poder anunciar o cancelar el turno
+        li Poder internar un paciente

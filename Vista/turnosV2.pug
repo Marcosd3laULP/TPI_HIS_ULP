@@ -7,21 +7,11 @@ block content
     // Mostrar datos del paciente (solo lectura)
     div.mb-4
       label.block.font-bold.text-lg.mb-1 Nombre:
-      input(
-        type="text" 
-        value=`${paciente.Nombre} ${paciente.Apellido}` 
-        readonly 
-        class="w-full border-0 outline-none bg-transparent pointer-events-none"
-      )
+      input(type="text" value=`${paciente.Nombre} ${paciente.Apellido}` readonly  class="w-full border-0 outline-none bg-transparent pointer-events-none")
 
     div.mb-4
       label.block.font-bold.text-lg.mb-1 DNI:
-      input(
-        type="text" 
-        value=paciente.DNI 
-        readonly 
-        class="w-full border-0 outline-none bg-transparent pointer-events-none"
-      )
+      input( type="text"  value=paciente.DNI  readonly  class="w-full border-0 outline-none bg-transparent pointer-events-none")
 
     if error
       p.text-red-600.font-semibold.mb-4= error
@@ -33,33 +23,30 @@ block content
 
       div.mb-4
         label.block.font-bold.text-lg.mb-1(for="Fecha") Fecha del turno:
-        input(
-          type="date" 
-          name="Fecha" 
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
-        )
+        input(type="date"  name="Fecha" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400" )
 
       div.mb-4
         label.block.font-bold.text-lg.mb-1(for="Motivo") Motivo:
-        input(
-          type="text" 
-          name="Motivo"  
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
-        )
+        input( type="text" name="Motivo" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400")
+
+      div.mb-4
+        label.block.font-bold.text-lg.mb-1(for="Obra") Obra social:
+        input( type="text" placeholder="Este campo es opcional" name="Obra" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400")
+      div.mb-4
+        label.block.font-bold.text-lg.mb-1(for="NumObra") Numero de obra social:
+        input( type="text" placeholder="Este campo es opcional" name="NumObra" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400")
 
       // Checkbox para activar filtrado por ID
       div.mb-2.flex.items-center.gap-2
         input(type="checkbox" id="filtrarID" class="form-checkbox text-sky-500")
         label(for="filtrarID" class="text-sm font-medium text-gray-700") Filtrar por ID
 
-      // Input de texto oculto inicialmente
+      
       div.mb-4.hidden(id="filtroIDContainer")
         label.block.font-bold.text-lg.mb-1(for="inputIDMedico") ID del médico:
         input#inputIDMedico(
-          type="text"
-          placeholder="Ingrese ID del médico"
-          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
-        )
+          type="text" placeholder="Ingrese ID del médico"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400")
 
       // Select para elegir prestador
       div.mb-6
@@ -72,10 +59,7 @@ block content
               data-id=profesional.ID_Profesional
             )= `${profesional.Nombre} ${profesional.Apellido} ${profesional.Especialidad} (ID: ${profesional.ID_Profesional})`
 
-      button(
-        type="submit" 
-        class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded transition-colors"
+      button(type="submit"  class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded transition-colors"
       ) Guardar turno
 
-    // Incluir script de filtrado
     script(type="module" src="/js/filtroTurnoMedico.js")

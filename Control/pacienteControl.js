@@ -1,4 +1,5 @@
 const {Paciente} = require('../Modelo/relaciones/asociaciones');
+const {Internacion} = require('../Modelo/relaciones/asociaciones');
 
 // Renderiza la vista inicial de pacientes
 exports.mostrarOpPaciente = function (req, res) { //SI ERA EXPORTS AL FINAL JAJA
@@ -11,7 +12,14 @@ exports.seccionInternados = function (req, res){
 
 exports.listaPacientesInternar = async function (req, res) {
     try{
-        const pacientes = await Paciente.findAll();
+        const pacientes = await Paciente.findAll({
+            include: [{
+                model: Internacion,
+                as: 'Internaciones',
+                required: false, // Incluir pacientes aunque no tengan internaciones
+                where: {Activo: true} }],
+            where: { '$Internaciones.ID_internacion$': null }
+        });
         res.render("Internos/nuevaInternacion", { pacientes });
     }catch(error) {
         console.error("Error al obtener pacientes:", error.message);
@@ -93,11 +101,6 @@ exports.cargarPaciente = async function(req, res) {
             
         }
 
-         if(!datos.Seguro || datos.Seguro.trim() === ""){
-            throw new Error("Debe ingresar una obra social");
-            
-        }
-
         if(!datos.Telefono || datos.Telefono.length < 4 || datos.Telefono.trim() === ""){
             throw new Error("Debe ingresar un telefono valido");
             
@@ -120,7 +123,8 @@ exports.cargarPaciente = async function(req, res) {
     } catch (error) {
         console.error("Error al cargar paciente:", error.message);
         res.render("ingresoPaciente", {
-            error: error.message
+            error: error.message,
+            datos: req.body
         });      
     }
 }

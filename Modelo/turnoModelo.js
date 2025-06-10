@@ -10,6 +10,16 @@ const Turno = sequelize.define("Turno", {
         autoIncrement: true,
         allowNull: false
     },
+    ObraSocial: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'Particular'
+    },
+
+    NumSocial: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
 
     Fecha: {
         type: DataTypes.DATE,
