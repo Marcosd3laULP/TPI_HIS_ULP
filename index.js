@@ -18,11 +18,12 @@ const apiRutas = require("./rutas/apiRuta")
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "./Vista"));
 
-app.use('/',rutas);
+app.use("/api", apiRutas);
+app.use('/', rutas);       
 app.use('/pacientes', pacientesRutas);
-app.use("/api",apiRutas);
 app.use('/prestador', prestadorRutas);
 app.use('/turnos', turnoRutas);
+
 app.use(express.static('public'));
 
 

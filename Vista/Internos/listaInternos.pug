@@ -1,6 +1,9 @@
 extends ../Utilitario/layout
 
 block content
+  body.bg-sky-100.min-h-screen
+  include ../utilitario/barraDeNav.pug
+
   h1.text-2xl.font-bold.mb-6 Lista de Internados
 
   table.w-full.table-auto.border-collapse
@@ -24,7 +27,7 @@ block content
             td.px-4.py-2= internacion.Cama && internacion.Cama.Hab ? internacion.Cama.Hab.numero : 'Desconocida'
             td.px-4.py-2= internacion.Cama ? internacion.Cama.Numero : 'Desconocida'
             td.px-4.py-2= internacion.Paciente.Nombre
-            td.px-4.py-2= new Date(internacion.Fecha_ingreso).toLocaleDateString()
+            td.px-4.py-2= new Date(internacion.Fecha_ingreso + 'T12:00:00').toLocaleDateString()
             td.px-4.py-2= internacion.Motivo
             td.px-4.py-2
               form(action=`/pacientes/internaciones/cancelar/${internacion.ID_internacion}`, method="POST")

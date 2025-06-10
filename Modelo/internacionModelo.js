@@ -25,6 +25,7 @@ const Internacion = sequelize.define("Internacion", {
         defaultValue: true
     }
 
+
 }, {
     timestamps: false,
     tableName: "internacion"

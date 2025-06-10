@@ -1,3 +1,29 @@
+ let timerError;
+
+const mostrarError = (mensaje) => {
+  const divError = document.getElementById("mensajeError");
+  const spanTexto = document.getElementById("textoError");
+  const btnCerrar = document.getElementById("cerrarError");
+
+  // Mostrar mensaje y botón cerrar
+  spanTexto.textContent = mensaje;
+  divError.classList.remove("hidden");
+
+  // Limpiar cualquier temporizador previo
+  if (timerError) clearTimeout(timerError);
+
+  // Temporizador para ocultar mensaje después de 5 segundos
+  timerError = setTimeout(() => {
+    divError.classList.add("hidden");
+  }, 5000);
+
+  // Evento para cerrar manualmente al pulsar la X
+  btnCerrar.onclick = () => {
+    divError.classList.add("hidden");
+    if (timerError) clearTimeout(timerError);
+  };
+};
+
 document.querySelectorAll(".ala-btn").forEach((btn) => {
   btn.addEventListener("click", async () => {
     const idAla = btn.dataset.id;
@@ -58,46 +84,55 @@ document.querySelectorAll(".ala-btn").forEach((btn) => {
 });
 
 // Mostrar formulario modal
-window.mostrarFormulario = function (idCama) {
-  const modal = document.getElementById("modalMotivo");
-  modal.classList.remove("hidden");
+window.mostrarFormulario = async function (idCama) {
+  const sexoPaciente = document.getElementById("paciente-info").dataset.sexo?.trim().toLowerCase();
+  const idPaciente = document.getElementById("paciente-info").dataset.idPaciente; // Asegúrate que exista este atributo
 
-  const form = document.getElementById("formMotivo");
-  form.dataset.idCama = idCama;
-};
-
-// Enviar internación
-document.getElementById("formMotivo").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const idCama = e.target.dataset.idCama;
-  const motivo = document.getElementById("inputMotivo").value;
-  const idPaciente = document.getElementById("idPaciente").value;
+  console.log(`🛏️ Intentando internar en cama ${idCama} con paciente de sexo: ${sexoPaciente}`);
 
   try {
-    const res = await fetch("/pacientes/internaciones/realizar-internacion", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        idPaciente,
-        idCama,
-        motivo
-      })
-    });
+    const res = await fetch(`/api/verificar-sexo/${idCama}/${sexoPaciente}`);
 
-    if (res.ok) {
-      window.location.href = "/pacientes/internaciones/lista-internados";
-    } else {
-      alert("Error al asignar internación.");
+    if (!res.ok) {
+      console.warn("⚠️ Respuesta no OK:", res.status);
+      const errorData = await res.json();
+      mostrarError(errorData.error || "Error inesperado desde el servidor");
+      return;
     }
-  } catch (err) {
-    console.error("Error en el envío:", err);
-  }
-});
 
-// Cerrar el modal
+    const data = await res.json();
+    console.log("📩 Respuesta de verificar-sexo:", data);
+
+    const esCompatible = Boolean(data?.compatible) === true;
+
+    if (esCompatible) {
+      console.log("✅ Compatible: mostrando formulario.");
+      document.getElementById("mensajeError").classList.add("hidden");
+
+      const modal = document.getElementById("modalMotivo");
+      modal.classList.remove("hidden");
+
+      // Asignar valores ocultos en el formulario para POST
+      document.getElementById("inputIdCama").value = idCama;
+      document.getElementById("inputIdPaciente").value = idPaciente;
+
+    } else {
+      console.log("🚫 Incompatible: mostrando mensaje de error.");
+      mostrarError("No se puede internar en esta habitación: hay un paciente de sexo diferente.");
+    }
+  } catch (error) {
+    console.error("🔥 Error verificando compatibilidad de sexo:", error);
+    mostrarError("Ocurrió un error al verificar compatibilidad.");
+  }
+};
+
+
+
+
+
 document.getElementById("cancelarBtn").addEventListener("click", () => {
   const modal = document.getElementById("modalMotivo");
   modal.classList.add("hidden");
   document.getElementById("inputMotivo").value = "";
+  document.getElementById("inputFecha").value = ""; 
 });

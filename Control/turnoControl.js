@@ -96,7 +96,7 @@ exports.insertarTurnoV2 = async function (req, res) {
 
 
         await Turno.create(datos);
-        res.redirect("/turnos/lista-turnos");
+        res.redirect("/turnos");
     } catch (error) {
         console.log("Hubo un error al insertar el turno: " + error.message);
         res.render("turnosV2", {
@@ -126,8 +126,6 @@ exports.anunciar = async function (req, res) {
         if(!turno){
             return res.status(404).send("Turno no encontrado.");
         }
-        //console.log('Datos del turno:', turno.toJSON());
-        //console.log('Body recibido:', req.body);
         await Atenciones.create({
             Fecha,
             Motivo,

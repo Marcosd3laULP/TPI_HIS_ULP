@@ -2,7 +2,9 @@ const {Internacion} = require("../Modelo/relaciones/asociaciones");
 const {Habitacion} = require("../Modelo/relaciones/asociaciones");
 const internacionUtils = require("./internacionUtilsControl");
 const {Paciente} = require("../Modelo/relaciones/asociaciones");
+const {Ala} = require("../Modelo/relaciones/asociaciones");
 const {Cama} = require("../Modelo/relaciones/asociaciones");
+const { where } = require("sequelize");
 
 /*exports.internacionInterfaz = async function (req, res) {
     res.render("Internos/pacienteInternado")
@@ -57,7 +59,6 @@ exports.buscarHabitacionPorAla = async function (req, res) {
 
 exports.buscarCamaPorHabitacion =async function (req, res) {
     try {
-         console.log("ID de la habitación recibido:", req.params.idhab); // <-- AGREGAR ESTO
         const camas = await Cama.findAll({
         attributes: ['ID_cama', 'Numero', 'Estado', 'Sexo_ocupante', 'ID_hab'], // explícito
         where: { ID_hab: req.params.idhab }
@@ -72,17 +73,22 @@ exports.buscarCamaPorHabitacion =async function (req, res) {
 }
 
 exports.realizarInternacion = async function (req, res) {
-        const {idCama, idPaciente,motivo} = req.body;
+        const {idCama, idPaciente, motivo, fecha} = req.body;
     try {
         const paciente = await Paciente.findByPk(idPaciente);
-
-        if(!paciente) res.status(404).send("Paciente no encontrado");
         
+        if(!paciente) 
+            return res.status(404).render('Internos/pacienteInternado', {
+            paciente,
+            alas: await Ala.findAll(),
+            error: "Paciente o cama no encontrado"
+        });
+   
         await Internacion.create({
             ID_cama: idCama,
             ID_paciente: idPaciente,
-            Fecha_ingreso: new Date(),
             Motivo: motivo,
+            Fecha_ingreso: fecha,
             Activo: true
         });
 

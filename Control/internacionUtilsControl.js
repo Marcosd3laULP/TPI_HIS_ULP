@@ -2,6 +2,8 @@ const { where } = require("sequelize");
 const { Ala } = require("../Modelo/relaciones/asociaciones");
 const { Habitacion } = require("../Modelo/relaciones/asociaciones");
 const { Cama } = require("../Modelo/relaciones/asociaciones");
+const { Paciente } = require("../Modelo/relaciones/asociaciones");
+const { Internacion } = require("../Modelo/relaciones/asociaciones");
 
 exports.buscarTodasAlas = async function () {
     try {
@@ -59,3 +61,54 @@ exports.liberarCama = async function (idCama) {
     }
     
 }
+
+exports.verificarSexo = async function (req, res) {
+  const { idCama, sexoPaciente } = req.params;
+
+  console.log("🔍 Verificando cama ID:", idCama, "con paciente sexo:", sexoPaciente);
+
+  try {
+    const cama = await Cama.findByPk(idCama);
+    if (!cama) {
+      console.log("❌ No se encontró la cama.");
+      return res.status(404).json({ error: "Cama no encontrada" });
+    }
+
+    console.log("✅ Cama encontrada. ID_hab:", cama.ID_hab);
+
+    const camasHabitacion = await Cama.findAll({
+      where: { ID_hab: cama.ID_hab },
+      include: {
+        model: Internacion, as: 'Internaciones',
+        where: { Activo: true },
+        required: false,
+        include: {
+          model: Paciente, as: 'Paciente',
+          attributes: ['Sexo']
+        }
+      }
+    });
+
+    console.log(`🔎 Habitacion tiene ${camasHabitacion.length} camas`);
+
+    for (const camaH of camasHabitacion) {
+      if (camaH.Internaciones.length > 0) {
+        const pacienteSexo = camaH.Internaciones[0].Paciente.Sexo;
+        console.log("➡️ Comparando con paciente internado de sexo:", pacienteSexo);
+
+        if (pacienteSexo !== sexoPaciente) {
+          console.log("❌ Sexo incompatible.");
+          return res.json({ compatible: false });
+        }
+      }
+    }
+
+    console.log("✅ Sexo compatible.");
+    return res.json({ compatible: true });
+
+  } catch (error) {
+    console.error("🔥 Error inesperado:", error);
+    return res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+

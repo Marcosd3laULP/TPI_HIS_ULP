@@ -2,6 +2,15 @@ const sequelize = require('../baseDatos/bd');
 const { DataTypes } = require('sequelize');
 
 const Cama = sequelize.define("Cama", {
+     ID_hab: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        field: 'ID_hab',
+        references: {
+            model: 'habitación',
+            key: 'ID_hab'
+        }
+    },
     ID_cama: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -9,6 +18,7 @@ const Cama = sequelize.define("Cama", {
         allowNull: false
     },
 
+   
     Numero: {
         type: DataTypes.INTEGER,
         allowNull: false
@@ -23,15 +33,6 @@ const Cama = sequelize.define("Cama", {
     Sexo_ocupante: {
         type: DataTypes.STRING,
         allowNull: true
-    },
-
-    id_habitacion: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'habitacion',
-            key: 'ID_hab'
-        }
     }
 
 }, {
