@@ -66,9 +66,9 @@ async function buscarPacientePorId(id) {
 
 // Crear (cargar) un nuevo paciente
 exports.cargarPaciente = async function(req, res) {
+        const datos = req.body 
     try {
-        const datos = req.body
-
+        
         if(!datos.Nombre || datos.Nombre.trim() === ""){
             throw new Error("Nombre no valido");
         }
@@ -81,7 +81,7 @@ exports.cargarPaciente = async function(req, res) {
         if(!datos.DNI ||datos.DNI.length < 8 || datos.DNI.trim() === ""){
             throw new Error("Ingrese un DNI valido");
             
-        }//VALIDADOR SI YA HAY UN DNI CARGADO
+        }
 
         if(!datos.Sexo || datos.Sexo.trim() === ""){
             throw new Error("Ingrese un genero");
@@ -103,24 +103,33 @@ exports.cargarPaciente = async function(req, res) {
             
         }
 
+        const pacienteYaCargado =  await Paciente.findOne({where: { DNI: datos.DNI } });
 
-        const paciente = await Paciente.create(datos);
-
-        res.redirect(`/turnos/${paciente.ID_paciente}/turnosV2`);
+        if(pacienteYaCargado){
+            throw new Error("Este paciente ya esta cargado");
+        }
+            const paciente = await Paciente.create(datos);
+        
+        if(datos.dar_turno){
+            res.redirect(`/turnos/${paciente.ID_paciente}/turnosV2`);
+        }else{
+            res.redirect("lista-pacientes");
+        }
+        
+        
     } catch (error) {
         console.error("Error al cargar paciente:", error.message);
         res.render("ingresoPaciente", {
-            error: error.message,
-            datos: req.body
+            error: error.message
         });      
     }
 }
 
 // Actualizar un paciente por su ID
 exports.actualizarPaciente = async function(req, res) {
-    try {
-        const id = req.params.id;
+         const id = req.params.id;
         const datos = req.body;
+    try {
         
         if(datos.Nombre.trim() === ""){
             throw new Error("Nombre no valido");
@@ -130,11 +139,6 @@ exports.actualizarPaciente = async function(req, res) {
             throw new Error("Ingrese un apellido valido");
             
         }
-
-        if(datos.DNI.length < 8 || datos.DNI.trim() === ""){
-            throw new Error("Ingrese un DNI valido");
-            
-        }//VALIDADOR SI YA HAY UN DNI CARGADO
 
         if(!datos.Sexo || datos.Sexo.trim() === ""){
             throw new Error("Ingrese un genero");
@@ -159,10 +163,12 @@ exports.actualizarPaciente = async function(req, res) {
         res.redirect("/pacientes/lista-pacientes");
     } catch (error) {
         console.error("Error al actualizar el paciente:", error.message);
+        
+        const pacienteDatos = await Paciente.findByPk(id);
         res.render("editarPaciente", {
         error: error.message,
         datos: req.body,
-        paciente: { ID_paciente: req.params.id }
+        paciente: pacienteDatos
         });
     }
 }

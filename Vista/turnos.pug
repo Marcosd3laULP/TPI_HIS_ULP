@@ -1,2 +1,17 @@
-body 
-    a(href="turnos/lista-turnos") listar turnos;
+extends ./utilitario/layout
+
+block content
+
+   body.bg-sky-100.min-h-screen
+    include ./utilitario/barraDeNav.pug
+
+    h1.text-3xl.font-bold.text-center.text-gray-800.mt-8.mb-6 Sección de turnos 
+
+    div.flex.justify-center.gap-6.flex-wrap.px-4
+        a(href="turnos/lista-turnos" class="bg-white rounded-2xl shadow-md py-10 px-6 w-80 flex flex-col items-center transition hover:shadow-xl") 
+            img(src="/images/admitir.svg" alt="Admitir paciente" class="w-20 h-20 mb-4")
+            p.text-center.text-gray-800.font-semibold.text-lg listar turnos
+        
+        a(href= "turnos/paciente-y-turnos" class="bg-white rounded-2xl shadow-md py-10 px-6 w-80 flex flex-col items-center transition hover:shadow-xl")
+            img(src="/images/admitir.svg" alt="Admitir paciente" class="w-20 h-20 mb-4")
+            p.text-center.text-gray-800.font-semibold.text-lg crear nuevo turnos

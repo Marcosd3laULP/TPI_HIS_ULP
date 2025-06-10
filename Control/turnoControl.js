@@ -8,6 +8,18 @@ exports.mostrarOpTurnos = async function (req, res) {
     res.render("turnos");
 }
 
+exports.ListaDePacientes = async function (req, res) {
+    try {
+        const pacientes = await Paciente.findAll()
+        if(!pacientes) return res.status(404).send("No se encontraron pacientes");
+
+        res.render("turnosListaPacientes", {pacientes });
+    } catch (error) {
+         console.log("Hubo un error y fue este: " + error.message);
+        throw new Error("Error al cargar la lista");
+    }
+}
+
 exports.formTurnoAdmision = async function (req, res) {
     try {
         const idPaciente = req.params.id;

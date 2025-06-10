@@ -16,6 +16,10 @@ block content
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Acciones
 
     tbody
+    if turnos.length === 0
+        tr
+            td(colspan="6", class="text-center py-4 text-gray-500") No hay turnos cargados actualmente.
+    else
       each turno, i in turnos
         - let filaClase = i % 2 === 0 ? 'bg-white' : 'bg-gray-50';
         - let estadoTexto = 'Activo';
