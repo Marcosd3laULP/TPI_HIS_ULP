@@ -6,25 +6,25 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo 'No build required'",  
-    "vercel-build": "npm install mysql2 && npm install"         
+    "build": "echo 'No build required'",
+    "vercel-build": "npm install"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mysql2": "^3.14.1",
     "pug": "^3.0.3",
-    "sequelize": "^6.37.7",                
-    "cors": "^2.8.5" 
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
   },
   "engines": {
-    "node": "18.x"                        
+    "node": "22.x"
   }
 }

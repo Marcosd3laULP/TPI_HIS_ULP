@@ -13,9 +13,4 @@ const sequelize = new Sequelize(
   }
 );
 
-// Verifica la conexión
-sequelize.authenticate()
-  .then(() => console.log('✅ Conectado a MySQL en Railway'))
-  .catch(err => console.error('❌ Error de conexión:', err));
-
 module.exports = sequelize;

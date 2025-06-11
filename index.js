@@ -31,7 +31,7 @@ app.use(express.static('public'));
 //PROBAMOS LA CONEXION A LA BASE
 sequelize.authenticate()
   .then(() => {
-    console.log("✅ Conexión a la BD establecida.");
+    console.log("Conexión a la BD establecida.");
     if (process.env.NODE_ENV !== 'production') {
       return sequelize.sync({ alter: false });
     }
@@ -39,7 +39,7 @@ sequelize.authenticate()
   .then(() => {
     app.listen(PORT, () => console.log(`Servidor en http://localhost:${PORT}`));
   })
-  .catch((error) => console.error("❌ Error:", error));
+  .catch((error) => console.error("Error:", error));
 
 // Cierre limpio
 process.on('SIGINT', async () => {
