@@ -1,15 +1,16 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config(); // Carga las variables del .env
+require('dotenv').config();
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME || 'railway',     // Nombre de la BD
-  process.env.DB_USER || 'root',        // Usuario
-  process.env.DB_PASSWORD || '',        // Contraseña
+  process.env.DB_NAME || 'railway',     
+  process.env.DB_USER || 'root',        
+  process.env.DB_PASSWORD || '',        
   {
     host: process.env.DB_HOST || 'mysql.railway.internal',
     port: process.env.DB_PORT || 3306,
-    dialect: 'mysql',
-    logging: false, // Opcional: desactiva logs de SQL en consola
+    dialect: process.env.DB_DIALECT,
+    dialectModule: require("mysql2"),
+    logging: false, 
   }
 );
 

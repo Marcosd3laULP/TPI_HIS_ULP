@@ -106,7 +106,7 @@ exports.insertarTurnoV2 = async function (req, res) {
             throw new Error("Debe seleccionar a un medico");
             
         }
-        if(Obra || NumObra){
+        if(Obra && NumObra){
             if(!Obra || Obra.trim() === ''){
                 throw new Error("Debe ingresar el numero de la obra social");
             }
@@ -125,8 +125,8 @@ exports.insertarTurnoV2 = async function (req, res) {
         await Turno.create({
             ID_paciente,
             ID_Profesional,
-            ObraSocial: Obra,
-            NumSocial: NumObra,
+            ObraSocial: Obra || 'particular',
+            NumSocial: NumObra || null,
             Fecha,
             Motivo
             
