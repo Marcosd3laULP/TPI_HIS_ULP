@@ -77,7 +77,7 @@ async function buscarTurnoId(id) {
 
 exports.insertarTurnoV2 = async function (req, res) {
         const datos = req.body;
-        const {Fecha, Motivo, ID_Profesional, Obra, NumObra, ID_paciente} = datos;
+        const {Fecha, ID_Profesional, Obra, NumObra, ID_paciente} = datos;
     try {
        
         if(!Fecha || Fecha.trim() === ""){
@@ -127,8 +127,7 @@ exports.insertarTurnoV2 = async function (req, res) {
             ID_Profesional,
             ObraSocial: Obra || 'particular',
             NumSocial: NumObra || null,
-            Fecha,
-            Motivo
+            Fecha
             
         });
         res.redirect("/turnos");
