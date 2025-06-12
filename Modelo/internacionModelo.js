@@ -10,7 +10,7 @@ const Internacion = sequelize.define("Internacion", {
     },
 
     Fecha_ingreso: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.DATE,
         allowNull: false
     },
 

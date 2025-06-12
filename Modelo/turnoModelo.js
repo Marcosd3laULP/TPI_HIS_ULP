@@ -32,11 +32,6 @@ const Turno = sequelize.define("Turno", {
         allowNull: false
     },
 
-    Motivo: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-
     Es_tomado: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
