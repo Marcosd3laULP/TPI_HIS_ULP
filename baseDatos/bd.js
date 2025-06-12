@@ -8,9 +8,8 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST || 'mysql.railway.internal',
     port: process.env.DB_PORT || 3306,
-    dialect: process.env.DB_DIALECT,
-    dialectModule: require("mysql2"),
-    logging: false, 
+    logging: false,
+
   }
 );
 
