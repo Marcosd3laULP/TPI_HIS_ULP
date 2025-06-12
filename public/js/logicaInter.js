@@ -5,19 +5,19 @@ const mostrarError = (mensaje) => {
   const spanTexto = document.getElementById("textoError");
   const btnCerrar = document.getElementById("cerrarError");
 
-  // Mostrar mensaje y botón cerrar
+
   spanTexto.textContent = mensaje;
   divError.classList.remove("hidden");
 
-  // Limpiar cualquier temporizador previo
+
   if (timerError) clearTimeout(timerError);
 
-  // Temporizador para ocultar mensaje después de 5 segundos
+
   timerError = setTimeout(() => {
     divError.classList.add("hidden");
   }, 5000);
 
-  // Evento para cerrar manualmente al pulsar la X
+
   btnCerrar.onclick = () => {
     divError.classList.add("hidden");
     if (timerError) clearTimeout(timerError);
@@ -86,42 +86,34 @@ document.querySelectorAll(".ala-btn").forEach((btn) => {
 // Mostrar formulario modal
 window.mostrarFormulario = async function (idCama) {
   const sexoPaciente = document.getElementById("paciente-info").dataset.sexo?.trim().toLowerCase();
-  const idPaciente = document.getElementById("paciente-info").dataset.idPaciente; // Asegúrate que exista este atributo
-
-  console.log(`🛏️ Intentando internar en cama ${idCama} con paciente de sexo: ${sexoPaciente}`);
+  const idPaciente = document.getElementById("paciente-info").dataset.idPaciente;
 
   try {
     const res = await fetch(`/api/verificar-sexo/${idCama}/${sexoPaciente}`);
 
     if (!res.ok) {
-      console.warn("⚠️ Respuesta no OK:", res.status);
       const errorData = await res.json();
       mostrarError(errorData.error || "Error inesperado desde el servidor");
       return;
     }
 
     const data = await res.json();
-    console.log("📩 Respuesta de verificar-sexo:", data);
 
     const esCompatible = Boolean(data?.compatible) === true;
 
     if (esCompatible) {
-      console.log("✅ Compatible: mostrando formulario.");
       document.getElementById("mensajeError").classList.add("hidden");
 
       const modal = document.getElementById("modalMotivo");
       modal.classList.remove("hidden");
 
-      // Asignar valores ocultos en el formulario para POST
       document.getElementById("inputIdCama").value = idCama;
       document.getElementById("inputIdPaciente").value = idPaciente;
 
     } else {
-      console.log("🚫 Incompatible: mostrando mensaje de error.");
       mostrarError("No se puede internar en esta habitación: hay un paciente de sexo diferente.");
     }
   } catch (error) {
-    console.error("🔥 Error verificando compatibilidad de sexo:", error);
     mostrarError("Ocurrió un error al verificar compatibilidad.");
   }
 };

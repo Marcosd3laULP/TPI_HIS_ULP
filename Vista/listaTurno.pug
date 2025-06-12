@@ -12,7 +12,6 @@ block content
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Médico
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Obra Social 
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Fecha
-        th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Motivo
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Estado
         th(class="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700") Acciones
 
@@ -36,14 +35,12 @@ block content
           td(class="border border-gray-300 px-4 py-2")= turno.Paciente ? turno.Paciente.Nombre + ' ' + turno.Paciente.Apellido : 'Sin datos'
           td(class="border border-gray-300 px-4 py-2")= turno.Prestador ? turno.Prestador.Nombre + ' ' + turno.Prestador.Apellido + ' (' + turno.Prestador.Especialidad + ')' : 'Sin médico'
           td(class="border border-gray-300 px-4 py-2")= turno.ObraSocial ? turno.ObraSocial : 'Particular'
-          td(class="border border-gray-300 px-4 py-2")= turno.Fecha
-          td(class="border border-gray-300 px-4 py-2")= turno.Motivo
+          td(class="border border-gray-300 px-4 py-2")= turno.fechaYhora
           td(class="border border-gray-300 px-4 py-2 font-semibold text-sm")= estadoTexto
           td(class="border border-gray-300 px-4 py-2")
             div(class="flex flex-col sm:flex-row gap-1 justify-center items-center")
               if turno.Estado
                 form(action=`/turnos/${turno.Nro_turno}/anunciar`, method="POST", class="inline")
-                  input(type="hidden" name="Motivo" value=turno.Motivo || "Consulta médica")
                   input(type="hidden" name="Fecha" value=turno.Fecha)
                   input(type="hidden" name="ID_paciente" value=turno.ID_paciente)
                   input(type="hidden" name="ID_Profesional" value=turno.ID_Profesional)

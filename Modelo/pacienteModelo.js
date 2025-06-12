@@ -23,7 +23,7 @@ const Paciente = sequelize.define('pacientes', {
     },
 
     DNI: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: false,
         unique: true
     },
@@ -39,7 +39,7 @@ const Paciente = sequelize.define('pacientes', {
     },
 
     Telefono: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: false
     }
     }, {

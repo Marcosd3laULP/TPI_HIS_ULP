@@ -44,8 +44,7 @@ block content
         h2.text-xl.font-bold.mb-4 Ingresar Motivo de Internación
         form#formMotivo.flex.flex-col.gap-4(method="POST" action="/pacientes/internaciones/realizar-internacion")
           input#inputMotivo(name="motivo" type="text" placeholder="Motivo" required class="border rounded px-3 py-2")
-          input#inputFecha(name="fecha" type="date" required class="border rounded px-3 py-2")
-          // Campos ocultos para enviar datos de paciente y cama
+          
           input#inputIdCama(type="hidden" name="idCama")
           input#inputIdPaciente(type="hidden" name="idPaciente")
           .flex.justify-end.gap-2

@@ -4,6 +4,7 @@ const internacionUtils = require("./internacionUtilsControl");
 const {Paciente} = require("../Modelo/relaciones/asociaciones");
 const {Ala} = require("../Modelo/relaciones/asociaciones");
 const {Cama} = require("../Modelo/relaciones/asociaciones");
+const {Turno} = require("../Modelo/relaciones/asociaciones");
 const { where } = require("sequelize");
 
 /*exports.internacionInterfaz = async function (req, res) {
@@ -13,19 +14,22 @@ const { where } = require("sequelize");
 exports.buscarTodoInternados = async function (req, res) {
     try {
         const internaciones = await Internacion.findAll({
-            where: {Activo: true},
-            include: [{model: Paciente, as: "Paciente"},
-            {model: Cama, as: "Cama", include: [{model: Habitacion, as: "Hab"}],
-            required: true,
-            attributes:['ID_hab', 'numero', 'ID_cama','Numero','Estado','Sexo_ocupante']}]  
+            where: { Activo: true },
+            include: [
+                {model: Paciente,as: "Paciente",
+                    include:[{model: Turno,as: "Turnos", where: { Estado: true }, required: false}]
+                },
+                {model: Cama,as: "Cama",include: [{ model: Habitacion, as: "Hab"}],required: true,
+                    attributes: ['ID_hab', 'numero', 'ID_cama', 'Numero', 'Estado', 'Sexo_ocupante']}]
         });
-        
+
         res.render("Internos/listaInternos", { internaciones });
     } catch (error) {
-         console.error("Error al buscar los internados:", error.message);
-        throw new Error("No se pudo localizar los internados");
-    }   
-}
+        console.error("Error al buscar los internados:", error.message);
+        res.status(500).send("No se pudo localizar los internados");
+    }
+};
+
 
 exports.interfazInternacion = async function (req, res) {
     try {
@@ -73,7 +77,7 @@ exports.buscarCamaPorHabitacion =async function (req, res) {
 }
 
 exports.realizarInternacion = async function (req, res) {
-        const {idCama, idPaciente, motivo, fecha} = req.body;
+        const {idCama, idPaciente, motivo} = req.body;
     try {
         const paciente = await Paciente.findByPk(idPaciente);
         
@@ -84,15 +88,28 @@ exports.realizarInternacion = async function (req, res) {
             error: "Paciente o cama no encontrado"
         });
    
-        await Internacion.create({
+       const nuevaInternacion = await Internacion.create({
             ID_cama: idCama,
             ID_paciente: idPaciente,
+            Fecha_ingreso: new Date(),
             Motivo: motivo,
-            Fecha_ingreso: fecha,
             Activo: true
         });
 
-        await internacionUtils.cambiarEstadoCama(idCama, paciente.Sexo);
+    const turnoConsumido = await Turno.findOne({
+      where: {
+        ID_paciente: idPaciente,
+        Es_tomado: true
+      },
+      order: [['Fecha', 'DESC']] 
+    });
+
+    if (turnoConsumido && turnoConsumido.Fecha) {
+     
+      await nuevaInternacion.update({ Fecha_ingreso: turnoConsumido.Fecha });
+    }
+
+ await internacionUtils.cambiarEstadoCama(idCama, paciente.Sexo);
 
         res.redirect("lista-internados");
     } catch (error) {

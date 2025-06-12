@@ -50,7 +50,16 @@ exports.buscarTodoTurno = async function(req, res){
             {model: Prestador, as: 'Prestador', attributes: ['Nombre', 'Apellido', 'Especialidad']}
         ]
         });
-        const turnosJson = turnos.map(t => t.toJSON());
+        const turnosJson = turnos.map(t => {
+            const turno = t.toJSON();
+            const fechaObj = new Date(turno.Fecha);
+
+            const fecha = fechaObj.toLocaleDateString('es-AR'); // ej: 11/06/2025
+            const hora = fechaObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }); // ej: 14:30
+
+            turno.fechaYhora = `${fecha} - ${hora} hs`;
+            return turno;
+        });
         res.render("listaTurno", { turnos: turnosJson });
     } catch (error) {
         console.log("Hubo un error al buscar todos los turnos: ", error.message);
@@ -77,30 +86,23 @@ async function buscarTurnoId(id) {
 
 exports.insertarTurnoV2 = async function (req, res) {
         const datos = req.body;
-        const {Fecha, ID_Profesional, Obra, NumObra, ID_paciente} = datos;
+        const {Fecha, Hora, ID_Profesional, Obra, NumObra, ID_paciente} = datos;
     try {
        
         if(!Fecha || Fecha.trim() === ""){
             throw new Error("Debe ingresar una fecha para el turno");
         }
-        const fechaIngresada = new Date(Fecha);
-        if(isNaN(fechaIngresada.getTime())){ //isNaN sirve también para fechas
+
+        if (!Hora || Hora.trim() === "") {
+            throw new Error("Debe ingresar una hora para el turno");
+        }
+
+        const fechaCompleta = new Date(`${Fecha}T${Hora}`);
+        if(isNaN(fechaCompleta.getTime())){ //isNaN sirve también para fechas
             throw new Error("La fecha ingresada no es valida");
             
         }
 
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0); //Sacamos las horas, minutos y segundos para solo dejar la fecha.
-
-        if(fechaIngresada < hoy){
-            throw new Error("La fecha del turno no puede ser anterior a la de hoy");
-            
-        }
-
-         if(!Motivo || Motivo === ""){
-            throw new Error("Debe especificar un motivo");
-            
-        }
 
         if(!ID_Profesional || ID_Profesional === ""){
             throw new Error("Debe seleccionar a un medico");
@@ -127,7 +129,7 @@ exports.insertarTurnoV2 = async function (req, res) {
             ID_Profesional,
             ObraSocial: Obra || 'particular',
             NumSocial: NumObra || null,
-            Fecha
+            Fecha: fechaCompleta
             
         });
         res.redirect("/turnos");
@@ -142,11 +144,10 @@ exports.insertarTurnoV2 = async function (req, res) {
 
 exports.anunciar = async function (req, res) {
     const {Nro_turno} = req.params
-    const {Fecha, Motivo, ID_Profesional, ID_paciente} = req.body
+    const {Fecha, ID_Profesional, ID_paciente} = req.body
 
     try {
         if(!Fecha) throw new Error("Fecha no proporcionada");
-        if(!Motivo) throw new Error("Motivo no proporcionado");
         if(!ID_paciente) throw new Error("Paciente no especificado");
         if(!ID_Profesional) throw new Error("Profesional no especificado");
 
@@ -162,7 +163,7 @@ exports.anunciar = async function (req, res) {
         }
         await Atenciones.create({
             Fecha,
-            Motivo,
+            Motivo:"A especificar",
             ID_paciente,
             ID_Profesional    
         });
@@ -172,7 +173,7 @@ exports.anunciar = async function (req, res) {
             {Es_tomado: true, Estado: false },
             {where: { Nro_turno }}
         );
-        res.redirect("/turnos/lista-turnos");
+        res.redirect(`/pacientes/internaciones/internar/${ID_paciente}`);
     } catch (error) {
         console.log("hubo un problema en anunciar y fue este: ", error.message);
         res.status(500).send("No se pudo anunciar el turno");
