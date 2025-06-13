@@ -6,6 +6,7 @@ const {Ala} = require("../Modelo/relaciones/asociaciones");
 const {Cama} = require("../Modelo/relaciones/asociaciones");
 const {Turno} = require("../Modelo/relaciones/asociaciones");
 const { where } = require("sequelize");
+const { Atenciones } = require("../Modelo/relaciones/asociaciones");
 
 /*exports.internacionInterfaz = async function (req, res) {
     res.render("Internos/pacienteInternado")
@@ -109,6 +110,19 @@ exports.realizarInternacion = async function (req, res) {
       await nuevaInternacion.update({ Fecha_ingreso: turnoConsumido.Fecha });
     }
 
+    const atencion = await Atenciones.findOne({
+                where: {
+                    ID_paciente: idPaciente,
+                    ID_Profesional: turnoConsumido.ID_Profesional,
+                    Fecha: turnoConsumido.Fecha,
+                    Motivo: 'a especificar'
+                }
+            });
+
+            if (atencion) {
+                await atencion.update({ Motivo: motivo });
+            }
+
  await internacionUtils.cambiarEstadoCama(idCama, paciente.Sexo);
 
         res.redirect("lista-internados");
@@ -119,7 +133,7 @@ exports.realizarInternacion = async function (req, res) {
 }
 
 //ESTE METODO QUEDO POSIBLEMENTE OBSOLETO, SI NO LE LLEGO A ENCONTRAR USO
-/*exports.cancelarInternacion = async function (req, res) {
+exports.cancelarInternacion = async function (req, res) {
     const {id} = req.params;
     try {
         const internado = await Internacion.findByPk(id);
@@ -134,4 +148,4 @@ exports.realizarInternacion = async function (req, res) {
          console.error("Error al eliminar:", error);
     res.status(500).send("Error al eliminar");
     }
-}*/ 
+}

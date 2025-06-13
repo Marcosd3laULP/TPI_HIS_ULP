@@ -76,11 +76,11 @@ block content
                   input(type="hidden" name="Fecha" value=turno.Fecha)
                   input(type="hidden" name="ID_paciente" value=turno.ID_paciente)
                   input(type="hidden" name="ID_Profesional" value=turno.ID_Profesional)
-                  button(type="submit" class="p-1 hover:bg-gray-200 rounded transition-colors" title="Anunciar turno")
+                  button(type="submit" class="p-1 hover:bg-gray-200 rounded transition-colors" title="Anunciar cita")
                     img(src="/images/anunciar.png" alt="Anunciar" class="w-6 h-6 hover:scale-110 transition-transform")
 
                 form(action=`/turnos/${turno.Nro_turno}/cancelar`, method="POST", class="inline")
-                  button(type="submit" class="p-1 hover:bg-gray-200 rounded transition-colors" title="Cancelar turno")
+                  button(type="submit" class="p-1 hover:bg-gray-200 rounded transition-colors" title="Cancelar cita")
                     img(src="/images/cancelar.png" alt="Cancelar" class="w-6 h-6 hover:scale-110 transition-transform")
   script.
     const tipoBusquedaSelect = document.getElementById('tipoBusqueda');

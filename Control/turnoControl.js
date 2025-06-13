@@ -153,11 +153,20 @@ exports.insertarTurnoV2 = async function (req, res) {
             
         }
 
-
         if(!ID_Profesional || ID_Profesional === ""){
             throw new Error("Debe seleccionar a un medico");
             
         }
+        const turnoExistente = await Turno.findOne({ 
+            where:{ Fecha: fechaCompleta, 
+                    ID_Profesional: ID_Profesional,
+                    Estado: true} });
+        
+        if(turnoExistente){
+            throw new Error("Ya hay un turno ocupado para esta fecha y hora");
+            
+        }
+        
         if(Obra && NumObra){
             if(!Obra || Obra.trim() === ''){
                 throw new Error("Debe ingresar el numero de la obra social");
@@ -185,9 +194,13 @@ exports.insertarTurnoV2 = async function (req, res) {
         res.redirect("/turnos");
     } catch (error) {
         console.log("Hubo un error al insertar el turno: " + error.message);
+        const paciente = await Paciente.findByPk(ID_paciente);
+        const prestadores = await Prestador.findAll();
         res.render("turnosV2", {
             error: error.message,
-            datos: req.body
+            datos: req.body,
+            paciente,
+            prestadores
         });
     }
 }

@@ -19,5 +19,5 @@ router.post("/confirmacion/:id", pacienteControl.ConfirmarDatosPaciente);
 router.get("/internaciones/internar/:id", internacionControl.interfazInternacion);
 router.post("/internaciones/realizar-internacion", internacionControl.realizarInternacion);
 router.get("/internaciones/lista-internados", internacionControl.buscarTodoInternados);
-//router.post('/internaciones/cancelar/:id', internacionControl.cancelarInternacion);
+router.post('/internaciones/cancelar/:id', internacionControl.cancelarInternacion);
 module.exports = router;
