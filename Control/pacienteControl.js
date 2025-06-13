@@ -286,7 +286,7 @@ exports.ConfirmarDatosPaciente = async function(req, res) {
         });
         
         if (actualizado === 0) {
-            onsole.log("No hubo cambios, pero se confirmó la información del paciente");
+            console.log("No hubo cambios, pero se confirmó la información del paciente");
         }
         res.redirect(`/pacientes/internaciones/internar/${id}`);
     } catch (error) {
