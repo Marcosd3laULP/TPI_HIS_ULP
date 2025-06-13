@@ -5,12 +5,11 @@ block content
 
   div.flex.items-center.justify-center.min-h-screen.bg-gray-100
 
-    div.bg-red-400.p-8.rounded-xl.shadow-md.w-full.max-w-md
+    div.bg-red-200.p-8.rounded-xl.shadow-md.w-full.max-w-md
       h1.text-2xl.font-bold.mb-6.text-center Nuevo Prestador
 
       if error
-        p.text-red-600.font-semibold.mb-4.text-center= error
-
+        p.text-red-600.font-semibold.text-xl.mb-4.text-center= error
       form(action="insertar", method="POST", class="space-y-4")
         div
           label(for="nombre", class="block font-medium text-gray-700") Nombre:

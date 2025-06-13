@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const internacionControl = require('../Control/internacionControl');
 const internacionUtilsControl = require('../Control/internacionUtilsControl');
-console.log("internacionControlUtils:", internacionUtilsControl);
 
 router.get('/habitaciones/:idAla', internacionControl.buscarHabitacionPorAla);
 
