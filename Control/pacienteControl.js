@@ -1,5 +1,7 @@
+const sequelize = require('../baseDatos/bd');
 const {Paciente} = require('../Modelo/relaciones/asociaciones');
 const {Internacion} = require('../Modelo/relaciones/asociaciones');
+const { Op, fn, col, where: sequelizeWhere } = require('sequelize');
 
 // Renderiza la vista inicial de pacientes
 exports.mostrarOpPaciente = function (req, res) { //SI ERA EXPORTS AL FINAL JAJA
@@ -29,12 +31,52 @@ exports.listaPacientesInternar = async function (req, res) {
 
 // Obtener todos los pacientes
 exports.obtenerPacientes = async function(req, res) {
+    const {criterio, valor} = req.query
     try {
-        const pacientes = await Paciente.findAll();
+         if (!criterio && !valor) {
+      const pacientes = await Paciente.findAll();
+      return res.render("listaPaciente", {pacientes});
+    }
+
+        if(!criterio || !valor || valor.trim() === ''){
+            throw new Error("Seleccione un criterio e ingrese un valor");
+        }
+
+        if(criterio === 'dni' || criterio === 'id'){
+            if(isNaN(valor)){
+                throw new Error(`El campo ${criterio.toUpperCase()} debe ser un número`);
+            }
+        }
+         let where = {};
+
+       if (criterio  === "dni") {
+            where.DNI = valor;
+        } else if (criterio  === "id") {
+            where.ID_paciente = valor;
+        } else if (criterio  === "nombre") {
+             where = {[Op.and]: [sequelizeWhere(
+            fn('LOWER', col('Nombre')),
+            { [Op.like]: `%${valor.toLowerCase()}%` }
+          )]
+      };
+    } else {
+      throw new Error("Criterio inválido, no se pudo filtrar...");
+    }
+        const pacientes = await Paciente.findAll( { where } );
+
+        if(pacientes.length === 0){
+            throw new Error("No se pudieron traer los pacientes filtrados");
+            
+        }
+
         res.render("listaPaciente", { pacientes });
+        
     } catch (error) {
         console.error("Error al obtener pacientes:", error.message);
-        throw new Error("No se pudieron obtener los datos de los pacientes");
+        res.render("listaPaciente", {
+        pacientes: [],
+        error: error.message
+        });
     }
 }
 
@@ -51,7 +93,29 @@ exports.formularioEdicionPaciente = async function (req, res) {
             
         }
 
-        res.render("editarPaciente", {paciente});
+        res.render("editarPaciente", {
+            paciente,
+            modo: "edicion"
+        });
+    } catch (error) {
+        console.log("Ocurrio un error al buscar al paciente " + error.message);
+         throw new Error("Ocurrio un fallo en traer al paciente..." + error.message);
+    }
+}
+
+exports.formularioConfirmacionPaciente = async function (req, res) {
+    try {
+        const id = req.params.id
+        const paciente = await buscarPacientePorId(id);
+        if(!paciente){
+            throw new Error("No se pudo hallar al paciente");
+            
+        }
+
+        res.render("editarPaciente", {
+            paciente,
+            modo: "confirmacion"
+        });
     } catch (error) {
         console.log("Ocurrio un error al buscar al paciente " + error.message);
          throw new Error("Ocurrio un fallo en traer al paciente..." + error.message);
@@ -157,12 +221,18 @@ exports.actualizarPaciente = async function(req, res) {
             
         }
 
+        const pacienteExistente =  await Paciente.findByPk(id);
+
+        if(!pacienteExistente){
+            throw new Error("No se pudo encontrar el paciente");
+        }
+
         const [actualizado] = await Paciente.update(datos, {
             where: { ID_paciente: id }
         });
         
         if (actualizado === 0) {
-            throw new Error("No se pudo hallar el paciente para hacer los cambios");
+            console.log("No hubo cambios, pero se confirmó la información del paciente");
         }
         res.redirect("/pacientes/lista-pacientes");
     } catch (error) {
@@ -172,7 +242,62 @@ exports.actualizarPaciente = async function(req, res) {
         res.render("editarPaciente", {
         error: error.message,
         datos: req.body,
-        paciente: pacienteDatos
+        paciente: pacienteDatos,
+        modo: "edicion"
+        });
+    }
+}
+
+exports.ConfirmarDatosPaciente = async function(req, res) {
+         const id = req.params.id;
+        const datos = req.body;
+    try {
+        
+        if(datos.Nombre.trim() === ""){
+            throw new Error("Nombre no valido");
+        }
+
+        if(datos.Apellido.trim() === ""){
+            throw new Error("Ingrese un apellido valido");
+            
+        }
+
+        if(!datos.Sexo || datos.Sexo.trim() === ""){
+            throw new Error("Ingrese un genero");
+            
+        }
+        if(datos.Domicilio.trim() === ""){
+            throw new Error("Debe ingresar un domicilio");
+            
+        }
+        if(datos.Telefono.length < 4 || datos.Telefono.trim() === ""){
+            throw new Error("Debe ingresar un telefono valido");
+            
+        }
+
+        const pacienteExistente =  await Paciente.findByPk(id);
+
+        if(!pacienteExistente){
+            throw new Error("No se pudo encontrar el paciente");
+        }
+
+        const [actualizado] = await Paciente.update(datos, {
+            where: { ID_paciente: id }
+        });
+        
+        if (actualizado === 0) {
+            onsole.log("No hubo cambios, pero se confirmó la información del paciente");
+        }
+        res.redirect(`/pacientes/internaciones/internar/${id}`);
+    } catch (error) {
+        console.error("Error al actualizar el paciente:", error.message);
+        
+        const pacienteDatos = await Paciente.findByPk(id);
+        res.render("editarPaciente", {
+        error: error.message,
+        datos: req.body,
+        paciente: pacienteDatos,
+        modo: "confirmacion"
         });
     }
 }

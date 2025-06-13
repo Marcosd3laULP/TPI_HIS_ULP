@@ -4,6 +4,38 @@ block content
   include ./utilitario/barraDeNav.pug
   h1(class="text-2xl font-bold text-center text-gray-800 mb-6") Lista de Turnos
 
+  div(class="px-8 mb-6")
+  form(action="/turnos/lista-turnos" method="GET" class="flex flex-col md:flex-row items-center gap-4 bg-white p-4 rounded shadow-md")
+    p.font-medium Seleccione un tipo de búsqueda:
+    select(name="tipoBusqueda" id="tipoBusqueda" class="border border-gray-300 rounded px-2 py-1")
+      option(value="" disabled selected) --Seleccione--
+      option(value="paciente" selected=tipoBusqueda==='paciente') Paciente
+      option(value="medico" selected=tipoBusqueda==='medico') Médico
+      option(value="fecha" selected=tipoBusqueda==='fecha') Fecha
+
+    div(id="opcionesPaciente" class="flex gap-4 items-center" style=(tipoBusqueda === 'paciente' ? '' : 'display:none;'))
+      label.flex.items-center.gap-1
+        input(type="radio" name="criterio" value="id" checked=criterio==='id')
+        | ID
+      label.flex.items-center.gap-1
+        input(type="radio" name="criterio" value="dni" checked=criterio==='dni')
+        | DNI
+      label.flex.items-center.gap-1
+        input(type="radio" name="criterio" value="nombre" checked=criterio==='nombre')
+        | Nombre
+
+    div(id="opcionesMedico" class="flex gap-4 items-center" style=(tipoBusqueda === 'medico' ? '' : 'display:none;'))
+      label.flex.items-center.gap-1
+        input(type="radio" name="criterio" value="id_medico" checked=criterio==='id_medico')
+        | ID
+      label.flex.items-center.gap-1
+        input(type="radio" name="criterio" value="nombre_medico" checked=criterio==='nombre_medico')
+        | Nombre
+
+    input(type=(tipoBusqueda === 'fecha' ? 'date' : 'text') name="valor" placeholder=(tipoBusqueda === 'fecha' ? '' : 'Ingrese valor...') class="border border-gray-300 px-2 py-1 rounded w-full md:w-auto" value=valor)
+    button(type="submit" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700") Buscar
+
+  
   table(class="min-w-full border-collapse border border-gray-300 shadow-lg rounded-lg overflow-hidden")
     thead(class="bg-blue-200")
       tr
@@ -45,8 +77,34 @@ block content
                   input(type="hidden" name="ID_paciente" value=turno.ID_paciente)
                   input(type="hidden" name="ID_Profesional" value=turno.ID_Profesional)
                   button(type="submit" class="p-1 hover:bg-gray-200 rounded transition-colors" title="Anunciar turno")
-                    img(src="/images/anunciar.png" alt="Anunciar turno" class="w-6 h-6 hover:scale-110 transition-transform")
+                    img(src="/images/anunciar.png" alt="Anunciar" class="w-6 h-6 hover:scale-110 transition-transform")
 
                 form(action=`/turnos/${turno.Nro_turno}/cancelar`, method="POST", class="inline")
                   button(type="submit" class="p-1 hover:bg-gray-200 rounded transition-colors" title="Cancelar turno")
-                    img(src="/images/cancelar.png" alt="Cancelar turno" class="w-6 h-6 hover:scale-110 transition-transform")
+                    img(src="/images/cancelar.png" alt="Cancelar" class="w-6 h-6 hover:scale-110 transition-transform")
+  script.
+    const tipoBusquedaSelect = document.getElementById('tipoBusqueda');
+    const opcionesPaciente = document.getElementById('opcionesPaciente');
+    const opcionesMedico = document.getElementById('opcionesMedico');
+    const valorInput = document.querySelector('input[name="valor"]');
+
+    tipoBusquedaSelect.addEventListener('change', () => {
+      const tipo = tipoBusquedaSelect.value;
+
+    // Mostrar radios según tipo seleccionado
+    opcionesPaciente.style.display = (tipo === 'paciente') ? 'flex' : 'none';
+    opcionesMedico.style.display = (tipo === 'medico') ? 'flex' : 'none';
+
+    // Cambiar tipo y placeholder del input según tipo
+    if (tipo === 'fecha') {
+      valorInput.type = 'date';
+      valorInput.placeholder = '';
+    } else {
+      valorInput.type = 'text';
+      valorInput.placeholder="Nombre, apellido o ambos" 
+    }
+
+    // Limpiar valor del input y radios seleccionados
+    valorInput.value = '';
+    document.querySelectorAll('input[name="criterio"]').forEach(radio => radio.checked = false);
+    });

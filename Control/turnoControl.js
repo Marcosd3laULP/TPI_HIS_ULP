@@ -4,6 +4,7 @@ const { Paciente } = require("../Modelo/relaciones/asociaciones");
 const { Prestador } = require("../Modelo/relaciones/asociaciones");
 const { Atenciones } = require("../Modelo/relaciones/asociaciones");
 const { ObraPaciente } = require("../Modelo/relaciones/asociaciones");
+const { Op, fn, col, where: sequelizeWhere, literal } = require('sequelize');
 
 exports.mostrarOpTurnos = async function (req, res) {
     res.render("turnos");
@@ -44,10 +45,59 @@ exports.formTurno = async function (req, res) {
 }
 
 exports.buscarTodoTurno = async function(req, res){
+    const {tipoBusqueda, criterio, valor} = req.query;
     try {
+        
+        let wherePaciente = {}
+        let whereMedico = {}
+        let whereTurno = {}
+        
+        if(tipoBusqueda && valor){
+
+            switch(tipoBusqueda){
+                case 'paciente':
+                    if(criterio === 'id'){
+                        wherePaciente.ID_paciente = valor
+                    }else if(criterio === 'dni'){
+                        wherePaciente.DNI = valor
+                    }else if(criterio === 'nombre'){
+                        wherePaciente.Nombre = {[Op.and]: [sequelizeWhere(
+                                    fn('LOWER', fn('CONCAT', col('Paciente.Nombre'), literal(`" "`), col('Paciente.Apellido'))),
+                                    { [Op.like]: `%${valor.toLowerCase()}%` })]
+                              };
+                    }else{
+                        throw new Error("Criterio de paciente invalido...");
+                        
+                    }
+                    break;
+                
+                case 'medico':
+                    if(criterio === 'id_medico'){
+                        whereMedico.ID_Profesional = valor
+                    }else if(criterio === 'nombre_medico'){
+                        whereMedico.Nombre = {[Op.and]: [sequelizeWhere(
+                                    fn('LOWER', fn('CONCAT', col('Prestador.Nombre'), literal(`" "`), col('Prestador.Apellido'))),
+                                    { [Op.like]: `%${valor.toLowerCase()}%` })]
+                              };
+                    }else{
+                        throw new Error("Criterio de medico invalido");
+                        
+                    }
+                    break;
+                
+                case 'fecha':
+                    if(tipoBusqueda === 'fecha'){
+                        const inicioDia = new Date(`${valor}T00:00:00`);
+                        const finDia = new Date(`${valor}T23:59:59`);
+                   whereTurno.Fecha = {[Op.between]: [inicioDia, finDia]}
+                   break;
+                    }
+            }
+        }
+
         const turnos =  await Turno.findAll({
-            include: [{ model: Paciente, as: 'Paciente', attributes: ["Nombre", "Apellido"]},
-            {model: Prestador, as: 'Prestador', attributes: ['Nombre', 'Apellido', 'Especialidad']}
+            where: whereTurno, include: [{ model: Paciente, as: 'Paciente', where: wherePaciente, attributes: ["Nombre", "Apellido"],  required: Object.keys(wherePaciente).length > 0},
+            {model: Prestador, as: 'Prestador', where: whereMedico, attributes: ['Nombre', 'Apellido', 'Especialidad'], required: Object.keys(whereMedico).length > 0}
         ]
         });
         const turnosJson = turnos.map(t => {
@@ -173,7 +223,7 @@ exports.anunciar = async function (req, res) {
             {Es_tomado: true, Estado: false },
             {where: { Nro_turno }}
         );
-        res.redirect(`/pacientes/internaciones/internar/${ID_paciente}`);
+        res.redirect(`/pacientes/confirmacion/${ID_paciente}`);
     } catch (error) {
         console.log("hubo un problema en anunciar y fue este: ", error.message);
         res.status(500).send("No se pudo anunciar el turno");

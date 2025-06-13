@@ -2,17 +2,18 @@ extends ./utilitario/layout
 
 block content
   head
-    title Edición de paciente
+    title= modo === 'confirmacion' ? 'Confirmación de datos del paciente' : 'Edición de paciente'
   body
     include ./utilitario/barraDeNav.pug
 
-    h1.text-2xl.font-bold.text-center.my-6 Edición de datos del paciente
+    h1.text-2xl.font-bold.text-center.my-6
+      = modo === 'confirmacion' ? 'Confirmación de datos del paciente' : 'Edición de datos del paciente'
 
-     if error
-        p.text-red-600.font-semibold.mb-4.text-center= error
+    if error
+      p.text-red-600.font-semibold.mb-4.text-center= error
 
     div(class="max-w-xl mx-auto bg-sky-200 p-6 rounded-lg shadow-md mt-10")
-      form(action=`/pacientes/${paciente.ID_paciente}` method="POST" class="flex flex-col space-y-4")
+      form(action=`/pacientes/${modo}/${paciente.ID_paciente}` method="POST" class="flex flex-col space-y-4")
 
         label(for="Nombre" class="font-bold text-lg text-black") Nombre:
         input(type="text" name="Nombre" id="Nombre" value=paciente.Nombre class="p-2 rounded border border-gray-300")
@@ -35,4 +36,5 @@ block content
         label(for="Telefono" class="font-bold text-lg text-black") Teléfono:
         input(type="number" name="Telefono" id="Telefono" value=paciente.Telefono class="p-2 rounded border border-gray-300")
 
-        button(type="submit" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300") Guardar Cambios
+        button(type="submit" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300")
+          = modo === 'confirmacion' ? 'Confirmar y continuar' : 'Guardar Cambios'

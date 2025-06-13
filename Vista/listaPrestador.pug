@@ -11,6 +11,7 @@ block content
     table.table-auto.min-w-full.bg-white.rounded-xl.shadow-lg
       thead
         tr.bg-orange-400.text-gray-600.uppercase.text-sm.leading-normal
+          th.py-3.px-6 ID
           th.py-3.px-6 Nombre
           th.py-3.px-6 Apellido
           th.py-3.px-6 Rol
@@ -20,6 +21,7 @@ block content
       tbody.text-gray-600.text-sm.font-light
         each profesional in medicos
           tr(class="border-b border-gray-200 hover:bg-red-50")
+            td.py-3.px-6= profesional.ID_Profesional
             td.py-3.px-6= profesional.Nombre
             td.py-3.px-6= profesional.Apellido
             td.py-3.px-6= profesional.Rol
