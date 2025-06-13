@@ -8,7 +8,7 @@ exports.mostrarOpPrestador = function(req, res){
 };
 
 exports.seccionDeMedicos = function(req, res){
-    res.render("Medicos/seccionMedicos");
+    res.render("medicos/seccionMedicos");
 };
 
 exports.NuevoInforme = async function(req, res){
