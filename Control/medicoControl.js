@@ -125,8 +125,14 @@ exports.insertarPrestador = async function (req, res) {
             throw new Error("Debe definir un rol");
         }
 
-        if(!datos.Especialidad || datos.Especialidad.trim() === ""){
+         if(datos.Rol === "Enfermero"){
+            if(!datos.Especialidad || !datos.Especialidad.trim() === ""){
+                datos.Especialidad = "Ninguna"
+            }         
+        }else if(datos.Rol === "Medico"){
+            if(!datos.Especialidad || datos.Especialidad.trim() === ""){
             throw new Error("Debe definir una especialidad");
+        }
         }
 
         await Prestador.create(datos);
@@ -159,8 +165,14 @@ exports.actualizarPrestador = async function (req, res) {
             throw new Error("Debe definir un rol");
         }
 
-        if(!datos.Especialidad || datos.Especialidad.trim() === ""){
+        if(datos.Rol === "Enfermero"){
+            if(!datos.Especialidad || !datos.Especialidad.trim() === ""){
+                datos.Especialidad = "Ninguna"
+            }         
+        }else if(datos.Rol === "Medico"){
+            if(!datos.Especialidad || datos.Especialidad.trim() === ""){
             throw new Error("Debe definir una especialidad");
+        }
         }
         
         const [prestadorEditado] = await Prestador.update(datos, {
