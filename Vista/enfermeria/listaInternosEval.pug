@@ -1,0 +1,35 @@
+
+body
+    div
+      select(name="enfermero")
+        option(value="") -- Seleccione un enfermero --
+        each enf in enfermeros
+         option(value=enf.ID_Profesional)= `${enf.Nombre} ${enf.Apellido} (ID: ${enf.ID_Profesional})`
+
+      div
+        label
+          input(type="radio", name="busqueda", value="id")
+          | ID
+        label
+          input(type="radio", name="busqueda", value="nombre")
+          | Nombre
+
+      button(type="submit") Buscar
+
+      p Seleccione un enfermero para empezar la evaluación.
+
+      table(border="1")
+        thead
+          tr
+            th ID
+            th Paciente
+            th DNI
+        tbody
+          tr
+            td 1
+            td Juan Pérez
+            td 12345678
+          tr
+            td 2
+            td Ana Torres
+            td 87654321
