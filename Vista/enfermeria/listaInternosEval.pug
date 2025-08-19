@@ -1,35 +1,61 @@
-
 body
-    div
-      select(name="enfermero")
-        option(value="") -- Seleccione un enfermero --
-        each enf in enfermeros
-         option(value=enf.ID_Profesional)= `${enf.Nombre} ${enf.Apellido} (ID: ${enf.ID_Profesional})`
+  // Selección de enfermero
+  div
+    select#enfermeroSelect(name="enfermero")
+      option(value="") -- Seleccione un enfermero --
+      each enf in enfermeros
+        option(value=enf.ID_Profesional)= `${enf.Nombre} ${enf.Apellido} (ID: ${enf.ID_Profesional})`
 
-      div
-        label
-          input(type="radio", name="busqueda", value="id")
-          | ID
-        label
-          input(type="radio", name="busqueda", value="nombre")
-          | Nombre
+  // Opciones de búsqueda
+  div
+    label
+      input(type="radio", name="busqueda", value="id")
+      | ID
+    label
+      input(type="radio", name="busqueda", value="nombre")
+      | Nombre
 
-      button(type="submit") Buscar
+  button(type="submit") Buscar
 
-      p Seleccione un enfermero para empezar la evaluación.
+  p Seleccione un enfermero para empezar la evaluación.
 
-      table(border="1")
-        thead
-          tr
-            th ID
-            th Paciente
-            th DNI
-        tbody
-          tr
-            td 1
-            td Juan Pérez
-            td 12345678
-          tr
-            td 2
-            td Ana Torres
-            td 87654321
+  // Tabla de pacientes
+  table(border="1")
+    thead
+      tr
+        th ID
+        th Paciente
+        th DNI
+        th Acciones
+    tbody
+      each paciente in pacientes
+        tr
+          td= paciente.ID_paciente
+          td= `${paciente.Nombre} ${paciente.Apellido}`
+          td= paciente.DNI
+          td
+            form(action="evaAntecedentes" method="get")
+              input(type="hidden" name="idPaciente" value=paciente.ID_paciente)
+              input(type="hidden" name="idEnfermero")
+              button(type="submit") Evaluar
+
+// Script para llenar correctamente el ID del enfermero
+script.
+  document.addEventListener("DOMContentLoaded", () => {
+    const enfermeroSelect = document.getElementById("enfermeroSelect");
+    const formularios = document.querySelectorAll("form[action='evaAntecedentes']");
+
+    formularios.forEach(form => {
+      form.addEventListener("submit", function(e) {
+        const idEnfermero = enfermeroSelect.value; // Captura el valor del select
+        console.log("ID enfermero seleccionado:", idEnfermero);
+        if (!idEnfermero) {
+          e.preventDefault();
+          alert("Debe seleccionar un enfermero antes de evaluar");
+        } else {
+          // Asigna el valor al input hidden dentro del formulario que se envía
+          form.querySelector("input[name='idEnfermero']").value = idEnfermero;
+        }
+      });
+    });
+  });

@@ -6,6 +6,7 @@ const enfermeroControl = require("../Control/enfermeroControl");
 router.get("/", prestadorControl.mostrarOpPrestador); //Seccion de opciones
 router.get("/medicos", prestadorControl.seccionDeMedicos);
 router.get("/enfermeros", enfermeroControl.mostrarOpEnfermero);
+router.get("/enfermeros/evaAntecedentes", enfermeroControl.faseAntecedentes);
 router.get("/enfermeros/internados", enfermeroControl.buscarTodoEnfermero);
 //router.get("/listaPrestador", prestadorControl.listaDePrestadores); //listamos a los prestadores
 //ANOTATE ESTE ERROR EH, ES UN DETALLE MUY FACIL DE PASARLO DESAPERCIBIDO
