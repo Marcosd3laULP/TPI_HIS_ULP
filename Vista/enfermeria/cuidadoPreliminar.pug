@@ -1,0 +1,39 @@
+extends ../layout
+
+block content
+  h2 Plan de cuidados preliminar
+
+  // Datos del enfermero
+  div
+    h3 Enfermero
+    p Nombre: #{enfermero.Nombre}
+    p ID: #{enfermero.ID_Profesional}
+
+  // Datos del paciente
+  div
+    h3 Paciente
+    p Nombre: #{paciente.Nombre}
+    p ID: #{paciente.ID_paciente}
+
+  // Formulario
+  form(action="/enfermeria/guardarEvaluacionFinal" method="POST")
+    // ID de internación oculto
+    input(type="hidden" name="ID_internacion" value=internacion.ID_internacion)
+
+    // Campo: Necesidades básicas
+    label(for="Necesidades_basicas") Necesidades básicas:
+    textarea(name="Necesidades_basicas" placeholder="Ej: Hidratación, higiene, movilidad...")
+
+    // Campo: Acciones inmediatas (este es obligatorio)
+    label(for="Acciones_inm") Acciones inmediatas:
+    textarea(name="Acciones_inm" placeholder="Ej: Control de signos vitales cada 4h" required)
+
+    // Campo: Medicación inicial
+    label(for="Medicación_inicial") Medicación inicial:
+    textarea(name="Medicación_inicial" placeholder="Ej: Analgésicos, antibióticos...")
+
+    // Campo: Observaciones
+    label(for="Observaciones") Observaciones:
+    textarea(name="Observaciones" placeholder="Notas adicionales del enfermero...")
+
+    button(type="submit") Guardar evaluación final

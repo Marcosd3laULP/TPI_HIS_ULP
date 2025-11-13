@@ -9,6 +9,11 @@ const ObservacionF = sequelize.define('ObservacionF', {
         autoIncrement: true
     },
 
+     ID_internacion: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+    },
+
     Fecha: {
         type: DataTypes.DATE,
         allowNull: false

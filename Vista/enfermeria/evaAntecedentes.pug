@@ -1,10 +1,35 @@
-body 
-    div 
-      h3 Enfemero 
-      p Nombre: #{enfermero.Nombre}
-      p ID: #{enfermero.ID_Profesional}
+extends ../layout
 
-    div 
-      h3 Paciente 
-      p Nombre: #{paciente.Nombre}
-      p ID: #{paciente.ID_paciente}
+block content
+  div
+    h3 Enfermero
+    p Nombre: #{enfermero.Nombre}
+    p ID: #{enfermero.ID_Profesional}
+
+  div
+    h3 Paciente
+    p Nombre: #{paciente.Nombre}
+    p ID: #{paciente.ID_paciente}
+
+  form(action="/enfermeria/guardarAntecedentes" method="POST")
+    input(type="hidden" name="ID_Paciente" value=paciente.ID_paciente)
+    input(type="hidden" name="ID_Enfermero" value=enfermero.ID_Profesional)
+
+    h4 Antecedentes del paciente
+    label(for="Enfermedad") Enfermedad:
+    input(type="text" name="Enfermedad" placeholder="Ej: Hipertensión")
+
+    label(for="Tipo") Tipo:
+    input(type="text" name="Tipo" placeholder="Crónica / Aguda / Alergia...")
+
+    label(for="Observaciones") Observaciones:
+    textarea(name="Observaciones" placeholder="Anota detalles clínicos...")
+
+    h4 Medicación actual
+    label(for="Medicina") Nombre del medicamento:
+    input(type="text" name="Medicina" placeholder="Ej: Losartán")
+
+    label(for="Origen") Origen:
+    input(type="text" name="Origen" placeholder="Ej: Prescrito / Automedicación")
+
+    button(type="submit") Guardar evaluación

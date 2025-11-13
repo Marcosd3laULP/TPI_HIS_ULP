@@ -10,6 +10,11 @@ const Antecedente = sequelize.define('Antecedente', {
         autoIncrement: true
     },
 
+    ID_Paciente: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+    },
+
     Enfermedad: {
         type: DataTypes.STRING,
         allowNull: true
@@ -26,7 +31,7 @@ const Antecedente = sequelize.define('Antecedente', {
     }
 },{
     timestamps: false,
-    tableName: "antecendentes_paciente"
+    tableName: "antecedentes_paciente"
 });
 
 module.exports = Antecedente;

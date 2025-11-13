@@ -9,6 +9,11 @@ const Internacion = sequelize.define("Internacion", {
         allowNull: false
     },
 
+    ID_Paciente: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+    },
+
     Fecha_ingreso: {
         type: DataTypes.DATE,
         allowNull: false

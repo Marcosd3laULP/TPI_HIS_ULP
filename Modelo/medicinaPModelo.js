@@ -9,6 +9,11 @@ const Medicina = sequelize.define('Medicina', {
         autoIncrement: true
     },
 
+    ID_Paciente: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+    },
+
     Medicina: {
         type: DataTypes.STRING,
         allowNull: true

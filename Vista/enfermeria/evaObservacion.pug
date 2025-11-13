@@ -1,0 +1,38 @@
+extends ../layout
+
+block content
+  h2 Observación de Enfermería
+
+  // Datos de referencia
+  div
+    h3 Enfermero
+    p Nombre: #{enfermero.Nombre}
+    p ID: #{enfermero.ID_Profesional}
+
+  div
+    h3 Paciente
+    p Nombre: #{paciente.Nombre}
+    p ID: #{paciente.ID_paciente}
+
+  // Formulario
+  form(action="/enfermeria/guardarObservacion" method="POST")
+    // ID de internación oculto
+    input(type="hidden" name="ID_internacion" value=internacion.ID_internacion)
+
+    // Presión arterial
+    label(for="Presion_arterial") Presión arterial:
+    input(type="text" name="Presion_arterial" placeholder="Ej: 120/80" required)
+
+    // Frecuencia cardíaca
+    label(for="Frecuencia_cardiaca") Frecuencia cardíaca:
+    input(type="text" name="Frecuencia_cardiaca" placeholder="Ej: 75 bpm" required)
+
+    // Temperatura
+    label(for="Temperatura") Temperatura:
+    input(type="text" name="Temperatura" placeholder="Ej: 36.8°C" required)
+
+    // Frecuencia respiratoria
+    label(for="Frecuencia_respiratoria") Frecuencia respiratoria:
+    input(type="text" name="Frecuencia_respiratoria" placeholder="Ej: 18 rpm" required)
+
+    button(type="submit") Guardar observación
