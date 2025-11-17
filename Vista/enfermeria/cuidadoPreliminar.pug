@@ -1,4 +1,3 @@
-extends ../layout
 
 block content
   h2 Plan de cuidados preliminar
@@ -18,7 +17,10 @@ block content
   // Formulario
   form(action="/enfermeria/guardarEvaluacionFinal" method="POST")
     // ID de internación oculto
+    // ID de internación oculto
     input(type="hidden" name="ID_internacion" value=internacion.ID_internacion)
+    input(type="hidden" name="ID_Paciente" value=paciente.ID_paciente)
+    input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)
 
     // Campo: Necesidades básicas
     label(for="Necesidades_basicas") Necesidades básicas:

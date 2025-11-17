@@ -1,4 +1,4 @@
-extends ../layout
+
 
 block content
   div
@@ -11,9 +11,9 @@ block content
     p Nombre: #{paciente.Nombre}
     p ID: #{paciente.ID_paciente}
 
-  form(action="/enfermeria/guardarAntecedentes" method="POST")
+  form(action="/enfermeria/guardarAntecedenteYMedicina" method="POST")
     input(type="hidden" name="ID_Paciente" value=paciente.ID_paciente)
-    input(type="hidden" name="ID_Enfermero" value=enfermero.ID_Profesional)
+    input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)
 
     h4 Antecedentes del paciente
     label(for="Enfermedad") Enfermedad:

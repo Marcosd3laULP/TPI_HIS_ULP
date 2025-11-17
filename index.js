@@ -23,6 +23,7 @@ app.use("/api", apiRutas);
 app.use('/', rutas);       
 app.use('/pacientes', pacientesRutas);
 app.use('/prestador', prestadorRutas);
+app.use('/enfermeria', prestadorRutas);
 app.use('/turnos', turnoRutas);
 
 app.use(express.static('public'));

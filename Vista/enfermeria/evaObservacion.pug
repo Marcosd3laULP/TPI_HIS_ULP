@@ -1,4 +1,4 @@
-extends ../layout
+
 
 block content
   h2 Observación de Enfermería
@@ -18,7 +18,9 @@ block content
   form(action="/enfermeria/guardarObservacion" method="POST")
     // ID de internación oculto
     input(type="hidden" name="ID_internacion" value=internacion.ID_internacion)
-
+    input(type="hidden" name="ID_Paciente" value=paciente.ID_paciente)
+    input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)
+    
     // Presión arterial
     label(for="Presion_arterial") Presión arterial:
     input(type="text" name="Presion_arterial" placeholder="Ej: 120/80" required)

@@ -6,6 +6,7 @@ const { Internacion } = require("../Modelo/relaciones/asociaciones");
 const { Antecedente } = require("../Modelo/relaciones/asociaciones"); // as "Antecedentes"
 const { Medicina } = require("../Modelo/relaciones/asociaciones"); //as "Medicinas"
 const { ObservacionF } = require ("../Modelo/relaciones/asociaciones");
+const { EvaluacionEf } = require("../Modelo/relaciones/asociaciones");
 //VISTAS:
 
 exports.mostrarOpEnfermero = async function (req, res) {
@@ -44,7 +45,8 @@ try{
 
 exports.vistaObservacion =async function (req, res) {
     try {
-        const {idEnfermero, idPaciente} = req.query;
+        const idPaciente = req.params.ID_Paciente;
+        const idEnfermero = req.params.ID_Profesional;
         
         const enfermero = await Prestador.findByPk(idEnfermero);
         const paciente = await Paciente.findByPk(idPaciente);
@@ -70,6 +72,35 @@ exports.vistaObservacion =async function (req, res) {
     
 };
 
+exports.vistaCuidadoPreliminar = async function (req, res) {
+    try {
+        const idPaciente = req.params.ID_Paciente;
+        const idEnfermero = req.params.ID_Profesional;
+        
+        const enfermero = await Prestador.findByPk(idEnfermero);
+        const paciente = await Paciente.findByPk(idPaciente);
+
+        const internacion = await Internacion.findOne({
+            where: {ID_Paciente: idPaciente, Activo: true}
+        });
+
+        if(!internacion){
+            return res.status(404).send("Este paciente no tiene internacion");
+
+        }
+
+        res.render("enfermeria/cuidadoPreliminar", {
+            enfermero,
+            paciente,
+            internacion
+        });
+        
+    } catch (error) {
+        console.error("Error al cargar la vista de cuidados preliminares: ", error.message);
+        res.status(500).send("No se pudo cargar la vista");
+    }
+}
+
 //METODOS POSTS
 exports.guardarAntecedenteYMedicina = async function (req, res) {
     try {
@@ -77,7 +108,7 @@ exports.guardarAntecedenteYMedicina = async function (req, res) {
         
         await registrarMedicina(req.body);
 
-        res.redirect(`enfermeria/evaObservacion`);
+        res.redirect(`/enfermeria/evaObservacion/${req.body.ID_Paciente}/${req.body.ID_Profesional}`);
 
     }catch (error){
         console.error("Error al guardar el antecedente y medicacion: ", error.message);
@@ -89,12 +120,22 @@ exports.guardarObservacion = async function (req, res){
     try {
         await registrarObservacion(req.body);
 
-        res.redirect(`enfermero/etc`)
+        res.redirect(`/enfermeria/cuidadoPreliminar/${req.body.ID_Paciente}/${req.body.ID_Profesional}`);
     } catch (error) {
         console.error("Error al registrar observacion: ", error.messaege);
         res.status(500).send("No se pudo registrar la observacion.");
     }
 };
+
+exports.guardarPlanPreliminar = async function(req, res) {
+    try {
+        await registrarCuidadoPreliminar(req.body);
+        res.redirect("enfermeria/seccionEnf");
+    } catch (error) {
+        console.error("Error al registrar el plan de cuidados: ", error.messaege);
+        res.status(500).send("No se pudo registrar el plan de cuidados.");
+    }
+}
 
 //LOGICAS:
 
@@ -147,4 +188,31 @@ async function registrarObservacion(datos) {
     });
 
     return nuevaObservacion;
+}
+
+async function registrarCuidadoPreliminar(datos) {
+    const {ID_Paciente, ID_Profesional, Necesidades_basicas, Acciones_inm, Medicacion_Inicial, Observaciones} = datos;
+
+     const internacion = await Internacion.findOne({
+        where: {
+            ID_Paciente,
+            Activo: true
+        }
+    });
+
+    if(!internacion){
+        throw new Error("El paciente no tiene internación activa.");
+
+    }
+
+    const nuevoPlan = await EvaluacionEf.create({
+        ID_internacion: internacion.ID_internacion,
+        fecha: new Date(),
+        Necesidades_basicas,
+        Acciones_inm,
+        Medicacion_Inicial,
+        Observaciones,
+        ID_Profesional
+    });
+    
 }
