@@ -1,0 +1,29 @@
+block content
+  // Encabezado con info del paciente
+  h2 Paciente: #{paciente.Nombre} #{paciente.Apellido}
+
+  h3 Evaluaciones realizadas
+
+  table
+    thead
+      tr
+        th Plan
+        th Enfermero
+        th Fecha
+        th Acciones
+    tbody
+      each evaluacion in evaluaciones
+        tr
+          // Nombre del plan con ID
+          td Plan de cuidados ##{evaluacion.ID_eva}
+
+          // Nombre del enfermero asociado
+          td #{evaluacion.Enfermero ? evaluacion.Enfermero.Nombre + ' ' + evaluacion.Enfermero.Apellido : ''}
+
+          // Fecha formateada
+          td #{evaluacion.Fecha ? new Date(evaluacion.Fecha).toISOString().slice(0,10) : ''}
+
+          // Botón Detalles
+          td 
+            form(action=`/enfermeria/vistaCuidados/${evaluacion.ID_Evaluacion}` method="get")
+              button(type="submit") Detalles

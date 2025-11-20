@@ -1,4 +1,4 @@
-const { where } = require("sequelize");
+const { where, Model } = require("sequelize");
 const { Prestador } = require("../Modelo/relaciones/asociaciones");
 const { Paciente } = require("../Modelo/relaciones/asociaciones");
 const { Atenciones } = require('../Modelo/relaciones/asociaciones');
@@ -12,6 +12,32 @@ const { EvaluacionEf } = require("../Modelo/relaciones/asociaciones");
 exports.mostrarOpEnfermero = async function (req, res) {
     res.render("enfermeria/seccionEnf");
 };
+
+exports.vistaInternosLista = async function (req, res) {
+    try {
+        const internados = await buscarInternadosConPlan();
+
+        res.render("enfermeria/InternosCuidados", {internados});
+    } catch (error) {
+        console.error("Error al buscar los internados con plan:", error.message);
+        res.status(500).send("Error al cargar la vista de lista de internados.");
+    }
+    
+}
+
+exports.vistaCuidados = async function (req, res) {
+    try {
+        const id = req.params.id;
+
+        const internado = await buscarInternadoConPlan(id);
+        const evaluacion = await buscarPlanesDeCuidados(id);
+
+        res.render("enfermeria/vistaCuidados", {paciente: internado.Paciente, evaluaciones: evaluacion});
+    } catch (error) {
+          console.error("Error al buscar los planes del internado:", error.message);
+        res.status(500).send("Error al cargar la vista de lista de planes.");
+    }
+}
 
 
 exports.buscarTodoEnfermero = async function (req, res) {
@@ -29,6 +55,7 @@ exports.buscarTodoEnfermero = async function (req, res) {
         res.status(500).send("Error al cargar la vista de evaluación.");
     }
 }
+
 
 exports.vistaAntecedentes =async function (req, res) {
 try{
@@ -122,7 +149,7 @@ exports.guardarObservacion = async function (req, res){
 
         res.redirect(`/enfermeria/cuidadoPreliminar/${req.body.ID_Paciente}/${req.body.ID_Profesional}`);
     } catch (error) {
-        console.error("Error al registrar observacion: ", error.messaege);
+        console.error("Error al registrar observacion: ", error.message);
         res.status(500).send("No se pudo registrar la observacion.");
     }
 };
@@ -130,9 +157,9 @@ exports.guardarObservacion = async function (req, res){
 exports.guardarPlanPreliminar = async function(req, res) {
     try {
         await registrarCuidadoPreliminar(req.body);
-        res.redirect("enfermeria/seccionEnf");
+        res.redirect("/prestador/enfermeros");
     } catch (error) {
-        console.error("Error al registrar el plan de cuidados: ", error.messaege);
+        console.error("Error al registrar el plan de cuidados: ", error.message);
         res.status(500).send("No se pudo registrar el plan de cuidados.");
     }
 }
@@ -180,7 +207,7 @@ async function registrarObservacion(datos) {
 
     const nuevaObservacion = await ObservacionF.create({
         ID_internacion: internacion.ID_internacion,
-        fecha: new Date(),
+        Fecha: new Date(),
         Presion_arterial,
         Frecuencia_cardiaca,
         Temperatura,
@@ -207,7 +234,7 @@ async function registrarCuidadoPreliminar(datos) {
 
     const nuevoPlan = await EvaluacionEf.create({
         ID_internacion: internacion.ID_internacion,
-        fecha: new Date(),
+        Fecha: new Date(),
         Necesidades_basicas,
         Acciones_inm,
         Medicacion_Inicial,
@@ -215,4 +242,29 @@ async function registrarCuidadoPreliminar(datos) {
         ID_Profesional
     });
     
+}
+
+async function buscarInternadosConPlan() {
+    
+        const internoYPlan = await EvaluacionEf.findAll({
+            include: [{model: Internacion, as: "Internacion", where: {Activo: true},
+            include: [{model: Paciente, as: "Paciente"}]
+        }]
+        });
+    return internoYPlan;
+}
+
+async function buscarInternadoConPlan(idInternacion) {
+    return await Internacion.findOne({ where: {ID_internacion: idInternacion, Activo: true},
+        include:[{model: Paciente, as: "Paciente"}]
+    });
+}
+
+
+async function buscarPlanesDeCuidados(idInternacion) {
+    return await EvaluacionEf.findAll({
+        where: {ID_internacion: idInternacion},
+        include: [{model: Prestador, as: "Profesional"},
+                  {model: Internacion, as: "Internacion"}]
+    });
 }

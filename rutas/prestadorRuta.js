@@ -11,6 +11,10 @@ router.get("/enfermeros/evaAntecedentes", enfermeroControl.vistaAntecedentes);
 router.post("/guardarAntecedenteYMedicina",enfermeroControl.guardarAntecedenteYMedicina);
 router.get("/evaObservacion/:ID_Paciente/:ID_Profesional", enfermeroControl.vistaObservacion);
 router.post("/guardarObservacion", enfermeroControl.guardarObservacion);
+router.get("/cuidadoPreliminar/:ID_Paciente/:ID_Profesional", enfermeroControl.vistaCuidadoPreliminar);
+router.post("/guardarEvaluacionFinal",enfermeroControl.guardarPlanPreliminar);
+router.get("/InternosCuidados", enfermeroControl.vistaInternosLista);
+router.get("/vistaCuidados/:id", enfermeroControl.vistaCuidados);
 //router.get("/listaPrestador", prestadorControl.listaDePrestadores); //listamos a los prestadores
 //ANOTATE ESTE ERROR EH, ES UN DETALLE MUY FACIL DE PASARLO DESAPERCIBIDO
 router.get("/listaPrestador", prestadorControl.buscarTodoPrestador);//Buscamos a los prestadores
