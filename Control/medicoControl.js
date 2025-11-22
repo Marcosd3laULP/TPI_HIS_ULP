@@ -2,7 +2,12 @@ const { Prestador } = require("../Modelo/relaciones/asociaciones");
 const { Paciente } = require("../Modelo/relaciones/asociaciones");
 const { Atenciones } = require('../Modelo/relaciones/asociaciones');
 const { Informe } = require("../Modelo/relaciones/asociaciones");
+const { EvaluacionMed } = require("../Modelo/relaciones/asociaciones");
+const { PedidoMed } = require("../Modelo/relaciones/asociaciones");
+const { Estudio } = require ("../Modelo/relaciones/asociaciones");
+const { ResultadoEst } = require("../Modelo/relaciones/asociaciones");
 
+//VISTAS:
 exports.mostrarOpPrestador = function(req, res){
     res.render("prestadores");
 };
@@ -59,7 +64,7 @@ exports.guardarInforme = async (req, res) => {
   }
 };
 
-
+//FUNCIONES POST
 
 exports.formularioNuevoPrestador = function(req, res){
     res.render("nuevoPrestador");
@@ -214,3 +219,5 @@ exports.PacientesConTurno = async function(req, res) {
     res.status(500).send("Error interno del servidor");
   }
 };
+
+//LOGICAS:

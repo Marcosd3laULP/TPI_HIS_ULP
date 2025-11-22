@@ -13,13 +13,33 @@ const Medicina = require("../medicinaPModelo");
 const ObservacionF = require("../obsEnfermeroModelo");
 const Antecedente = require("../antecedenteModelo");
 const ObraPaciente = require("../obraModelo");
+const EvaluacionMed = require("../evaMedicoModelo");
+const PedidoMed = require ("../pedidoModelo");
+const ResultadoEst = require("../resultadoModelo");
+const Estudio = require ("../estudioModelo");
+
 
 //EVALUACION E INTERNACION Y PROFESIONAL:
 Internacion.hasMany(EvaluacionEf, { foreignKey: 'ID_internacion', as: 'Evaluaciones' });
 EvaluacionEf.belongsTo(Internacion, { foreignKey: 'ID_internacion', as: 'Internacion' });
+Internacion.hasMany(EvaluacionMed, {foreignKey: 'ID_internacion', as: 'EvalMedicas'});
+EvaluacionMed.belongsTo(Internacion, {foreignKey: "ID_internaciones", as: 'Internacion'});
 
 Prestador.hasMany(EvaluacionEf, { foreignKey: 'ID_Profesional', as: 'EvaluacionesRealizadas' });
 EvaluacionEf.belongsTo(Prestador, { foreignKey: 'ID_Profesional', as: 'Profesional' });
+Prestador.hasMany(EvaluacionMed, { foreignKey: 'ID_Profesional', as: 'EvaluacionesMedicas' });
+EvaluacionMed.belongsTo(Prestador, { foreignKey: 'ID_Profesional', as: 'Profesional' });
+
+//PEDIDOS ESTUDIOS Y RESULTADOS:
+EvaluacionMed.hasMany(PedidoMed, {foreignKey: "IdMedEva", as:'Pedidos'});
+PedidoMed.belongsTo(EvaluacionMe, {foreignKey: "IdMedEva", as: 'EvaluacionMedica'});
+
+PedidoMed.hasOne(ResultadoEst, {foreignKey: "IdPedido", as: 'PedidoR'});
+ResultadoEst.belongsTo(PedidoMed, {foreignKey: "IdPedido", as: 'Resultado'});
+
+Estudio.hasMany(PedidoMed, {foreignKey: "ID_tipoEstudio", as: "PedidosEst"});
+PedidoMed.belongsTo(Estudio, {foreignKey: "ID_tipoEstudio", as: "Estudio"});
+
 
 //MEDICINA Y PACIENTE:
 Paciente.hasMany(Medicina, {foreignKey: "ID_paciente", as: "Medicinas"});
