@@ -12,6 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 const rutas = require('./rutas/rutaInicio'); //Importamos las rutas
 const pacientesRutas = require('./rutas/pacienteRuta');
 const prestadorRutas = require("./rutas/prestadorRuta");
+const medicoRutas = require("./rutas/medicoRuta");
 const turnoRutas = require("./rutas/turnoRuta");
 const apiRutas = require("./rutas/apiRuta")
 
@@ -24,6 +25,7 @@ app.use('/', rutas);
 app.use('/pacientes', pacientesRutas);
 app.use('/prestador', prestadorRutas);
 app.use('/enfermeria', prestadorRutas);
+app.use('/medicos', medicoRutas);
 app.use('/turnos', turnoRutas);
 
 app.use(express.static('public'));

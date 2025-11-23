@@ -24,22 +24,12 @@ const EvaluacionMed = sequelize.define('EvaluacionMed', {
         allowNull: false
     },
 
-    Sintomas: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-
     Diag_teorico: {
         type: DataTypes.STRING,
         allowNull: false
     },
 
     Diag_real: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-
-    Medicina: {
         type: DataTypes.STRING,
         allowNull: false
     },

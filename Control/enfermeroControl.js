@@ -185,7 +185,8 @@ async function registrarMedicina(datos) {
     const nuevaMedicina = await Medicina.create({
         ID_Paciente,
         Medicina: nombreMed,
-        Origen
+        Origen,
+        Estado: true
     });
     return { nuevaMedicina };
 }

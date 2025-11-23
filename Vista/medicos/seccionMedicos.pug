@@ -1,10 +1,10 @@
-extends  ../utilitario/layout
-
 block content
   head
     title Sección Médicos
 
-  body.bg-sky-100.min-h-screen
-    include ../utilitario/barraDeNav.pug
+  body
+      a(href="/medicos/vistaInternos") Evaluar pacientes
 
-    h1.text-3xl.font-bold.text-center.text-gray-800.mt-8.mb-6 POR EL MOMENTO NO ESTA DISPONIBLE ¡PRONTO LO ESTARA!
+      a(href="/medicos/gestionInternos") gestionar internados
+
+      a(href="/medicos/algo") gestionar pedidos de estudios

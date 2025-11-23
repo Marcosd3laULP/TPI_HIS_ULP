@@ -1,0 +1,64 @@
+body
+  // Selección de medico
+  div
+    select#medicoSelect(name="medico")
+      option(value="") -- Seleccione un medico --
+      each med in medicos
+        option(value=med.ID_Profesional)= `${med.Nombre} ${med.Apellido} (ID: ${med.ID_Profesional})`
+
+  // Opciones de búsqueda
+  div
+    label
+      input(type="radio", name="busqueda", value="id")
+      | ID
+    label
+      input(type="radio", name="busqueda", value="nombre")
+      | Nombre
+
+  button(type="submit") Buscar
+
+  p Seleccione un medico para empezar la evaluación.
+
+  // Tabla de pacientes
+  table(border="1")
+    thead
+      tr
+        th Paciente
+        th DNI
+        th Fecha de ingreso
+        th Motivo de internacion
+        th Acciones
+    tbody
+      each interno  in internados
+        tr
+          td(style="display:none") #{interno.ID_internacion}
+          td #{`${interno.Internacion.Paciente.Nombre} ${interno.Internacion.Paciente.Apellido}`}
+          td #{interno.Internacion.Paciente.DNI}
+          td #{interno.Internacion && interno.Internacion.Fecha_ingreso ? new Date(interno.Internacion.Fecha_ingreso).toISOString().slice(0,10) : "Sin fecha"}
+          td #{interno.Internacion.Motivo}
+          td
+            form(action="evaMedica" method="get")
+              input(type="hidden" name="idInterno" value=interno.ID_internacion)
+              input(type="hidden" name="idMedico")
+              button(type="submit") Evaluar
+
+// Script para llenar correctamente el ID del medico
+script.
+  document.addEventListener("DOMContentLoaded", () => {
+    const medicoSelect = document.getElementById("medicoSelect");
+    const formularios = document.querySelectorAll("form[action='evaMedica']");
+
+    formularios.forEach(form => {
+      form.addEventListener("submit", function(e) {
+        const idMedico = medicoSelect.value; // Captura el valor del select
+        console.log("ID medico seleccionado:", idMedico);
+        if (!idMedico) {
+          e.preventDefault();
+          alert("Debe seleccionar un medico antes de evaluar");
+        } else {
+          // Asigna el valor al input hidden dentro del formulario que se envía
+          form.querySelector("input[name='idMedico']").value = idMedico;
+        }
+      });
+    });
+  });

@@ -32,7 +32,7 @@ EvaluacionMed.belongsTo(Prestador, { foreignKey: 'ID_Profesional', as: 'Profesio
 
 //PEDIDOS ESTUDIOS Y RESULTADOS:
 EvaluacionMed.hasMany(PedidoMed, {foreignKey: "IdMedEva", as:'Pedidos'});
-PedidoMed.belongsTo(EvaluacionMe, {foreignKey: "IdMedEva", as: 'EvaluacionMedica'});
+PedidoMed.belongsTo(EvaluacionMed, {foreignKey: "IdMedEva", as: 'EvaluacionMedica'});
 
 PedidoMed.hasOne(ResultadoEst, {foreignKey: "IdPedido", as: 'PedidoR'});
 ResultadoEst.belongsTo(PedidoMed, {foreignKey: "IdPedido", as: 'Resultado'});
@@ -134,5 +134,9 @@ module.exports ={
     Medicina,
     EvaluacionEf,
     Antecedente,
-    ObraPaciente
+    ObraPaciente,
+    EvaluacionMed,
+    PedidoMed,
+    Estudio,
+    ResultadoEst
 }

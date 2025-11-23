@@ -1,0 +1,42 @@
+
+
+block content
+  div
+    h3 Medico
+    p Nombre: #{medico.Nombre}
+    p ID: #{medico.ID_Profesional}
+
+  div
+    h3 Paciente
+    p Nombre: #{interno.Paciente.Nombre}
+    p ID: #{interno.Paciente.ID_paciente}
+
+  form(action="/medicos/guardarEvaluacionMedica" method="POST")
+    input(type="hidden" name="ID_internacion" value=interno.ID_internacion)
+    input(type="hidden" name="ID_Profesional" value=medico.ID_Profesional)
+
+    h4 Evaluacion medica Inicial
+    label(for="Enfermedad") Sintomas:
+    input(type="text" name="Enfermedad" placeholder="Ej: Fiebre")
+
+    label(for="Tipo") Tipo:
+    input(type="text" name="Tipo" placeholder="Crónica / Aguda / Alergia...")
+
+    label(for="Diag_teorico") Diagnostico teorico:
+    input(type="text" name="Diag_teorico" placeholder="Ej: Posible infección")
+
+    label(for="Diag_real") Diagnostico real:
+    input(type="text" name="Diag_real" placeholder="Ej: fractura")
+
+    h4 Medicación a recetar
+    label(for="Medicina") Nombre del medicamento:
+    input(type="text" name="Medicina" placeholder="Ej: Losartán")
+
+    label(for="Indicaciones") Indicaciones:
+    input(type="text" name="Indicaciones" placeholder="Como tratar al paciente ")
+
+    label(for="Descripcion") Observaciones:
+    input(type="text" name="Descripcion" placeholder="Añada detalles utiles...")
+
+    button(type="submit" onclick="console.log('FORM ENVIADO')") Guardar evaluación
+

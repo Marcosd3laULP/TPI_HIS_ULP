@@ -22,6 +22,11 @@ const Medicina = sequelize.define('Medicina', {
     Origen: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+
+    Estado: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
     }
 
 },{
