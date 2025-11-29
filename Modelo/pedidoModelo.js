@@ -9,7 +9,7 @@ const PedidoMed = sequelize.define('PedidoMed', {
         autoIncrement: true
     },
 
-    IdMedEva: {
+    IDMedEva: {
         type: DataTypes.INTEGER,
         allowNull: false
     },

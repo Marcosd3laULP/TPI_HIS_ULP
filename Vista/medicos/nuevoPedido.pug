@@ -1,35 +1,75 @@
+// archivo: views/medicos/nuevoPedido.pug
+
 block content
 
-  div
-    h3 Medico
-    p Nombre: #{medico.Nombre} #{medico.Apellido}
-    p ID: #{medico.ID_Profesional}
-
+  // Información de evaluación
   div
     h3 Evaluación Médica
-    p ID de Evaluación: #{evaluacion.IdMedEva}
+    p ID de Evaluación: #{evaluacion.IDMedEva}
 
+  // Formulario principal
   form(action="/medicos/guardarPedido" method="POST")
 
-    // Campos ocultos requeridos
-    input(type="hidden" name="ID_Profesional" value=medico.ID_Profesional)
-    input(type="hidden" name="IdMedEva" value=evaluacion.IdMedEva)
+    // Campo oculto obligatorio
+    input(type="hidden" name="IDMedEva" value=evaluacion.IDMedEva)
 
+    // Selección de médico
+    div
+      label(for="medicoSelect") Seleccione un médico:
+      select#medicoSelect(name="ID_Profesional" required)
+        option(value="") -- Seleccione un médico --
+        each med in medicos
+          option(value=med.ID_Profesional)= `${med.Nombre} ${med.Apellido} (ID: ${med.ID_Profesional})`
+
+    // Radios de búsqueda
+    div
+      label
+        input(type="radio" name="busquedaMedico" value="id")
+        | Buscar por ID
+      label
+        input(type="radio" name="busquedaMedico" value="nombre")
+        | Buscar por Nombre
+
+    // Título
     h4 Nuevo Pedido de Estudio
 
-    label(for="Prioridad") Prioridad:
-    select(name="Prioridad" required)
-      option(value="") Seleccione...
-      option(value="Urgente") Urgente
-      option(value="Particular") Particular
+    // Prioridad
+    div
+      label(for="Prioridad") Prioridad:
+      select(name="Prioridad" required)
+        option(value="") Seleccione...
+        option(value="Urgente") Urgente
+        option(value="Particular") Particular
 
-    label(for="ID_tipoEstudio") Tipo de Estudio:
-    select(name="ID_tipoEstudio" required)
-      option(value="") Seleccione...
-      each tipo in tiposEstudios
-        option(value=tipo.ID_tipoEstudio)
+    // Tipo de Estudio
+    div
+      label(for="ID_tipoEstudio") Tipo de Estudio:
+      select(name="ID_tipoEstudio" required)
+        option(value="") Seleccione...
+        each tipo in tiposEstudios
+          option(value=tipo.ID_tipoEstudio)= tipo.Nombre
 
-    label(for="Indicaciones") Indicaciones:
-    input(type="text" name="Indicaciones" placeholder="Notas para el estudio...")
+    // Indicaciones
+    div
+      label(for="Indicaciones") Indicaciones:
+      input(type="text" name="Indicaciones" placeholder="Notas para el estudio...")
 
+    // Botón
     button(type="submit") Crear Pedido
+
+// Scripts
+script.
+  document.addEventListener("DOMContentLoaded", () => {
+    const medicoSelect = document.getElementById("medicoSelect");
+    const radioButtons = document.querySelectorAll("input[name='busquedaMedico']");
+
+    radioButtons.forEach(rb => {
+      rb.addEventListener("change", () => {
+        console.log("Modo de búsqueda de médico seleccionado:", rb.value);
+      });
+    });
+
+    medicoSelect.addEventListener("change", () => {
+      console.log("Médico seleccionado:", medicoSelect.value);
+    });
+  });

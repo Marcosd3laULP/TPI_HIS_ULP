@@ -1,0 +1,77 @@
+
+block content
+    h1 Pedidos de estudio del paciente
+
+    // Información del paciente y evaluación
+    p
+      | Paciente: 
+      strong #{interno.Paciente.Nombre} #{interno.Paciente.Apellido}
+    p
+      | ID Evaluación Médica: 
+      strong #{evaluacion.IDMedEva}
+
+    a(href=`/medicos/nuevoPedido?idEva=${evaluacion.IDMedEva}`) Cargar nuevo pedido 
+    if !pedidos || pedidos.length === 0
+      p El paciente no tiene ningún pedido de estudio asociado a esta evaluación.
+    else
+      
+      table(border="1" cellpadding="5")
+        thead
+          tr
+            th ID Pedido
+            th Profesional
+            th Fecha
+            th Prioridad
+            th Indicaciones
+            th Estado
+            th Tipo de estudio
+            th Acciones
+        tbody
+          each pedido in pedidos
+            tr
+              td #{pedido.IdPedido}
+              td #{pedido.Profesional.Nombre} #{pedido.Profesional.Apellido}
+              td #{pedido.Fecha}
+              td #{pedido.Prioridad}
+              td #{pedido.Indicaciones}
+              td #{pedido.Estado}
+              td #{pedido.TipoEstudio.Nombre}
+              td 
+                a(href=`/medicos/pedido/${pedido.IdPedido}`) detalles
+
+    // Tablas ocultas
+    // Tabla oculta de IDs de pedidos
+    table(style="display:none")
+      thead
+        tr
+          th IdPedido
+      tbody
+        each pedido in pedidos
+          tr
+            td #{pedido.IdPedido}
+
+    // Tabla oculta de IDs de pedidos
+    table(style="display:none")
+      thead
+        tr
+          th IdPedido
+          th ID_tipoEstudio
+      tbody
+        each pedido in pedidos
+          tr
+            td #{pedido.IdPedido}
+            td #{pedido.ID_tipoEstudio}
+
+    // Tabla oculta de profesionales
+    table(style="display:none")
+      thead
+        tr
+          th ID_Profesional
+          th Nombre
+          th Apellido
+      tbody
+        each pedido in pedidos
+          tr
+            td #{pedido.ID_Profesional}
+            td #{pedido.Profesional.Nombre}
+            td #{pedido.Profesional.Apellido}

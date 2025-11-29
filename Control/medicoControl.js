@@ -87,6 +87,21 @@ exports.vistaEvaluacionesDeUnPaciente = async function (req, res) {
     }
 }
 
+exports.vistaDePedidosDeUnPaciente = async function (req, res) {
+    try {
+        const { idInterno, idEva } = req.query;
+        const interno = await buscarUnInternadoYSusDatosDePaciente(idInterno);
+        const evaluacion = await obtenerEvaluacionMedicaPorId(idEva);
+
+        const pedidos = await buscarPedidosDeUnaEvaluacionPorId(idEva);
+        //console.log(JSON.stringify(pedidos, null, 2));
+        res.render("medicos/gestionPedidos", {interno, evaluacion, pedidos});
+    } catch (error) {
+        console.error("Error al cargar los pedidos de estudio de este paciente:", error.message);
+        res.status(500).send("Error interno del servidor.");
+    }
+}
+
 exports.vistaDeTratamientos = async function(req, res) {
     try {
 
@@ -109,15 +124,24 @@ exports.vistaDeTratamientos = async function(req, res) {
 
 exports.vistaSolicitudPedido = async function (req, res) {
     try {
-     const { idMedico, idEva } = req.query
+     const { idEva } = req.query
 
-     const medico = await obtenerPrestadorPorId(idMedico);
+     const medicos = await buscarTodosMedicos();
      const evaluacion = await obtenerEvaluacionMedicaPorId(idEva);
      const tiposEstudios = await obtenerTipoEstudioParaSelect();
      
-     res.render("medicos/nuevoPedido", {medico, evaluacion, tiposEstudios});   
+     res.render("medicos/nuevoPedido", {medicos, evaluacion, tiposEstudios});   
     } catch (error) {
         console.error("Error al cargar la evaluación médica:", error.message);
+        res.status(500).send("Error interno del servidor.");
+    }
+}
+
+exports.vistaListadoDePedidos = async function (req, res){
+    try {
+        res.render("medicos/listaPedidos");
+    } catch (error) {
+        console.error("Error al cargar la vista para ver los pedidos:", error.message);
         res.status(500).send("Error interno del servidor.");
     }
 }
@@ -164,6 +188,16 @@ exports.guardarTratamiento = async function (req, res) {
     } catch (error) {
         console.error("Error al guardar el tratamiento o terapia: ", error.message);
         res.status(500).send("Error al registrar el tratamiento o terapia del paciente");
+    }
+}
+
+exports.guardarPedido = async function (req, res) {
+    try {
+        await registrarNuevoPedido(req.body);
+        res.redirect("/medicos/listaPedidos");
+    } catch (error) {
+        console.error("Error al guardar el nuevo pedido: ", error.message);
+        res.status(500).send("Error al registrar la evaluación del paciente");
     }
 }
 
@@ -306,15 +340,40 @@ async function buscarTodosPrestadores() {
     return medicos;
 }
 
+async function obtenerPrestadorPorId(idMedico){
+    const prestador = await Prestador.findOne({
+        where: {ID_Profesional: idMedico}
+    });
+
+    return prestador;
+}
+
 async function buscarTodosProcesos() {
     procesos = await Proceso.findAll();
 
     return procesos;
 }
 
+async function buscarTodosPedidos() {
+    pedidos = await PedidoMed.findAll();
+
+    return pedidos
+}
+
 async function buscarEvaluacionPorID(idEva) {
     return await EvaluacionMed.findOne({
         where: { IDMedEva: idEva }
+    });
+}
+
+//Incluye también buscar los datos del prestador, pero se hacia larguisimo el nombre xd
+async function buscarPedidosDeUnaEvaluacionPorId(idEva) {
+    return await PedidoMed.findAll({
+        where: { IDMedEva: idEva },
+        include: [
+            { model: Prestador, as: "Profesional" },
+            { model: Estudio, as: "TipoEstudio" }
+        ]
     });
 }
 
@@ -325,6 +384,7 @@ async function buscarTodasEvaMedicasDeUnInterno(idInterno) {
     });
     return EvaMedicaInterno;
 }
+
 
 async function buscarTodosTraYTerDeUnInterno(idInterno) {
     TratamientosYTerapiasInterno = await TraYTer.findAll({
@@ -374,12 +434,10 @@ async function obtenerIdPacienteDesdeInternacion(idInternacion) {
     return internacion.ID_Paciente;
 }
 
-async function obtenerTipoEstudioParaSelect () {
-    const tipo = await Estudio.findAll({
-        attributes: ["ID_tipoEstudio"]
-    });
+async function obtenerTipoEstudioParaSelect() {
+    const tiposEstudios = await Estudio.findAll();
 
-    return tipo;
+    return tiposEstudios;
 }
 
 async function obtenerEvaluacionMedicaPorId(idEva) {
@@ -388,15 +446,6 @@ async function obtenerEvaluacionMedicaPorId(idEva) {
     });
 
     return evaluacionMedica;
-}
-
-
-async function obtenerPrestadorPorId(idMedico){
-    const prestador = await Prestador.findOne({
-        where: {ID_Profesional: idMedico}
-    });
-
-    return prestador;
 }
 
 async function registrarAntecedente(datos) {
@@ -422,7 +471,7 @@ async function registrarMedicinaMedica(datos) {
     const nuevaMedicina = await Medicina.create({
         ID_Paciente,
         Medicina: nombreMed,
-        Origen: "Recetado durante internacion",
+        Origen: "Tratamiento",
         Estado: true
     });
     return { nuevaMedicina };
@@ -461,4 +510,19 @@ async function registrarTratamientoOTerapia(datos) {
         Estado: "Activo"
     });
     return nuevoTratamientoOTerapia;
+}
+
+async function registrarNuevoPedido(datos) {
+    const {ID_Profesional, IDMedEva, ID_tipoEstudio, Prioridad, Indicaciones} = datos;
+
+    const nuevoPedido = await PedidoMed.create({
+        ID_Profesional,
+        IDMedEva,
+        ID_tipoEstudio,
+        Fecha: new Date(),
+        Prioridad,
+        Indicaciones,
+        Estado: "Pendiente"
+    });
+    return nuevoPedido;
 }

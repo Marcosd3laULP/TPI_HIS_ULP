@@ -43,14 +43,17 @@ Proceso.hasMany(TraYTer, {foreignKey: "IdTipoProceso", as: "Tratamientos"});
 TraYTer.belongsTo(Proceso, {foreignKey: "IdTipoProceso", as: "TipoProceso"});
 
 //PEDIDOS ESTUDIOS Y RESULTADOS:
-EvaluacionMed.hasMany(PedidoMed, {foreignKey: "IdMedEva", as:'Pedidos'});
-PedidoMed.belongsTo(EvaluacionMed, {foreignKey: "IdMedEva", as: 'EvaluacionMedica'});
+EvaluacionMed.hasMany(PedidoMed, {foreignKey: "IDMedEva", as:'Pedidos'});
+PedidoMed.belongsTo(EvaluacionMed, {foreignKey: "IDMedEva", as: 'EvaluacionMedica'});
+
+Prestador.hasMany(PedidoMed, {foreignKey: "ID_Profesional", as: 'Pedidos'});
+PedidoMed.belongsTo(Prestador, {foreignKey: "ID_Profesional", as: "Profesional"});
 
 PedidoMed.hasOne(ResultadoEst, {foreignKey: "IdPedido", as: 'PedidoR'});
 ResultadoEst.belongsTo(PedidoMed, {foreignKey: "IdPedido", as: 'Resultado'});
 
-Estudio.hasMany(PedidoMed, {foreignKey: "ID_tipoEstudio", as: "PedidosEst"});
-PedidoMed.belongsTo(Estudio, {foreignKey: "ID_tipoEstudio", as: "Estudio"});
+Estudio.hasMany(PedidoMed, {foreignKey: "ID_tipoEstudio", as: "Pedidos"});
+PedidoMed.belongsTo(Estudio, {foreignKey: "ID_tipoEstudio", as: "TipoEstudio"});
 
 
 //MEDICINA Y PACIENTE:
