@@ -17,18 +17,30 @@ const EvaluacionMed = require("../evaMedicoModelo");
 const PedidoMed = require ("../pedidoModelo");
 const ResultadoEst = require("../resultadoModelo");
 const Estudio = require ("../estudioModelo");
+const TraYTer = require ("../TraYTerModelo");
+const Proceso = require ("../tipoProcesoModelo");
 
 
 //EVALUACION E INTERNACION Y PROFESIONAL:
 Internacion.hasMany(EvaluacionEf, { foreignKey: 'ID_internacion', as: 'Evaluaciones' });
 EvaluacionEf.belongsTo(Internacion, { foreignKey: 'ID_internacion', as: 'Internacion' });
 Internacion.hasMany(EvaluacionMed, {foreignKey: 'ID_internacion', as: 'EvalMedicas'});
-EvaluacionMed.belongsTo(Internacion, {foreignKey: "ID_internaciones", as: 'Internacion'});
+EvaluacionMed.belongsTo(Internacion, {foreignKey: "ID_internacion", as: 'Internacion'});
 
 Prestador.hasMany(EvaluacionEf, { foreignKey: 'ID_Profesional', as: 'EvaluacionesRealizadas' });
 EvaluacionEf.belongsTo(Prestador, { foreignKey: 'ID_Profesional', as: 'Profesional' });
 Prestador.hasMany(EvaluacionMed, { foreignKey: 'ID_Profesional', as: 'EvaluacionesMedicas' });
 EvaluacionMed.belongsTo(Prestador, { foreignKey: 'ID_Profesional', as: 'Profesional' });
+
+//TRATAMIENTOS TERAPIAS Y EVALUACIONES MEDICAS:
+Internacion.hasMany(TraYTer, {foreignKey: "ID_internacion", as: "Tratamientos"});
+TraYTer.belongsTo(Internacion, {foreignKey: "ID_internacion", as: "Internacion"});
+
+EvaluacionMed.hasMany(TraYTer, {foreignKey: "IDMedEva", as: "Tratamientos"});
+TraYTer.belongsTo(EvaluacionMed, {foreignKey: "IDMedEva", as: "EvaluacionMedica"});
+
+Proceso.hasMany(TraYTer, {foreignKey: "IdTipoProceso", as: "Tratamientos"});
+TraYTer.belongsTo(Proceso, {foreignKey: "IdTipoProceso", as: "TipoProceso"});
 
 //PEDIDOS ESTUDIOS Y RESULTADOS:
 EvaluacionMed.hasMany(PedidoMed, {foreignKey: "IdMedEva", as:'Pedidos'});

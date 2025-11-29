@@ -1,9 +1,9 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require ("../baseDatos/bd");
 
-const Estudio = sequelize.define('Estudio', {
+const Proceso = sequelize.define('Proceso', {
 
-    ID_tipoEstudio: {
+    IdTipoProceso: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
@@ -13,20 +13,20 @@ const Estudio = sequelize.define('Estudio', {
         type: DataTypes.STRING,
         allowNull: false
     },
+
+      Descripcion: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     
     Categoria: {
         type: DataTypes.STRING,
         allowNull: false
-    },
-
-    Descripcion: {
-        type: DataTypes.STRING,
-        allowNull: true
     }
 
 },{
     timestamps: false,
-    tableName: 'tipoestudio'
+    tableName: 'tipoproceso'
 });
 
-module.exports = Estudio
+module.exports = Proceso

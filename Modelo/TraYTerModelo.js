@@ -1,52 +1,57 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require ("../baseDatos/bd");
 
-const EvaluacionMed = sequelize.define('EvaluacionMed', {
+const TraYTer = sequelize.define("TraYTer", {
 
-    IDMedEva: {
+    IdTraYTer: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
 
     ID_internacion: {
-        type: DataTypes.INTEGER, 
-        allowNull: false
-    },
-    
-    ID_Profesional: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
 
-    Fecha: {
+    IDMedEva: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+
+    IdTipoProceso: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+
+    Tipo: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+
+    FechaInicio: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    
+    FechaFin: {
         type: DataTypes.DATE,
         allowNull: false
     },
 
-    Diag_teorico: {
+    Observaciones: {
         type: DataTypes.STRING,
         allowNull: false
     },
 
-    Diag_real: {
+    Estado: {
         type: DataTypes.STRING,
         allowNull: false
-    },
-
-    Indicaciones: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-
-    Descripcion: {
-        type: DataTypes.STRING,
-        allowNull: true
     }
 
 },{
     timestamps: false,
-    tableName: 'evaluacion_medica'
+    tableName: 'tratamientoyterapia'
 });
 
-module.exports = EvaluacionMed
+module.exports = TraYTer

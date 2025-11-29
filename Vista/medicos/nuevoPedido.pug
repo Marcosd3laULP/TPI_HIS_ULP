@@ -1,1 +1,35 @@
-H1 holaaaaa :D
+block content
+
+  div
+    h3 Medico
+    p Nombre: #{medico.Nombre} #{medico.Apellido}
+    p ID: #{medico.ID_Profesional}
+
+  div
+    h3 Evaluación Médica
+    p ID de Evaluación: #{evaluacion.IdMedEva}
+
+  form(action="/medicos/guardarPedido" method="POST")
+
+    // Campos ocultos requeridos
+    input(type="hidden" name="ID_Profesional" value=medico.ID_Profesional)
+    input(type="hidden" name="IdMedEva" value=evaluacion.IdMedEva)
+
+    h4 Nuevo Pedido de Estudio
+
+    label(for="Prioridad") Prioridad:
+    select(name="Prioridad" required)
+      option(value="") Seleccione...
+      option(value="Urgente") Urgente
+      option(value="Particular") Particular
+
+    label(for="ID_tipoEstudio") Tipo de Estudio:
+    select(name="ID_tipoEstudio" required)
+      option(value="") Seleccione...
+      each tipo in tiposEstudios
+        option(value=tipo.ID_tipoEstudio)
+
+    label(for="Indicaciones") Indicaciones:
+    input(type="text" name="Indicaciones" placeholder="Notas para el estudio...")
+
+    button(type="submit") Crear Pedido

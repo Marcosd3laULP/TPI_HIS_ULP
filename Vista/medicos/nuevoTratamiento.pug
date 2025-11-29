@@ -1,0 +1,88 @@
+block content
+  h1 Cargar nuevo tratamiento
+
+  form(action="/medicos/guardarTratamiento" method="POST")
+    
+    div
+      label(for="medicoSelect") Seleccione un médico:
+      select#medicoSelect(name="ID_Profesional" required)
+        option(value="") -- Seleccione un médico --
+        each med in medicos
+          option(value=med.ID_Profesional)= `${med.Nombre} ${med.Apellido} (ID: ${med.ID_Profesional})`
+
+    div
+      label
+        input(type="radio", name="busquedaMedico", value="id")
+        | Buscar por ID
+
+      label
+        input(type="radio", name="busquedaMedico", value="nombre")
+        | Buscar por Nombre
+
+
+    div
+    h3 Paciente
+    p Nombre: #{interno.Paciente.Nombre}
+    p ID: #{interno.Paciente.ID_paciente}
+
+    hr
+
+    div
+      label(for="tipoProcesoSelect") Tipo de proceso:
+      select#tipoProcesoSelect(name="IdTipoProceso" required)
+        option(value="") -- Seleccione tipo --
+        each tp in tipoProcesos
+          option(value=tp.IdTipoProceso)= tp.Nombre
+
+    hr
+
+    div
+      label(for="Tipo") Categoría:
+      select#TipoSelect(name="Tipo" required)
+        option(value="") -- Seleccione categoría --
+        option(value="tratamiento") Tratamiento
+        option(value="terapia") Terapia
+
+
+    div
+        label(for="FechaInicio") Fecha de inicio:
+        input(type="date" id="FechaInicio" name="FechaInicio" required)
+
+
+    div
+        label(for="FechaFin") Fecha de finalización:
+        input(type="date" id="FechaFin" name="FechaFin")
+
+    div 
+      label(for="Observaciones") Observaciones: 
+      input(type="text" id="Observaciones" name="Observaciones")
+
+    hr
+
+    // Inputs ocultos
+    input(type="hidden" name="ID_internacion" value=idInterno)
+    input(type="hidden" name="IDMedEva" value=idEva)
+
+    button(type="submit") Guardar tratamiento
+
+script.
+  document.addEventListener("DOMContentLoaded", () => {
+    const medicoSelect = document.getElementById("medicoSelect");
+    const radioButtons = document.querySelectorAll("input[name='busquedaMedico']");
+
+    // FILTRO BÁSICO (ID o Nombre)
+    radioButtons.forEach(rb => {
+      rb.addEventListener("change", () => {
+        const modo = rb.value;
+        const opciones = [...medicoSelect.options];
+
+        // NO filtra aún la lista, solo muestra el modo activo en consola
+        console.log("Modo de búsqueda de médico seleccionado:", modo);
+      });
+    });
+
+    // OPCIONAL: loguear la selección
+    medicoSelect.addEventListener("change", () => {
+      console.log("Médico seleccionado:", medicoSelect.value);
+    });
+  });

@@ -1,0 +1,28 @@
+block content
+  h2 Lista de internados
+
+  table
+    thead
+      tr
+        th Nombre
+        th Apellido
+        th Fecha de ingreso
+        th Motivo
+        th Acciones
+    tbody
+      each interno in internados
+        tr
+          // ID oculto
+          td(style="display:none")= interno.ID_internacion
+
+          td= interno.Paciente.Nombre
+          td= interno.Paciente.Apellido
+          td= interno.Fecha_ingreso
+          td= interno.Motivo
+
+          td
+            a(href=`/medicos/gestionPlanesDeCuidado?idInterno=${interno.ID_internacion}`) Ver planes de cuidado
+
+            a(href=`/medicos/gestionEvaluaciones?idInterno=${interno.ID_internacion}`) Evaluaciones 
+
+

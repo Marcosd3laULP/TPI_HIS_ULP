@@ -13,8 +13,9 @@ const rutas = require('./rutas/rutaInicio'); //Importamos las rutas
 const pacientesRutas = require('./rutas/pacienteRuta');
 const prestadorRutas = require("./rutas/prestadorRuta");
 const medicoRutas = require("./rutas/medicoRuta");
+const enfermeroRutas = require("./rutas/enfermeroRuta");
 const turnoRutas = require("./rutas/turnoRuta");
-const apiRutas = require("./rutas/apiRuta")
+const apiRutas = require("./rutas/apiRuta");
 
 
 app.set("view engine", "pug");
@@ -24,7 +25,7 @@ app.use("/api", apiRutas);
 app.use('/', rutas);       
 app.use('/pacientes', pacientesRutas);
 app.use('/prestador', prestadorRutas);
-app.use('/enfermeria', prestadorRutas);
+app.use('/enfermeria', enfermeroRutas);
 app.use('/medicos', medicoRutas);
 app.use('/turnos', turnoRutas);
 

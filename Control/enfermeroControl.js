@@ -157,7 +157,7 @@ exports.guardarObservacion = async function (req, res){
 exports.guardarPlanPreliminar = async function(req, res) {
     try {
         await registrarCuidadoPreliminar(req.body);
-        res.redirect("/prestador/enfermeros");
+        res.redirect("/enfermeria/seccionEnf");
     } catch (error) {
         console.error("Error al registrar el plan de cuidados: ", error.message);
         res.status(500).send("No se pudo registrar el plan de cuidados.");

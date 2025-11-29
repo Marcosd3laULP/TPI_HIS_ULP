@@ -1,0 +1,43 @@
+block content
+  h1 Evaluaciones del Internado
+
+  h2 Paciente
+  p
+    strong Nombre:
+    | #{interno.Paciente.Nombre} #{interno.Paciente.Apellido}
+
+  p
+    strong ID Internado:
+    | #{interno.ID_internacion}
+
+  hr
+
+  if evaluaciones && evaluaciones.length > 0
+    h2 Lista de Evaluaciones
+
+    table(border="1")
+      thead
+        tr
+          th ID Evaluación
+          th Fecha
+          th Diagnóstico Teórico
+          th Diagnóstico Real
+          th Indicaciones
+          th Acciones
+      tbody
+        each eva in evaluaciones
+          tr
+            td #{eva.IDMedEva}
+            td #{new Date(eva.Fecha).toISOString().slice(0,10)}
+            td #{eva.Diag_teorico}
+            td #{eva.Diag_real}
+            td #{eva.Indicaciones}
+
+            td
+              a(href=`/medicos/gestionTratamientos?idInterno=${interno.ID_internacion}&idEva=${eva.IDMedEva}`) Tratamientos
+              |  |  
+              a(href=`/medicos/pedidosEstudio?idInterno=${interno.ID_internacion}&idEva=${eva.IDMedEva}`) Pedidos de estudio
+
+  else
+    h2 No hay evaluaciones registradas para este internado.
+    p Aún no se han realizado evaluaciones médicas.

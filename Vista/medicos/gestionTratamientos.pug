@@ -1,0 +1,48 @@
+
+block content
+    h1 Tratamientos del Internado
+
+        h2 Paciente
+        p
+            strong Nombre: 
+            | #{interno.Paciente.Nombre} #{interno.Paciente.Apellido}
+
+        p
+            strong ID Internado:
+            | #{interno.ID_internacion}
+
+        p
+            strong ID Evaluación: 
+            | #{IDMedEva}
+
+        // IDs ocultos para el formulario o JS
+        input(type="hidden" id="ID_internacion" name="ID_internacion" value=interno.ID_internacion)
+        input(type="hidden" id="IDMedEva" name="IDMedEva" value=IDMedEva)
+
+    hr
+
+    // LISTA DE TRATAMIENTOS
+    if tratamientos && tratamientos.length > 0
+        h2 Lista de Tratamientos
+
+        table
+            thead
+                tr
+                    th Tipo de Tratamiento
+                    th Fecha Inicio
+                    th Fecha Fin
+                    th Observaciones
+            tbody
+                each t in tratamientos
+                    tr
+                        td #{t.Tipo}
+                        td #{t.FechaInicio}
+                        td #{t.TipoProceso.Nombre}
+                        td #{t.FechaFin || "—"}
+                        td #{t.Observaciones || "—"}
+
+    else
+        h2 No hay tratamientos asociados a este paciente…
+        p Este paciente aún no tiene ningún tratamiento cargado.
+
+    a(href=`/medicos/nuevoTratamiento?idInterno=${interno.ID_internacion}&idEva=${IDMedEva}`) Cargar Tratamientos
