@@ -1,41 +1,97 @@
-
 block content
   h2 Plan de cuidados preliminar
 
   // Datos del enfermero
-  div
+  .contenedor-info
     h3 Enfermero
-    p Nombre: #{enfermero.Nombre}
-    p ID: #{enfermero.ID_Profesional}
+    if enfermero
+      p Nombre: #{enfermero.Nombre} #{enfermero.Apellido}
+      p ID: #{enfermero.ID_Profesional}
+    else
+      p Seleccione un enfemero antes de continuar
 
   // Datos del paciente
-  div
+  .contenedor-info
     h3 Paciente
-    p Nombre: #{paciente.Nombre}
-    p ID: #{paciente.ID_paciente}
+    p Nombre: #{paciente.Nombre} #{paciente.Apellido}
+    p ID Paciente: #{paciente.ID_paciente}
 
-  // Formulario
-  form(action="/enfermeria/guardarEvaluacionFinal" method="POST")
-    // ID de internación oculto
-    // ID de internación oculto
+  // Datos del internado
+  .contenedor-info
+    h3 Internación
+    p ID Internación: #{internacion.ID_internacion}
+
+  // ---- Selector / buscador de enfermero (solo en modo individual) ----
+  if modoIndividual
+    .buscador-enfermero
+      label(for="enfermeroSelect") Seleccione un enfermero:
+      select#enfermeroSelect(name="enfermero")
+        option(value="") -- Seleccione un enfermero --
+        each enf in enfermeros
+          option(value=enf.ID_Profesional)= enf.Nombre + ' ' + enf.Apellido + ' (ID: ' + enf.ID_Profesional + ')'
+
+      // Opciones de búsqueda (visual; podrías usar para filtrar con JS)
+      .opciones-busqueda
+        label
+          input(type="radio", name="busqueda", value="id")
+          | ID
+        label
+          input(type="radio", name="busqueda", value="nombre")
+          | Nombre
+
+  // ---- Formulario (action viene por formAction desde el controlador) ----
+  form(action=formAction method="POST")
+    // hidden básicos
     input(type="hidden" name="ID_internacion" value=internacion.ID_internacion)
-    input(type="hidden" name="ID_Paciente" value=paciente.ID_paciente)
-    input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)
+  
+    // Si el enfermero ya vino seleccionado lo mantenemos en hidden; sino el script lo rellenará
+    if enfermero
+      input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)
+    else
+      input(type="hidden" name="ID_Profesional" value="")
+
+    // Campo que indica a dónde redirigir luego del guardado (opcional)
+    input(type="hidden" name="next" value=next || "")
 
     // Campo: Necesidades básicas
     label(for="Necesidades_basicas") Necesidades básicas:
     textarea(name="Necesidades_basicas" placeholder="Ej: Hidratación, higiene, movilidad...")
 
-    // Campo: Acciones inmediatas (este es obligatorio)
+    // Campo: Acciones inmediatas (obligatorio)
     label(for="Acciones_inm") Acciones inmediatas:
-    textarea(name="Acciones_inm" placeholder="Ej: Control de signos vitales cada 4h" required)
+    textarea(name="Acciones_inm" required placeholder="Ej: Control de signos vitales cada 4h")
 
     // Campo: Medicación inicial
-    label(for="Medicación_inicial") Medicación inicial:
-    textarea(name="Medicación_inicial" placeholder="Ej: Analgésicos, antibióticos...")
+    label(for="Medicacion_inicial") Medicación inicial:
+    textarea(name="Medicacion_inicial" placeholder="Ej: Analgésicos, antibióticos...")
 
     // Campo: Observaciones
     label(for="Observaciones") Observaciones:
     textarea(name="Observaciones" placeholder="Notas adicionales del enfermero...")
 
-    button(type="submit") Guardar evaluación final
+    // Botón con texto parametrizable
+    button(type="submit") #{buttonText || "Guardar evaluación final"}
+
+  
+  // ---- Script: solo en modoIndividual inyectamos comportamiento para completar el ID ----
+  if modoIndividual
+    script.
+      document.addEventListener("DOMContentLoaded", () => {
+        const enfermeroSelect = document.getElementById("enfermeroSelect");
+        // Buscamos el formulario con la action exacta (o el primero si no lo encuentra)
+        const form = document.querySelector("form");
+        const hiddenProfesional = form.querySelector("input[name='ID_Profesional']");
+
+        form.addEventListener("submit", function(e) {
+          const idEnfermero = enfermeroSelect ? enfermeroSelect.value : hiddenProfesional.value;
+
+          if (!idEnfermero) {
+            e.preventDefault();
+            alert("Debe seleccionar un enfermero antes de guardar.");
+            return;
+          }
+
+          // asigna el valor al hidden para que el POST lo reciba
+          hiddenProfesional.value = idEnfermero;
+        });
+      });

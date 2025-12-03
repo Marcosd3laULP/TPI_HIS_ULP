@@ -1,0 +1,53 @@
+block content
+  h2 Detalle del Internado
+
+  // Datos del internado y paciente
+  div
+    h3 Información del Internado
+    p ID Internación: #{interno.ID_internacion}
+    p Paciente: #{paciente.Nombre} #{paciente.Apellido}
+
+  hr
+
+  // --- Última observación ---
+  div.container-observacion
+    h3 Última Observación de Enfermería
+
+    // ---- NUEVA OBSERVACIÓN ----
+    a(
+      href=`/enfermeria/evaObservacion/${interno.ID_internacion}/individual?next=/enfermeria/PlanCuidados`
+      class="btn btn-primary"
+    ) Nueva observación
+
+    if observacion
+      p Fecha: #{observacion.Fecha}
+      p Presión arterial: #{observacion.Presion_arterial}
+      p Frecuencia cardíaca: #{observacion.Frecuencia_cardiaca}
+      p Temperatura: #{observacion.Temperatura}
+      p Frecuencia respiratoria: #{observacion.Frecuencia_respiratoria}
+      p Cargado por: #{observacion.Profesional ? observacion.Profesional.Nombre + ' ' + observacion.Profesional.Apellido : '—'} 
+    else
+      p No se han registrado observaciones.
+
+  hr
+
+  // --- Último plan de cuidados ---
+  div.container-plan
+    h3 Último Plan de Cuidados
+
+    // ---- NUEVO PLAN ----
+    a(
+      href=`/enfermeria/cuidadoPreliminar/${interno.ID_internacion}/individual?next=/enfermeria/PlanCuidados`
+      class="btn btn-success"
+    ) Nuevo plan de cuidados
+
+    if plan
+      p Fecha: #{plan.Fecha}
+      p Necesidades basicas: #{plan.Necesidades_basicas || "—"}
+      p Objetivos: #{plan.Acciones_inm || "—"}
+      p Evaluación: #{plan.ID_eva || "—"}
+      p Registrado por: #{plan.Profesional ? plan.Profesional.Nombre + ' ' + plan.Profesional.Apellido : '—'}
+    else
+      p No se ha registrado ningún plan de cuidados.
+
+

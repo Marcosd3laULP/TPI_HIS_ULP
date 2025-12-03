@@ -19,9 +19,9 @@ block content
         each interno in internados
           tr
             td(style="display:none") #{interno.ID_internacion}
-            td #{interno.Internacion.Paciente.Nombre}
-            td #{interno.Internacion.Paciente.Apellido}
-            td #{interno.Internacion && interno.Internacion.Fecha_ingreso ? new Date(interno.Internacion.Fecha_ingreso).toISOString().slice(0,10) : "Sin fecha"}
-            td #{interno.Internacion.Motivo}
+            td #{interno.Paciente.Nombre}
+            td #{interno.Paciente.Apellido}
+            td #{interno && interno.Fecha_ingreso ? new Date(interno.Fecha_ingreso).toISOString().slice(0,10) : "Sin fecha"}
+            td #{interno.Motivo}
             td
               a(href=`/enfermeria/vistaCuidados/${interno.ID_internacion}`) Ver cuidados

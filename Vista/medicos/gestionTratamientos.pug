@@ -29,17 +29,18 @@ block content
             thead
                 tr
                     th Tipo de Tratamiento
+                    th Nombre del tratamiento
                     th Fecha Inicio
                     th Fecha Fin
-                    th Observaciones
+                    th Estado 
             tbody
                 each t in tratamientos
                     tr
                         td #{t.Tipo}
-                        td #{t.FechaInicio}
                         td #{t.TipoProceso.Nombre}
+                        td #{t.FechaInicio}
                         td #{t.FechaFin || "—"}
-                        td #{t.Observaciones || "—"}
+                        td #{t.Estado || "—"}
 
     else
         h2 No hay tratamientos asociados a este paciente…

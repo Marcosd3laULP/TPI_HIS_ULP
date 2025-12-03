@@ -14,6 +14,11 @@ const ObservacionF = sequelize.define('ObservacionF', {
     allowNull: false
     },
 
+     ID_Profesional: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+    },
+
     Fecha: {
         type: DataTypes.DATE,
         allowNull: false

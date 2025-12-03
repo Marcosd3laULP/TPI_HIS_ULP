@@ -68,6 +68,9 @@ Antecedente.belongsTo(Paciente, {foreignKey: "ID_paciente", as: "Paciente"});
 Internacion.hasMany(ObservacionF, {foreignKey: "ID_internacion", as: "Observaciones"});
 ObservacionF.belongsTo(Internacion, {foreignKey: "ID_internacion", as: "Internacion"});
 
+Prestador.hasMany(ObservacionF, { foreignKey: 'ID_Profesional', as: 'Observaciones' });
+ObservacionF.belongsTo(Prestador, { foreignKey: 'ID_Profesional', as: 'Profesional' });
+
 // TRASLADO E INTERNACION:
 Internacion.hasMany(Traslado, { foreignKey: 'ID_internacion', as: "Traslados" });
 Traslado.belongsTo(Internacion, { foreignKey: 'ID_internacion', as: "Internacion" });

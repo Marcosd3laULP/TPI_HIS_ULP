@@ -1,1 +1,32 @@
-h1 ¿Me ves o no me ves?
+body
+  h1 Lista de Pedidos de Estudio
+
+  table(border="1" cellpadding="5" cellspacing="0")
+    thead
+      tr
+        th ID Pedido
+        th ID Evaluación Médica
+        th Profesional
+        th Tipo de Estudio
+        th Fecha
+        th Prioridad
+        th Estado
+        th Acciones
+
+    tbody
+      each pedido in pedidos
+        tr
+          td= pedido.IdPedido
+          td= pedido.IDMedEva
+          td= `${pedido.Profesional.Nombre} ${pedido.Profesional.Apellido}`
+          td= pedido.TipoEstudio.Nombre
+          td= pedido.Fecha
+          td= pedido.Prioridad
+          td= pedido.Estado
+          td
+            if pedido.Estado === "Realizado"
+              // Botón alternativo cuando YA está realizado
+              a(href=`/medicos/verPedidoRealizado?IdPedido=${pedido.IdPedido}`) Detalles 
+            else
+              // Botón normal cuando AÚN no se realizó
+              a(href=`/medicos/realizarPedido?IdPedido=${pedido.IdPedido}`) Realizar un nuevo pedido

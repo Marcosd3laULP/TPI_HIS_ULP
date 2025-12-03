@@ -9,7 +9,7 @@ const ResultadoEst = sequelize.define('ResultadoEst', {
         autoIncrement: true
     },
 
-    idPedido: {
+    IdPedido: {
         type: DataTypes.INTEGER,
         allowNull: false
     },

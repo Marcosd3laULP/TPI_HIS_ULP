@@ -29,10 +29,10 @@ exports.vistaCuidados = async function (req, res) {
     try {
         const id = req.params.id;
 
-        const internado = await buscarInternadoConPlan(id);
+        const interno = await buscarInternadoConPlan(id);
         const evaluacion = await buscarPlanesDeCuidados(id);
 
-        res.render("enfermeria/vistaCuidados", {paciente: internado.Paciente, evaluaciones: evaluacion});
+        res.render("enfermeria/vistaCuidados", {interno, paciente: interno.Paciente, evaluaciones: evaluacion});
     } catch (error) {
           console.error("Error al buscar los planes del internado:", error.message);
         res.status(500).send("Error al cargar la vista de lista de planes.");
@@ -70,71 +70,141 @@ try{
      }
 }
 
-exports.vistaObservacion =async function (req, res) {
-    try {
-        const idPaciente = req.params.ID_Paciente;
-        const idEnfermero = req.params.ID_Profesional;
-        
-        const enfermero = await Prestador.findByPk(idEnfermero);
-        const paciente = await Paciente.findByPk(idPaciente);
 
-        const internacion = await Internacion.findOne({
-            where: {ID_Paciente: idPaciente, Activo: true}
-        });
+exports.vistaObservacion = async function (req, res) {
+  try {
+    const { ID_internacion, profesionalOmodo} = req.params;
+    const next = req.query.next || "";
+    // Buscamos internación + datos del paciente
+    const internacion = await buscarUnInternadoYSusDatosDePaciente(ID_internacion);
 
-        if(!internacion){
-            return res.status(404).send("Este paciente no tiene internacion");
-
-        }
-
-        res.render("enfermeria/evaObservacion", {
-            enfermero,
-            paciente,
-            internacion
-        });
-    } catch (error) {
-        console.error("Error al cargar la vista de observacion: ", error.message);
-        res.status(500).send("No se pudo cargar la vista");
+    if (!internacion) {
+      return res.status(404).send("Internación no encontrada.");
     }
-    
+
+    const paciente = internacion.Paciente; // Asumiendo que el include lo nombra así
+
+    const modoIndividual = profesionalOmodo === "individual";
+
+    let enfermero = null;
+    let enfermeros = null;
+
+    if (modoIndividual) {
+      enfermeros = await Prestador.findAll({
+        where: { Rol: "Enfermero" }
+      });
+    } else {
+      // profesionalOmodo = ID del profesional
+      enfermero = await Prestador.findByPk(profesionalOmodo);
+    }
+
+    res.render("enfermeria/evaObservacion", {
+      internacion,
+      paciente,
+      enfermero,
+      enfermeros,
+      modoIndividual,
+      next,
+      formAction: "/enfermeria/guardarObservacion",
+      buttonText: modoIndividual ? "Guardar observación" : "Guardar y continuar"
+    });
+
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Error al cargar la vista de observación");
+  }
 };
 
-exports.vistaCuidadoPreliminar = async function (req, res) {
-    try {
-        const idPaciente = req.params.ID_Paciente;
-        const idEnfermero = req.params.ID_Profesional;
-        
-        const enfermero = await Prestador.findByPk(idEnfermero);
-        const paciente = await Paciente.findByPk(idPaciente);
 
-        const internacion = await Internacion.findOne({
-            where: {ID_Paciente: idPaciente, Activo: true}
-        });
 
-        if(!internacion){
-            return res.status(404).send("Este paciente no tiene internacion");
-
-        }
-
-        res.render("enfermeria/cuidadoPreliminar", {
+/*res.render("enfermeria/evaObservacion", {
             enfermero,
             paciente,
             internacion
-        });
-        
-    } catch (error) {
-        console.error("Error al cargar la vista de cuidados preliminares: ", error.message);
-        res.status(500).send("No se pudo cargar la vista");
+        });*/
+
+exports.vistaCuidadoPreliminar = async function (req, res) {
+  try {
+    // Params: /enfermeria/cuidadoPreliminar/:ID_Paciente/:ID_Profesional?/:modo?
+    const { ID_internacion, profesionalOmodo} = req.params;
+    const next = req.query.next || "";
+
+    const internacion = await buscarUnInternadoYSusDatosDePaciente(ID_internacion);
+    
+    if (!internacion) {
+      return res.status(404).send("Este paciente no tiene internación activa");
     }
-}
+
+    const paciente = internacion.Paciente;
+    
+    const modoIndividual = profesionalOmodo === "individual";
+
+    // Enfermero (si viene)
+    let enfermero = null;
+    let enfermeros = null;
+
+    if (modoIndividual) {
+      enfermeros = await Prestador.findAll({
+        where: {Rol: "Enfermero "}
+      });
+    } else{
+      // Traemos todos los enfermeros (o filtrado si querés)
+      enfermero = await Prestador.findByPk(profesionalOmodo);
+    }
+
+    // Render final
+    res.render("enfermeria/cuidadoPreliminar", {
+      paciente,
+      enfermero,
+      enfermeros,
+      internacion,
+      modoIndividual,
+      next,
+      formAction: "/enfermeria/guardarEvaluacionFinal",
+      buttonText: modoIndividual ? "Guardar evaluacion final" : "Guardar y continuar"
+    });
+
+  } catch (error) {
+    console.error("Error al cargar la vista de cuidados preliminares:", error.message);
+    res.status(500).send("No se pudo cargar la vista");
+  }
+};
+
+
+exports.vistaDetalleInternado = async function (req, res) {
+    try {
+        const { idInterno } = req.params;
+
+        // Datos del internado
+        const internacion = await Internacion.findByPk(idInterno);
+        if (!internacion) return res.status(404).send("Internación no encontrada");
+
+        // Paciente asociado
+        const paciente = await Paciente.findByPk(internacion.ID_paciente);
+
+        // Últimos registros
+        const observacion = await obtenerUltimaObservacion(idInterno);
+        const plan = await obtenerUltimoPlan(idInterno);
+        //console.log(plan)
+        res.render("enfermeria/PlanCuidados", {
+            interno: internacion,
+            paciente,
+            observacion,
+            plan
+        });
+
+    } catch (error) {
+        console.error("Error al cargar el detalle del internado:", error);
+        res.status(500).send("Error al cargar el detalle del internado");
+    }
+};
+
 
 //METODOS POSTS
-exports.guardarAntecedenteYMedicina = async function (req, res) {
+exports.guardarAntecedentes = async function (req, res) {
     try {
         await registrarAntecedente(req.body);
         
-        await registrarMedicina(req.body);
-
         res.redirect(`/enfermeria/evaObservacion/${req.body.ID_Paciente}/${req.body.ID_Profesional}`);
 
     }catch (error){
@@ -143,21 +213,39 @@ exports.guardarAntecedenteYMedicina = async function (req, res) {
     }
 }
 
-exports.guardarObservacion = async function (req, res){
+exports.guardarObservacion = async function (req, res) {
     try {
+        const { ID_internacion, ID_Profesional, next } = req.body;
+
         await registrarObservacion(req.body);
 
-        res.redirect(`/enfermeria/cuidadoPreliminar/${req.body.ID_Paciente}/${req.body.ID_Profesional}`);
+        //  Si vino desde la vista alternativa
+        if (next) {
+            //return res.redirect(`/enfermeria/PlanCuidados/${ID_internacion}/${ID_Profesional}`);
+            return res.redirect(`${next}/${ID_internacion}`);
+        }
+
+        // Si vino desde la vista normal
+        return res.redirect(`/enfermeria/cuidadoPreliminar/${ID_internacion}/${ID_Profesional}`);
+
     } catch (error) {
         console.error("Error al registrar observacion: ", error.message);
         res.status(500).send("No se pudo registrar la observacion.");
     }
 };
 
+
 exports.guardarPlanPreliminar = async function(req, res) {
     try {
+        const {ID_internacion, next} = req.body;
+        
         await registrarCuidadoPreliminar(req.body);
-        res.redirect("/enfermeria/seccionEnf");
+
+        if (next) {
+            return res.redirect(`${next}/${ID_internacion}`);
+        }
+
+        return res.redirect("/enfermeria/seccionEnf");
     } catch (error) {
         console.error("Error al registrar el plan de cuidados: ", error.message);
         res.status(500).send("No se pudo registrar el plan de cuidados.");
@@ -165,6 +253,24 @@ exports.guardarPlanPreliminar = async function(req, res) {
 }
 
 //LOGICAS:
+
+async function obtenerUltimaObservacion(idInterno) {
+    return await ObservacionF.findOne({
+        where: { ID_internacion: idInterno },
+        include: [{ model: Prestador, as: "Profesional" }],
+        order: [["ID", "DESC"]],
+    });
+}
+
+async function obtenerUltimoPlan(idInterno) {
+    
+    return await EvaluacionEf.findOne({
+        where: { ID_internacion: idInterno },
+        include: [{ model: Prestador, as: "Profesional" }],
+        order: [["ID_eva", "DESC"]],
+    });
+}
+
 
 async function registrarAntecedente(datos) {
     const {ID_Paciente, Enfermedad, Tipo, Observaciones } = datos;
@@ -192,11 +298,11 @@ async function registrarMedicina(datos) {
 }
 
 async function registrarObservacion(datos) {
-    const {ID_Paciente, Presion_arterial, Frecuencia_cardiaca, Temperatura, Frecuencia_respiratoria} = datos;
+    const {ID_internacion, ID_Profesional, Presion_arterial, Frecuencia_cardiaca, Temperatura, Frecuencia_respiratoria} = datos;
 
     const internacion = await Internacion.findOne({
         where: {
-            ID_Paciente,
+            ID_internacion,
             Activo: true
         }
     });
@@ -212,18 +318,19 @@ async function registrarObservacion(datos) {
         Presion_arterial,
         Frecuencia_cardiaca,
         Temperatura,
-        Frecuencia_respiratoria
+        Frecuencia_respiratoria,
+        ID_Profesional
     });
 
     return nuevaObservacion;
 }
 
 async function registrarCuidadoPreliminar(datos) {
-    const {ID_Paciente, ID_Profesional, Necesidades_basicas, Acciones_inm, Medicacion_Inicial, Observaciones} = datos;
+    const {ID_internacion, ID_Profesional, Necesidades_basicas, Acciones_inm, Medicacion_Inicial, Observaciones} = datos;
 
      const internacion = await Internacion.findOne({
         where: {
-            ID_Paciente,
+            ID_internacion,
             Activo: true
         }
     });
@@ -242,18 +349,28 @@ async function registrarCuidadoPreliminar(datos) {
         Observaciones,
         ID_Profesional
     });
-    
+    return nuevoPlan;
 }
 
 async function buscarInternadosConPlan() {
-    
-        const internoYPlan = await EvaluacionEf.findAll({
-            include: [{model: Internacion, as: "Internacion", where: {Activo: true},
-            include: [{model: Paciente, as: "Paciente"}]
-        }]
-        });
-    return internoYPlan;
+    const internadosConPlan = await Internacion.findAll({
+        where: { Activo: true },
+        include: [
+            {
+                model: EvaluacionEf,
+                as: "Evaluaciones",   
+                required: true  
+            },
+            {
+                model: Paciente,
+                as: "Paciente"
+            }
+        ]
+    });
+
+    return internadosConPlan;
 }
+
 
 async function buscarInternadoConPlan(idInternacion) {
     return await Internacion.findOne({ where: {ID_internacion: idInternacion, Activo: true},
@@ -268,4 +385,13 @@ async function buscarPlanesDeCuidados(idInternacion) {
         include: [{model: Prestador, as: "Profesional"},
                   {model: Internacion, as: "Internacion"}]
     });
+}
+
+async function buscarUnInternadoYSusDatosDePaciente(idInterno) {
+    
+    const interno = await Internacion.findOne({
+        where: {ID_internacion: idInterno},
+        include: [{model: Paciente, as: "Paciente"}]
+    });
+    return interno;
 }

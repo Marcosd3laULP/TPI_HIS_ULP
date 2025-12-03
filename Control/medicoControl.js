@@ -139,9 +139,24 @@ exports.vistaSolicitudPedido = async function (req, res) {
 
 exports.vistaListadoDePedidos = async function (req, res){
     try {
-        res.render("medicos/listaPedidos");
+        const pedidos = await buscarTodosPedidos();
+        res.render("medicos/listaPedidos", { pedidos });
     } catch (error) {
         console.error("Error al cargar la vista para ver los pedidos:", error.message);
+        res.status(500).send("Error interno del servidor.");
+    }
+}
+
+exports.vistaRealizacionDeUnPedido = async function (req, res) {
+    try {
+        const { IdPedido } = req.query;
+        const pedido = await buscarPedidoPorID(IdPedido);
+        const eva = await buscarEvaluacionPorID(pedido.IDMedEva);
+        const tipoEstudio = await buscarTipoEstudioPorID(pedido.ID_tipoEstudio);
+        const Profesional = await buscarPrestadorId(pedido.ID_Profesional); 
+        res.render("medicos/realizarPedido", {pedido, tipoEstudio, Profesional, eva});
+    } catch (error) {
+        console.error("Error al cargar la vista para realizar un pedido:", error.message);
         res.status(500).send("Error interno del servidor.");
     }
 }
@@ -182,7 +197,7 @@ exports.guardarEvaluacionMedica = async function (req, res) {
 
 exports.guardarTratamiento = async function (req, res) {
     try {
-        console.log("BODY:", req.body);
+        //console.log("BODY:", req.body);
         await registrarTratamientoOTerapia(req.body);
         res.redirect("/medicos/gestionInternos");
     } catch (error) {
@@ -197,6 +212,16 @@ exports.guardarPedido = async function (req, res) {
         res.redirect("/medicos/listaPedidos");
     } catch (error) {
         console.error("Error al guardar el nuevo pedido: ", error.message);
+        res.status(500).send("Error al registrar la evaluación del paciente");
+    }
+}
+
+exports.guardarResultado = async function (req, res) {
+    try {
+        await registrarResultadoPedido(req.body);
+        res.redirect("/medicos/listaPedidos");
+    } catch (error) {
+        console.error("Error al guardar el resultado del pedido: ", error.message);
         res.status(500).send("Error al registrar la evaluación del paciente");
     }
 }
@@ -225,7 +250,7 @@ exports.formularioEditarPrestador = async function (req, res) {
 async function buscarPrestadorId (id) { //exports no puede ir aca ANOTA EL PORQUE
     try {
         const prestador = await Prestador.findByPk(id);
-        console.log("buscando a prestador con id " + id);
+        //console.log("buscando a prestador con id " + id);
         if(!prestador){
             throw new Error("No se pudo hallar el prestador...");    
         }
@@ -340,7 +365,7 @@ async function buscarTodosPrestadores() {
     return medicos;
 }
 
-async function obtenerPrestadorPorId(idMedico){
+async function obtenerPrestadorMedicoPorId(idMedico){
     const prestador = await Prestador.findOne({
         where: {ID_Profesional: idMedico}
     });
@@ -355,7 +380,10 @@ async function buscarTodosProcesos() {
 }
 
 async function buscarTodosPedidos() {
-    pedidos = await PedidoMed.findAll();
+    pedidos = await PedidoMed.findAll({
+        include: [{model: Prestador, as: "Profesional"},
+            {model: Estudio, as: "TipoEstudio"}]
+    });
 
     return pedidos
 }
@@ -364,6 +392,25 @@ async function buscarEvaluacionPorID(idEva) {
     return await EvaluacionMed.findOne({
         where: { IDMedEva: idEva }
     });
+}
+
+async function buscarPedidoPorID(IdPedido) {
+    pedido = await PedidoMed.findOne({
+        where: {IdPedido}
+    });
+    return pedido;
+}
+
+async function buscarTipoEstudioPorID(ID_tipoEstudio) {
+    tipoEstudio = await Estudio.findOne({
+        where: {ID_tipoEstudio}
+    });
+    return tipoEstudio;
+}
+
+async function buscarTodosTipoEstudio() {
+    tiposEstudios = await Estudio.findAll();
+    return tiposEstudios;
 }
 
 //Incluye también buscar los datos del prestador, pero se hacia larguisimo el nombre xd
@@ -388,7 +435,8 @@ async function buscarTodasEvaMedicasDeUnInterno(idInterno) {
 
 async function buscarTodosTraYTerDeUnInterno(idInterno) {
     TratamientosYTerapiasInterno = await TraYTer.findAll({
-         where: [{ID_internacion: idInterno}]
+         where: [{ID_internacion: idInterno}],
+         include: [{model: Proceso, as: "TipoProceso"}]
     });
 
     return TratamientosYTerapiasInterno;
@@ -412,13 +460,22 @@ async function buscarUnInternadoYSusDatosDePaciente(idInterno) {
 }
 
 async function buscarInternadosConPlan() {
-    
-        const internoYPlan = await EvaluacionEf.findAll({
-            include: [{model: Internacion, as: "Internacion", where: {Activo: true},
-            include: [{model: Paciente, as: "Paciente"}]
-        }]
-        });
-    return internoYPlan;
+    const internadosConPlan = await Internacion.findAll({
+        where: { Activo: true },
+        include: [
+            {
+                model: EvaluacionEf,
+                as: "Evaluaciones",   
+                required: true  
+            },
+            {
+                model: Paciente,
+                as: "Paciente"
+            }
+        ]
+    });
+
+    return internadosConPlan;
 }
 
 async function obtenerIdPacienteDesdeInternacion(idInternacion) {
@@ -525,4 +582,16 @@ async function registrarNuevoPedido(datos) {
         Estado: "Pendiente"
     });
     return nuevoPedido;
+}
+
+async function registrarResultadoPedido(datos) {
+    const {InformeTextual, IdPedido} = datos;
+
+    const resultado = await ResultadoEst.create({
+        IdPedido,
+        InformeTextual,
+        Fecha: new Date()
+    });
+    await PedidoMed.update({Estado: "Realizado"},{where: {IdPedido} });
+    return resultado;
 }

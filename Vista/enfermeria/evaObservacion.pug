@@ -1,40 +1,76 @@
-
-
 block content
   h2 Observación de Enfermería
 
-  // Datos de referencia
+  // Datos del enfermero
   div
     h3 Enfermero
-    p Nombre: #{enfermero.Nombre}
-    p ID: #{enfermero.ID_Profesional}
+    if enfermero
+      p Nombre: #{enfermero.Nombre}
+      p ID: #{enfermero.ID_Profesional}
+    else
+      p Seleccione un enfermero antes de continuar
 
+  // Datos del paciente
   div
     h3 Paciente
     p Nombre: #{paciente.Nombre}
     p ID: #{paciente.ID_paciente}
 
-  // Formulario
-  form(action="/enfermeria/guardarObservacion" method="POST")
-    // ID de internación oculto
+  // Selector de enfermeros solo en modo individual
+  if modoIndividual
+    div
+      label(for="enfermeroSelect") Seleccione un enfermero:
+      select#enfermeroSelect(name="enfermero")
+        option(value="") -- Seleccione un enfermero --
+        each enf in enfermeros
+          option(value=enf.ID_Profesional)= enf.Nombre + ' ' + enf.Apellido + ' (ID:' + enf.ID_Profesional + ')'
+
+    div
+      label
+        input(type="radio", name="busqueda", value="id")
+        | ID
+      label
+        input(type="radio", name="busqueda", value="nombre")
+        | Nombre
+
+  form(action=formAction method="POST")
     input(type="hidden" name="ID_internacion" value=internacion.ID_internacion)
-    input(type="hidden" name="ID_Paciente" value=paciente.ID_paciente)
-    input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)
-    
-    // Presión arterial
+
+    if enfermero
+      input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)
+    else
+      input(type="hidden" name="ID_Profesional")
+
+    input(type="hidden" name="next" value=next || "")
+
     label(for="Presion_arterial") Presión arterial:
     input(type="text" name="Presion_arterial" placeholder="Ej: 120/80" required)
 
-    // Frecuencia cardíaca
     label(for="Frecuencia_cardiaca") Frecuencia cardíaca:
     input(type="text" name="Frecuencia_cardiaca" placeholder="Ej: 75 bpm" required)
 
-    // Temperatura
     label(for="Temperatura") Temperatura:
     input(type="text" name="Temperatura" placeholder="Ej: 36.8°C" required)
 
-    // Frecuencia respiratoria
     label(for="Frecuencia_respiratoria") Frecuencia respiratoria:
     input(type="text" name="Frecuencia_respiratoria" placeholder="Ej: 18 rpm" required)
 
-    button(type="submit") Guardar observación
+    button(type="submit") #{buttonText || "Guardar observación"}
+
+  if modoIndividual
+    script.
+      document.addEventListener("DOMContentLoaded", () => {
+        const sel = document.getElementById("enfermeroSelect");
+        const form = document.querySelector("form");
+        const hidden = form.querySelector("input[name='ID_Profesional']");
+
+        form.addEventListener("submit", (e) => {
+          const id = sel ? sel.value : hidden.value;
+          if (!id) {
+            e.preventDefault();
+            alert("Debe seleccionar un enfermero.");
+            return;
+          }
+          hidden.value = id;
+        });
+      });

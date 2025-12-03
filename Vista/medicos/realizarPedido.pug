@@ -1,0 +1,43 @@
+doctype html
+html
+  head
+    title Realizar Pedido
+  body
+    h1 Realizar Pedido
+
+
+    h3 Datos del pedido
+    p
+      strong ID Evaluación Médica:
+      |  #{eva.IDMedEva}
+
+    p
+      strong Profesional solicitante:
+      |  #{Profesional.Nombre} #{Profesional.Apellido}
+
+    p
+      strong Fecha del pedido:
+      |  #{pedido.Fecha}
+
+    p
+      strong Tipo de estudio:
+      |  #{tipoEstudio.Nombre}
+
+    p
+      strong Prioridad:
+      |  #{pedido.Prioridad}
+
+    hr
+
+    // Formulario para cargar el resultado
+    h3 Cargar Informe del Estudio
+
+    form(action="/medicos/guardarResultado" method="POST")
+      // ID oculto para saber qué pedido estamos completando
+      input(type="hidden" name="IdPedido" value=pedido.IdPedido)
+
+      label(for="InformeTextual") Informe textual:
+      textarea#InformeTextual(name="InformeTextual" rows="6" cols="50" required)
+
+      br
+      button(type="submit") Guardar Informe

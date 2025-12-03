@@ -10,6 +10,8 @@ router.get("/nuevoPedido", prestadorControl.vistaSolicitudPedido);
 router.get("/gestionPedidos", prestadorControl.vistaDePedidosDeUnPaciente);
 router.post("/guardarPedido", prestadorControl.guardarPedido);
 router.get("/listaPedidos", prestadorControl.vistaListadoDePedidos);
+router.get("/realizarPedido", prestadorControl.vistaRealizacionDeUnPedido);
+router.post("/guardarResultado", prestadorControl.guardarResultado);
 router.get("/gestionInternos", prestadorControl.vistaInternadosEnSeccMedico);
 router.get("/gestionTratamientos", prestadorControl.vistaDeTratamientos);
 router.get("/gestionEvaluaciones", prestadorControl.vistaEvaluacionesDeUnPaciente);

@@ -9,6 +9,11 @@ const EvaluacionEf = sequelize.define('EvaluacionEf', {
         autoIncrement: true
     },
 
+    ID_Profesional: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+
     Fecha: {
         type: DataTypes.DATE,
         allowNull: false

@@ -11,7 +11,7 @@ block content
     p Nombre: #{paciente.Nombre}
     p ID: #{paciente.ID_paciente}
 
-  form(action="/enfermeria/guardarAntecedenteYMedicina" method="POST")
+  form(action="/enfermeria/guardarAntecedentes" method="POST")
     input(type="hidden" name="ID_Paciente" value=paciente.ID_paciente)
     input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)
 
@@ -24,12 +24,5 @@ block content
 
     label(for="Observaciones") Observaciones:
     textarea(name="Observaciones" placeholder="Anota detalles clínicos...")
-
-    h4 Medicación actual
-    label(for="Medicina") Nombre del medicamento:
-    input(type="text" name="Medicina" placeholder="Ej: Losartán")
-
-    label(for="Origen") Origen:
-    input(type="text" name="Origen" placeholder="Ej: Prescrito / Automedicación")
 
     button(type="submit") Guardar evaluación

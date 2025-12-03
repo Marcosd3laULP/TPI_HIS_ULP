@@ -1,7 +1,6 @@
 block content
   // Encabezado con info del paciente
   h2 Paciente: #{paciente.Nombre} #{paciente.Apellido}
-
   h3 Evaluaciones realizadas
 
   table
@@ -18,12 +17,11 @@ block content
           td Plan de cuidados ##{evaluacion.ID_eva}
 
           // Nombre del enfermero asociado
-          td #{evaluacion.Enfermero ? evaluacion.Enfermero.Nombre + ' ' + evaluacion.Enfermero.Apellido : ''}
+          td #{evaluacion.Profesional ? evaluacion.Profesional.Nombre + ' ' + evaluacion.Profesional.Apellido : ''}
 
           // Fecha formateada
           td #{evaluacion.Fecha ? new Date(evaluacion.Fecha).toISOString().slice(0,10) : ''}
 
           // Botón Detalles
           td 
-            form(action=`/enfermeria/vistaCuidados/${evaluacion.ID_Evaluacion}` method="get")
-              button(type="submit") Detalles
+            a(href=`/enfermeria/PlanCuidados/${interno.ID_internacion}`) Detalles
