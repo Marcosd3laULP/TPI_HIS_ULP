@@ -1,0 +1,30 @@
+doctype html
+html
+  head
+    title Iniciar sesión
+  body
+    h2 Iniciar sesión
+
+    if error
+      p(style="color: red") #{error}
+
+    // Mostrar leyenda del sector actual
+    if sector
+      p Ingresando al sector: #{sector}
+
+    form(action="/usuario/login" method="POST")
+      input(type="hidden" name="_csrf" value=csrfToken)
+
+      // Campo oculto para reenviar el sector al POST
+      if sector
+        input(type="hidden" name="sector" value=sector)
+
+      div
+        label(for="Email") Email:
+        input(type="email" name="Email" required)
+
+      div
+        label(for="Contrasenia") Contraseña:
+        input(type="password" name="Contrasenia" required)
+
+      button(type="submit") Ingresar

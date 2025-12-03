@@ -2,3 +2,7 @@
 exports.mostrarInicio = (req, res) => {
     res.render("inicio"); // Busca el archivo "inicio.pug" dentro de la carpeta "Vista"
 };
+
+exports.mostrarSectores = (req, res) => {
+    res.render("seleccSector");
+};
