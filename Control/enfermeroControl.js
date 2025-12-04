@@ -41,29 +41,51 @@ exports.vistaCuidados = async function (req, res) {
 
 
 exports.buscarTodoEnfermero = async function (req, res) {
-    try {
-        const enfermero =  await Prestador.findAll({where:{ Rol: 'Enfermero'}}) 
-            const pacientes = await Paciente.findAll({
-            include: [{
-                model: Internacion, 
-                as: 'Internaciones',
-                where: {Activo: true} }]
-        });
-        res.render("enfermeria/listaInternosEval", { enfermeros: enfermero, pacientes})
-    } catch (error) {
-        console.error("Error al buscar enfermeros:", error.message);
-        res.status(500).send("Error al cargar la vista de evaluación.");
-    }
-}
+  try {
+    const csrfToken = req.csrfToken();
+
+    // Traemos todos los enfermeros
+    const enfermeros = await Prestador.findAll({
+      where: { Rol: 'Enfermero' }
+    });
+
+    // Traemos todos los pacientes con internaciones activas
+    const pacientes = await Paciente.findAll({
+      include: [{
+        model: Internacion,
+        as: 'Internaciones',
+        where: { Activo: true }
+      }]
+    });
+
+    // Capturamos el enfermero seleccionado desde la URL
+    const selectedIdEnfermero = req.query.idEnfermero ?? "";
+
+    // Renderizamos la vista
+    res.render("enfermeria/listaInternosEval", {
+      enfermeros,
+      pacientes,
+      csrfToken,
+      selectedIdEnfermero
+    });
+
+  } catch (error) {
+    console.error("Error al buscar enfermeros:", error.message);
+    res.status(500).send("Error al cargar la vista de evaluación.");
+  }
+};
+
+
 
 
 exports.vistaAntecedentes =async function (req, res) {
 try{
+    const csrfToken = req.csrfToken()
     const {idEnfermero, idPaciente} = req.query
     const enfermero = await Prestador.findByPk(idEnfermero);
     const paciente = await Paciente.findByPk(idPaciente);
  
-    res.render("enfermeria/evaAntecedentes", {enfermero, paciente});
+    res.render("enfermeria/evaAntecedentes", {enfermero, paciente, csrfToken});
 }catch(error){
     console.error("Error al cargar la pagina con el enfermero y paciente:", error.message)
     res.status(500).send("Error ocurrido :(")
@@ -73,6 +95,7 @@ try{
 
 exports.vistaObservacion = async function (req, res) {
   try {
+    
     const { ID_internacion, profesionalOmodo} = req.params;
     const next = req.query.next || "";
     // Buscamos internación + datos del paciente
@@ -97,6 +120,7 @@ exports.vistaObservacion = async function (req, res) {
       // profesionalOmodo = ID del profesional
       enfermero = await Prestador.findByPk(profesionalOmodo);
     }
+    const csrfToken = req.csrfToken();
 
     res.render("enfermeria/evaObservacion", {
       internacion,
@@ -104,6 +128,7 @@ exports.vistaObservacion = async function (req, res) {
       enfermero,
       enfermeros,
       modoIndividual,
+      csrfToken,
       next,
       formAction: "/enfermeria/guardarObservacion",
       buttonText: modoIndividual ? "Guardar observación" : "Guardar y continuar"
@@ -151,7 +176,7 @@ exports.vistaCuidadoPreliminar = async function (req, res) {
       // Traemos todos los enfermeros (o filtrado si querés)
       enfermero = await Prestador.findByPk(profesionalOmodo);
     }
-
+    const csrfToken = req.csrfToken();
     // Render final
     res.render("enfermeria/cuidadoPreliminar", {
       paciente,
@@ -159,6 +184,7 @@ exports.vistaCuidadoPreliminar = async function (req, res) {
       enfermeros,
       internacion,
       modoIndividual,
+      csrfToken,
       next,
       formAction: "/enfermeria/guardarEvaluacionFinal",
       buttonText: modoIndividual ? "Guardar evaluacion final" : "Guardar y continuar"
@@ -173,7 +199,7 @@ exports.vistaCuidadoPreliminar = async function (req, res) {
 
 exports.vistaDetalleInternado = async function (req, res) {
     try {
-        const { idInterno } = req.params;
+        const { idInterno, csrfToken } = req.params;
 
         // Datos del internado
         const internacion = await Internacion.findByPk(idInterno);
@@ -190,6 +216,7 @@ exports.vistaDetalleInternado = async function (req, res) {
             interno: internacion,
             paciente,
             observacion,
+            csrfToken,
             plan
         });
 
@@ -215,7 +242,7 @@ exports.guardarAntecedentes = async function (req, res) {
 
 exports.guardarObservacion = async function (req, res) {
     try {
-        const { ID_internacion, ID_Profesional, next } = req.body;
+        const { ID_internacion, ID_Profesional, next} = req.body;
 
         await registrarObservacion(req.body);
 
@@ -252,24 +279,45 @@ exports.guardarPlanPreliminar = async function(req, res) {
     }
 }
 
+exports.escogerEnfermero = async (req, res) => {
+  try {
+    // ID del enfermero seleccionado viene del form POST
+    const selectedIdEnfermero = req.body.idEnfermero || "";
+
+    if (!selectedIdEnfermero) {
+      // Si no se seleccionó enfermero, redirigimos con un mensaje opcional
+      return res.redirect("/enfermeria/internados");
+    }
+
+    // Redirigimos a la vista principal de internados, pasando el ID del enfermero como query
+    res.redirect(`/enfermeria/internados?idEnfermero=${selectedIdEnfermero}`);
+    
+  } catch (error) {
+    console.error("Error en escogerEnfermero:", error);
+    res.status(500).send("No se pudo procesar la selección del enfermero.");
+  }
+};
+
+
 //LOGICAS:
 
 async function obtenerUltimaObservacion(idInterno) {
     return await ObservacionF.findOne({
         where: { ID_internacion: idInterno },
         include: [{ model: Prestador, as: "Profesional" }],
-        order: [["ID", "DESC"]],
+        order: [["Fecha", "DESC"]],  
     });
 }
 
+
 async function obtenerUltimoPlan(idInterno) {
-    
     return await EvaluacionEf.findOne({
         where: { ID_internacion: idInterno },
         include: [{ model: Prestador, as: "Profesional" }],
-        order: [["ID_eva", "DESC"]],
+        order: [["Fecha", "DESC"]], 
     });
 }
+
 
 
 async function registrarAntecedente(datos) {

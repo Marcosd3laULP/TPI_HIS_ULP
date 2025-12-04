@@ -1,0 +1,37 @@
+
+extends ../utilitario/layout
+
+block content
+  body.bg-sky-100.min-h-screen
+    include ../utilitario/navMedico.pug
+
+    div.max-w-3xl.mx-auto.bg-white.mt-10.p-8.rounded-xl.shadow-lg
+      h1.text-2xl.font-bold.text-center.text-blue-700.mb-6 Detalle del Alta Hospitalaria
+
+      // Datos del paciente
+      div.mb-6
+        h2.text-xl.font-semibold.text-gray-700 Paciente
+        p.mt-1.text-gray-600
+          | #{alta.Internacion.Paciente.Nombre} #{alta.Internacion.Paciente.Apellido} (DNI: #{alta.Internacion.Paciente.DNI})
+
+      // Datos del médico
+      div.mb-6
+        h2.text-xl.font-semibold.text-gray-700 Médico responsable
+        p.mt-1.text-gray-600
+          | #{alta.Profesional.Nombre} #{alta.Profesional.Apellido}
+
+      // Datos del alta hospitalaria
+      div.mb-6
+        h2.text-xl.font-semibold.text-gray-700 Datos del alta
+        p.mt-1.text-gray-600 Fecha de alta: #{alta.Fecha_alta}
+        p.mt-1.text-gray-600 Motivo: #{alta.Motivo}
+        p.mt-1.text-gray-600 Estado final: #{alta.Estado_final}
+
+      div.mb-6
+        h2.text-xl.font-semibold.text-gray-700 Observaciones
+        p.mt-1.text-gray-600= alta.Observaciones
+
+      a(
+        href="/medicos/listaAltas"
+        class="block text-center mt-6 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition"
+      ) Volver al listado

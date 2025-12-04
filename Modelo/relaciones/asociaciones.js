@@ -19,7 +19,14 @@ const ResultadoEst = require("../resultadoModelo");
 const Estudio = require ("../estudioModelo");
 const TraYTer = require ("../TraYTerModelo");
 const Proceso = require ("../tipoProcesoModelo");
+const AltaHospitalaria = require("../altaModelo");
 
+//ALTA HOSPITALARIA:
+AltaHospitalaria.belongsTo(Internacion, { foreignKey: "ID_internacion", as: "Internacion" });
+AltaHospitalaria.belongsTo(Prestador, { foreignKey: "ID_Profesional", as: "Profesional" });
+
+Internacion.hasOne(AltaHospitalaria, {foreignKey: "ID_internacion", as: "Alta"});
+Prestador.hasMany(AltaHospitalaria, {foreignKey: "ID_Profesional", as: "Altas"});
 
 //EVALUACION E INTERNACION Y PROFESIONAL:
 Internacion.hasMany(EvaluacionEf, { foreignKey: 'ID_internacion', as: 'Evaluaciones' });

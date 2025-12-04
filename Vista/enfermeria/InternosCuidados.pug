@@ -24,4 +24,4 @@ block content
             td #{interno && interno.Fecha_ingreso ? new Date(interno.Fecha_ingreso).toISOString().slice(0,10) : "Sin fecha"}
             td #{interno.Motivo}
             td
-              a(href=`/enfermeria/vistaCuidados/${interno.ID_internacion}`) Ver cuidados
+              a(href=`/enfermeria/PlanCuidados/${interno.ID_internacion}`) Ver cuidados

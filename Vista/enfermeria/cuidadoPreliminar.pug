@@ -43,7 +43,7 @@ block content
   form(action=formAction method="POST")
     // hidden básicos
     input(type="hidden" name="ID_internacion" value=internacion.ID_internacion)
-  
+    input(type="hidden" name="_csrf" value=csrfToken)
     // Si el enfermero ya vino seleccionado lo mantenemos en hidden; sino el script lo rellenará
     if enfermero
       input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)

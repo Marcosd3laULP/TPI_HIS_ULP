@@ -35,7 +35,7 @@ block content
 
   form(action=formAction method="POST")
     input(type="hidden" name="ID_internacion" value=internacion.ID_internacion)
-
+    input(type="hidden" name="_csrf" value=csrfToken)
     if enfermero
       input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)
     else

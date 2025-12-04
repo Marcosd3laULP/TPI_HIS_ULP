@@ -1,61 +1,48 @@
-body
-  // Selección de enfermero
-  div
-    select#enfermeroSelect(name="enfermero")
-      option(value="") -- Seleccione un enfermero --
-      each enf in enfermeros
-        option(value=enf.ID_Profesional)= `${enf.Nombre} ${enf.Apellido} (ID: ${enf.ID_Profesional})`
+extends ../utilitario/layout
 
-  // Opciones de búsqueda
-  div
-    label
-      input(type="radio", name="busqueda", value="id")
-      | ID
-    label
-      input(type="radio", name="busqueda", value="nombre")
-      | Nombre
+block content
+  body.bg-sky-100.min-h-screen
+    include ../utilitario/navEnfermero.pug
 
-  button(type="submit") Buscar
+    div.px-8.mt-6
+      h1.text-2xl.font-bold.text-center.my-6 Selección de Enfermero e Internados
 
-  p Seleccione un enfermero para empezar la evaluación.
+      // Form para seleccionar enfermero
+      form(action="/enfermeria/internados/escoger" method="POST")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        label.font-semibold(for="enfermeroSelect") Seleccione un enfermero:
+        select#enfermeroSelect(name="idEnfermero" class="border px-2 py-1 rounded w-full")
+          option(value="") -- Seleccione un enfermero --
+          each enf in enfermeros
+            if selectedIdEnfermero == enf.ID_Profesional
+              option(value=enf.ID_Profesional selected)= enf.Nombre + " " + enf.Apellido
+            else
+              option(value=enf.ID_Profesional)= enf.Nombre + " " + enf.Apellido
 
-  // Tabla de pacientes
-  table(border="1")
-    thead
-      tr
-        th ID
-        th Paciente
-        th DNI
-        th Acciones
-    tbody
-      each paciente in pacientes
-        tr
-          td= paciente.ID_paciente
-          td= `${paciente.Nombre} ${paciente.Apellido}`
-          td= paciente.DNI
-          td
-            form(action="evaAntecedentes" method="get")
-              input(type="hidden" name="idPaciente" value=paciente.ID_paciente)
-              input(type="hidden" name="idEnfermero")
-              button(type="submit") Evaluar
+        button(type="submit" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition") Seleccionar
 
-// Script para llenar correctamente el ID del enfermero
-script.
-  document.addEventListener("DOMContentLoaded", () => {
-    const enfermeroSelect = document.getElementById("enfermeroSelect");
-    const formularios = document.querySelectorAll("form[action='evaAntecedentes']");
+      // Mostrar el ID del enfermero seleccionado
+      p.mt-2 Id del enfermero seleccionado: 
+        span.text-blue-600.font-bold= selectedIdEnfermero || "Ninguno"
 
-    formularios.forEach(form => {
-      form.addEventListener("submit", function(e) {
-        const idEnfermero = enfermeroSelect.value; // Captura el valor del select
-        console.log("ID enfermero seleccionado:", idEnfermero);
-        if (!idEnfermero) {
-          e.preventDefault();
-          alert("Debe seleccionar un enfermero antes de evaluar");
-        } else {
-          // Asigna el valor al input hidden dentro del formulario que se envía
-          form.querySelector("input[name='idEnfermero']").value = idEnfermero;
-        }
-      });
-    });
-  });
+      // Tabla de pacientes internados
+      div#tablaPacientes.max-w-4xl.mx-auto.bg-white.p-6.rounded-lg.shadow-md
+        table.table-auto.w-full.border-collapse.border.border-gray-300
+          thead.bg-blue-600.text-white
+            tr
+              th.border.border-gray-300.px-4.py-2 ID
+              th.border.border-gray-300.px-4.py-2 Paciente
+              th.border.border-gray-300.px-4.py-2 DNI
+              th.border.border-gray-300.px-4.py-2 Acciones
+          tbody
+            each paciente in pacientes
+              tr(class="hover:bg-gray-100 transition")
+                td.border.border-gray-300.px-4.py-2= paciente.ID_paciente
+                td.border.border-gray-300.px-4.py-2= paciente.Nombre + " " + paciente.Apellido
+                td.border.border-gray-300.px-4.py-2= paciente.DNI
+                td.border.border-gray-300.px-4.py-2
+                  form(action="/enfermeria/evaAntecedentes" method="GET")
+                    input(type="hidden" name="_csrf" value=csrfToken)
+                    input(type="hidden" name="idEnfermero" value=selectedIdEnfermero)
+                    input(type="hidden" name="idPaciente" value=paciente.ID_paciente)
+                    button(type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition") Evaluar

@@ -1,0 +1,59 @@
+extends ../utilitario/layout
+
+block content
+  body.bg-sky-100.min-h-screen
+    include ../utilitario/navMedico.pug
+
+    div.max-w-3xl.mx-auto.bg-white.mt-10.p-8.rounded-xl.shadow-lg
+      h1.text-2xl.font-bold.text-center.text-blue-700.mb-6 Alta Hospitalaria
+
+      // Información del paciente
+      div.mb-6
+        h2.text-xl.font-semibold.text-gray-700 Paciente
+        p.mt-1.text-gray-600
+          | #{paciente.Nombre} #{paciente.Apellido} (DNI: #{paciente.DNI})
+
+      // Información de la internación
+      div.mb-6
+        h2.text-xl.font-semibold.text-gray-700 Internación
+        p.mt-1.text-gray-600 ID Internación: #{internacion.ID_internacion}
+        p.mt-1.text-gray-600 Fecha ingreso: #{internacion.Fecha_ingreso}
+        p.mt-1.text-gray-600 Cama: #{cama.ID_cama} - #{cama.Sector}
+
+      // Formulario de alta hospitalaria
+      form(action=`/medicos/alta?idInterno=${internacion.ID_internacion}` method="POST" class="space-y-5")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        div
+          label.font-semibold.text-gray-700(for="Profesional") Médico responsable:
+          select#Profesional(name="ID_Profesional" required class="w-full mt-1 border px-3 py-2 rounded focus:ring focus:ring-blue-300")
+            option(value="" disabled selected) -- Seleccione un médico --
+            each medico in medicos
+              option(value=medico.ID_Profesional)= medico.Nombre + " " + medico.Apellido
+
+        // Fecha de alta
+        div
+          label.font-semibold.text-gray-700(for="Fecha_alta") Fecha y hora de alta:
+          input#Fecha_alta(type="datetime-local" name="Fecha_alta" required class="w-full mt-1 border px-3 py-2 rounded")
+
+        // Motivo
+        div
+          label.font-semibold.text-gray-700(for="Motivo") Motivo del alta:
+          textarea#Motivo(name="Motivo" rows="3" class="w-full mt-1 border px-3 py-2 rounded" required)
+
+        // Estado final del paciente
+        div
+          label.font-semibold.text-gray-700(for="Estado_final") Estado final del paciente:
+          select#Estado_final(name="Estado_final" required class="w-full mt-1 border px-3 py-2 rounded")
+            option(value="" disabled selected) -- Seleccione una opción --
+            option(value="Estable") Estable
+            option(value="Mejora") Mejora
+            option(value="Derivado") Derivado
+            option(value="Fallecido") Fallecido
+
+        // Observaciones
+        div
+          label.font-semibold.text-gray-700(for="Observaciones") Observaciones:
+          textarea#Observaciones(name="Observaciones" rows="3" class="w-full mt-1 border px-3 py-2 rounded")
+
+        // Botón
+        button(type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition") Registrar Alta

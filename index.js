@@ -43,10 +43,13 @@ app.use(session({
 }));
 sessionStore.sync();
 
-app.use (csrf());
+app.use(csrf());
 
-app.use(async (req, res, next) =>{
+
+app.use(async (req, res, next) => {
+
   res.locals.currentUser = req.session.user || null;
+  res.locals.csrfToken = req.csrfToken();
   next();
 });
 ///////////////////////////////////////////////////////

@@ -20,4 +20,11 @@ router.get("/gestionEvaluaciones", soloMedico, prestadorControl.vistaEvaluacione
 router.get("/nuevoTratamiento", soloMedico, prestadorControl.vistaNuevoTratamiento);
 router.post("/guardarTratamiento", soloMedico, prestadorControl.guardarTratamiento);
 
+//FLUJO ALTA:
+router.get("/alta", soloMedico, prestadorControl.vistaFormularioAlta);
+router.post("/alta", soloMedico, prestadorControl.guardarAlta);
+router.get("/listaAltas", soloMedico, prestadorControl.listarAltas);
+router.get("/altaDetalle", soloMedico, prestadorControl.detalleAlta);
+
+
 module.exports = router;

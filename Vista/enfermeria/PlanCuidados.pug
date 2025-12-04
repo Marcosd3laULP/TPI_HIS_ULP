@@ -6,7 +6,7 @@ block content
     h3 Información del Internado
     p ID Internación: #{interno.ID_internacion}
     p Paciente: #{paciente.Nombre} #{paciente.Apellido}
-
+    input(type="hidden" name="_csrf" value=csrfToken)
   hr
 
   // --- Última observación ---

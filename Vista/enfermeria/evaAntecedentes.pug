@@ -1,28 +1,42 @@
-
+extends ../utilitario/layout
 
 block content
-  div
-    h3 Enfermero
-    p Nombre: #{enfermero.Nombre}
-    p ID: #{enfermero.ID_Profesional}
+  body.bg-sky-100.min-h-screen
+    include ../utilitario/navEnfermero.pug
 
-  div
-    h3 Paciente
-    p Nombre: #{paciente.Nombre}
-    p ID: #{paciente.ID_paciente}
+    // Botón volver
+    div.px-8.mt-6
+      a(href="/enfermeria/seccionEnf" class="inline-block bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 transition") Volver
 
-  form(action="/enfermeria/guardarAntecedentes" method="POST")
-    input(type="hidden" name="ID_Paciente" value=paciente.ID_paciente)
-    input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)
+    h1.text-2xl.font-bold.text-center.my-6 Evaluación de Paciente
 
-    h4 Antecedentes del paciente
-    label(for="Enfermedad") Enfermedad:
-    input(type="text" name="Enfermedad" placeholder="Ej: Hipertensión")
+    // Datos del enfermero y paciente
+    div.max-w-2xl.mx-auto.bg-white.p-6.rounded-lg.shadow-md.mb-6
+      div.mb-4
+        h3.text-lg.font-semibold.mb-1 Enfermero
+        p Nombre: #{enfermero.Nombre}
+        p ID: #{enfermero.ID_Profesional}
 
-    label(for="Tipo") Tipo:
-    input(type="text" name="Tipo" placeholder="Crónica / Aguda / Alergia...")
+      div.mb-4
+        h3.text-lg.font-semibold.mb-1 Paciente
+        p Nombre: #{paciente.Nombre}
+        p ID: #{paciente.ID_paciente}
 
-    label(for="Observaciones") Observaciones:
-    textarea(name="Observaciones" placeholder="Anota detalles clínicos...")
+    // Formulario de antecedentes
+    div.max-w-2xl.mx-auto.bg-white.p-6.rounded-lg.shadow-md
+      form(action="/enfermeria/guardarAntecedentes" method="POST" class="flex flex-col gap-4")
+        input(type="hidden" name="ID_Paciente" value=paciente.ID_paciente)
+        input(type="hidden" name="ID_Profesional" value=enfermero.ID_Profesional)
+        input(type="hidden" name="_csrf" value=csrfToken)
+        h4.text-lg.font-semibold.mb-2 Antecedentes del paciente
 
-    button(type="submit") Guardar evaluación
+        label.font-medium(for="Enfermedad") Enfermedad:
+        input(type="text" name="Enfermedad" placeholder="Ej: Hipertensión" class="border px-2 py-1 rounded w-full")
+        
+        label.font-medium(for="Tipo") Tipo:
+        input(type="text" name="Tipo" placeholder="Crónica / Aguda / Alergia..." class="border px-2 py-1 rounded w-full")
+
+        label.font-medium(for="Observaciones") Observaciones:
+        textarea(name="Observaciones" placeholder="Anota detalles clínicos..." class="border px-2 py-1 rounded w-full h-24")
+
+        button(type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition") Guardar evaluación

@@ -13,7 +13,9 @@ const { Estudio } = require ("../Modelo/relaciones/asociaciones");
 const { ResultadoEst } = require("../Modelo/relaciones/asociaciones");
 const Proceso = require("../Modelo/tipoProcesoModelo");
 const TraYTer = require("../Modelo/TraYTerModelo");
-
+const Cama = require("../Modelo/camasModelo");
+const internacionUtils = require("../Control/internacionUtilsControl");
+const AltaHospitalaria  = require("../Modelo/altaModelo");
 
 //VISTAS:
 exports.mostrarOpPrestador = function(req, res){
@@ -163,7 +165,6 @@ exports.vistaRealizacionDeUnPedido = async function (req, res) {
 
 exports.vistaNuevoTratamiento = async function (req, res) {
     try {
-        console.log("BODY:", req.body);
         const { idInterno, idEva } = req.query
         const interno = await buscarUnInternadoYSusDatosDePaciente(idInterno);
         const medicos = await buscarTodosMedicos();
@@ -177,7 +178,144 @@ exports.vistaNuevoTratamiento = async function (req, res) {
     }
 }
 
+exports.vistaFormularioAlta = async (req, res) => {
+    try {
+        const idInternacion = req.query.idInterno;
+
+        if (!idInternacion) {
+            return res.status(400).send("Falta el ID de internación en la query.");
+        }
+        
+        const internacion = await Internacion.findByPk(idInternacion, {
+            include: [
+                { model: Paciente, as: "Paciente" },
+                { model: Cama, as: "Cama" }
+            ]
+        });
+        const medicos = await Prestador.findAll({ where: { Rol: "Medico" } });
+        if (!internacion) {
+            return res.status(404).send("Internación no encontrada.");
+        }
+//csrfToken: req.csrfToken()
+        res.render("medicos/alta", {
+            internacion,
+            medicos,
+            paciente: internacion.Paciente,
+            cama: internacion.Cama,
+            
+        });
+
+    } catch (error) {
+        console.error("Error al mostrar el alta:", error);
+        res.status(500).send("Error interno.");
+    }
+};
+
+exports.listarAltas = async (req, res) => {
+  try {
+    const altas = await AltaHospitalaria.findAll({
+      include: [
+        {
+          model: Internacion,
+          as: "Internacion",
+          include: [
+            { model: Paciente, as: "Paciente" }
+          ]
+        },
+        { model: Prestador, as: "Profesional" }
+      ],
+      order: [["Fecha_alta", "DESC"]]
+    });
+
+    res.render("medicos/listaAltas", { altas });
+
+  } catch (error) {
+    console.error("Error al listar altas:", error.message);
+    res.status(500).send("No se pudo obtener la lista de altas.");
+  }
+};
+
+exports.detalleAlta = async (req, res) => {
+  try {
+    const { idAlta } = req.query;
+
+    if (!idAlta) {
+      return res.status(400).send("Falta el parámetro idAlta.");
+    }
+
+    const alta = await AltaHospitalaria.findOne({
+      where: { ID_alta: idAlta },
+      include: [
+        {
+          model: Internacion,
+          as: "Internacion",
+          include: [
+            { model: Paciente, as: "Paciente" }
+          ]
+        },
+        { model: Prestador, as: "Profesional" }
+      ],
+    });
+
+    if (!alta) {
+      return res.status(404).send("Alta hospitalaria no encontrada.");
+    }
+
+    res.render("medicos/altaDetalle", { alta });
+
+  } catch (error) {
+    console.error("Error al obtener detalle de alta:", error.message);
+    res.status(500).send("No se pudo obtener el detalle del alta.");
+  }
+};
+
+
+
+
 //METODOS POST
+
+exports.guardarAlta = async (req, res) => {
+    try {
+        const idInternacion = req.query.idInterno;
+
+        if (!idInternacion) {
+            return res.status(400).send("Falta el ID de internación en la query.");
+        }
+
+        const { Fecha_alta, Motivo, Observaciones, ID_Profesional, Estado_final } = req.body;
+
+        const internacion = await Internacion.findByPk(idInternacion);
+
+        if (!internacion) {
+            return res.status(404).send("Internación no encontrada.");
+        }
+
+        // Registrar el alta
+        await AltaHospitalaria.create({
+            ID_internacion: idInternacion,
+            Fecha_alta,
+            Motivo,
+            Observaciones,
+            ID_Profesional,
+            Estado_final
+        });
+
+        // Cambiar estado de internación
+        internacion.Estado = false;
+        await internacion.save();
+
+        // Liberar cama
+        await internacionUtils.liberarCama(internacion.ID_cama);
+
+        // Redirigir al listado
+        res.redirect("/medicos/listaAltas");
+
+    } catch (error) {
+        console.error("Error guardando el alta:", error);
+        res.status(500).send("Error al guardar el alta.");
+    }
+};
+
 
 exports.guardarEvaluacionMedica = async function (req, res) {
     try {
