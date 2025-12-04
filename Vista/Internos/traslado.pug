@@ -1,22 +1,37 @@
+extends ../utilitario/layout
+
 block content
-  h1.text-2xl.font-bold.text-center.my-6 Traslado de paciente
+  body.bg-sky-100.min-h-screen
+    include ../utilitario/navRecepcion.pug
 
-  p Paciente: #{paciente.Nombre} #{paciente.Apellido} (ID: #{paciente.ID_paciente})
-  p Cama actual: #{internacion.Cama.Numero} - Habitación #{internacion.Cama.Hab.numero} - Ala #{internacion.Cama.Hab.Ala.Sector}
+    div.px-8.mt-6.mb-4
+      a(href="/pacientes/internaciones/lista-internados"
+        class="inline-block bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 transition") Volver
 
-  form(method="POST", action="/pacientes/internaciones/trasladar")
-    input(type="hidden", name="_csrf", value=csrfToken)
-    input(type="hidden", name="idInternacion", value=internacion.ID_internacion)
-    input(type="hidden", name="idPaciente", value=paciente.ID_paciente)
-    input(type="hidden", name="camaActual", value=internacion.ID_cama)
+    h1.text-2xl.font-bold.text-center.my-6 Traslado de paciente
 
-    label(for="nuevaCama") Seleccione nueva cama:
-    select(name="idNuevaCama" required)
-      each cama in camasLibres
-        option(value=cama.ID_cama)
-          | Cama #{cama.Numero} - Habitación #{cama.Hab.numero} - Ala #{cama.Hab.Ala.Sector}
+      if error
+          p.text-red-600.font-bold.text-center.mb-2= error
+    
+    div.flex.justify-center
+      form(method="POST", action="/pacientes/internaciones/trasladar"
+        class="bg-white p-6 rounded-lg shadow-md flex flex-col gap-4 w-full max-w-md")
+        input(type="hidden", name="_csrf", value=csrfToken)
+        input(type="hidden", name="idInternacion", value=internacion.ID_internacion)
+        input(type="hidden", name="idPaciente", value=paciente.ID_paciente)
+        input(type="hidden", name="camaActual", value=internacion.ID_cama)
 
-    label(for="motivo") Motivo del traslado:
-    input(type="text", name="motivo" required)
+        p.font-semibold Paciente: #{paciente.Nombre} #{paciente.Apellido} (ID: #{paciente.ID_paciente})
+        p.font-semibold Cama actual: #{internacion.Cama.Numero} - Habitación #{internacion.Cama.Hab.numero} - Ala #{internacion.Cama.Hab.Ala.Sector}
 
-    button(type="submit" class="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700") Trasladar
+        label(for="nuevaCama" class="font-semibold") Seleccione nueva cama:
+        select(name="idNuevaCama" required class="border px-2 py-1 rounded w-full")
+          each cama in camasLibres
+            option(value=cama.ID_cama)
+              | Cama #{cama.Numero} - Habitación #{cama.Hab.numero} - Ala #{cama.Hab.Ala.Sector}
+
+        label(for="motivo" class="font-semibold") Motivo del traslado:
+        input(type="text" name="motivo" required class="border px-2 py-1 rounded w-full")
+
+        button(type="submit"
+          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition mt-2") Trasladar

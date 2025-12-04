@@ -1,17 +1,24 @@
-doctype html
-html
-  head
-    title Internación por emergencia
-  body
-    h2 Internación por emergencia
+extends ../utilitario/Layout
 
-    form(action="/pacientes/internaciones/emergencia/registrarEmergencia" method="POST")
-      input(type="hidden" name="_csrf" value=csrfToken)
+block content
+  body.bg-sky-100.min-h-screen
+    include ../utilitario/navRecepcion.pug
 
-      label Seleccione el sexo:
-      select(name="sexo" required)
-        option(value="masculino") Masculino
-        option(value="femenino") Femenino
+    //- Botón Volver
+    div.px-8.mt-6.mb-4
+      a(href="/pacientes/internaciones" class="inline-block bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 transition") Volver
 
-      br
-      button(type="submit") Internar
+    h2.text-2xl.font-bold.text-center.text-gray-800.mt-6.mb-6 Internación por emergencia
+
+    div.flex.justify-center
+      form(action="/pacientes/internaciones/emergencia/registrarEmergencia" method="POST" class="bg-white p-6 rounded-lg shadow-md w-full max-w-md flex flex-col space-y-4")
+        //- CSRF token
+        input(type="hidden" name="_csrf" value=csrfToken)
+
+        label.font-semibold.text-gray-700 Seleccione el sexo:
+        select(name="sexo" required class="border border-gray-300 rounded px-2 py-2 w-full")
+          option(value="" disabled selected) --Seleccione--
+          option(value="masculino") Masculino
+          option(value="femenino") Femenino
+
+        button(type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300") Internar

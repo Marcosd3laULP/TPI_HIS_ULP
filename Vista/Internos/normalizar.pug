@@ -1,39 +1,37 @@
+extends ../utilitario/layout
+
 block content
-  h1.text-2xl.font-bold.text-center.my-6 Normalización de Paciente
+  body.bg-sky-100.min-h-screen
+    include ../utilitario/navRecepcion.pug
 
-  // Mensaje de resultado de búsqueda
-  if mensaje
-    p(style="color:blue; font-weight:bold;") #{mensaje}
+    //- Botón Volver
+    div.px-8.mt-6.mb-4
+      a(href="/pacientes/lista-pacientes" class="inline-block bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 transition") Volver
 
-  // Formulario para buscar paciente por DNI
-  form(method="POST", action="/pacientes/internaciones/normalizar/buscar" class="flex items-center gap-2 mb-4")
-    input(type="hidden", name="_csrf", value=csrfToken)
-    input(type="hidden", name="idPacienteEmergencia", value=idPacienteEmergencia)
-    
-    label(for="dni") DNI del paciente:
-    input(type="text" name="dni" required class="border px-2 py-1 rounded")
-    button(type="submit" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700") Buscar
+    h1.text-2xl.font-bold.text-center.my-6 Normalización de Paciente
 
-  hr
+    //- Mensaje de resultado de búsqueda
+    if mensaje
+      p.text-blue-600.font-bold.text-center.mb-4= mensaje
 
-  // Formulario oculto para normalización
-  form(method="POST", action="/pacientes/internaciones/normalizar/guardar")
-    input(type="hidden", name="_csrf", value=csrfToken)
-    input(type="hidden", name="idPacienteEmergencia", value=idPacienteEmergencia)
-    input(type="hidden", name="idPacienteNormal", value=idPacienteNormal)
+    //- Formulario para buscar paciente por DNI
+    div.flex.justify-center
+      form(method="POST", action="/pacientes/internaciones/normalizar/buscar" class="bg-white p-6 rounded-lg shadow-md flex flex-col items-center gap-4 w-full max-w-md")
+        input(type="hidden", name="_csrf", value=csrfToken)
+        input(type="hidden", name="idPacienteEmergencia", value=idPacienteEmergencia)
 
-    p Paciente a normalizar: #{idPacienteEmergencia || 'No asignado'}
-    p Paciente seleccionado: #{idPacienteNormal || 'No seleccionado'}
+        label(for="dni" class="font-semibold") DNI del paciente:
+        input(type="text" name="dni" required class="border px-2 py-1 rounded w-full")
+        button(type="submit" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition") Buscar
 
-    // Solo un botón para completar la normalización si el paciente está seleccionado
-    if idPacienteNormal
-      button(type="submit" class="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700") Normalizar
+        //- Contenedor de botones que solo aparece después de la búsqueda
+        if mensaje && idPacienteEmergencia
+          div.flex.flex-col.items-center.gap-4.mt-4.w-full
+            if idPacienteNormal
+              button(type="submit" formaction="/pacientes/internaciones/normalizar/guardar")
 
-  hr
-
-  // Enlace dinámico: SOLO mostrar después de la búsqueda
-  if mensaje 
-    if idPacienteNormal
-      a(href=`/pacientes/internaciones/confirmar/${idPacienteNormal}/${idPacienteEmergencia}` class="text-blue-600 hover:underline") Confirmar normalización
-    else
-      a(href=`/pacientes/internaciones/registroAnonimo/${idPacienteEmergencia}` class="text-red-600 hover:underline") Registrar paciente anónimo
+              a(href=`/pacientes/internaciones/confirmar/${idPacienteNormal}/${idPacienteEmergencia}`
+                class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition w-full text-center") Confirmar normalización
+            else
+              a(href=`/pacientes/internaciones/registroAnonimo/${idPacienteEmergencia}`
+                class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 transition w-full text-center") Registrar paciente anónimo

@@ -1,30 +1,43 @@
-doctype html
-html
-  head
-    title Iniciar sesión
-  body
-    h2 Iniciar sesión
+//- views/login.pug
+extends utilitario/Layout
 
-    if error
-      p(style="color: red") #{error}
+block content
+  //- Fondo degradado según sector
+  - let bgClass = 'bg-gray-100'
+  if sector === 'recepcion'
+    - bgClass = 'bg-gradient-to-r from-blue-400 to-blue-600'
+  else if sector === 'enfermero'
+    - bgClass = 'bg-gradient-to-r from-yellow-300 to-yellow-500'
+  else if sector === 'medico'
+    - bgClass = 'bg-gradient-to-r from-red-400 to-red-600'
+  else if sector === 'admin'
+    - bgClass = 'bg-gradient-to-r from-gray-100 to-gray-300'
 
-    // Mostrar leyenda del sector actual
-    if sector
-      p Ingresando al sector: #{sector}
+  .min-h-screen.flex.items-center.justify-center(class=bgClass)
+    .w-full.max-w-md.p-8.rounded-md.shadow-lg.bg-white
+      h2.text-2xl.font-bold.mb-6.text-center.text-gray-900 Iniciar sesión
 
-    form(action="/usuario/login" method="POST")
-      input(type="hidden" name="_csrf" value=csrfToken)
+      // Mostrar mensaje de error
+      if error
+        p.text-red-500.text-sm.mb-4 #{error}
 
-      // Campo oculto para reenviar el sector al POST
+      // Mostrar leyenda del sector actual
       if sector
-        input(type="hidden" name="sector" value=sector)
+        p.text-gray-700.text-sm.mb-4.text-center Ingresando al sector: #{sector}
 
-      div
-        label(for="Email") Email:
-        input(type="email" name="Email" required)
+      form(action="/usuario/login" method="POST" class="space-y-4")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        
+        // Campo oculto para reenviar el sector al POST
+        if sector
+          input(type="hidden" name="sector" value=sector)
 
-      div
-        label(for="Contrasenia") Contraseña:
-        input(type="password" name="Contrasenia" required)
+        div
+          label(for="Email" class="block text-sm font-medium mb-1 text-gray-700") Email:
+          input(type="email" name="Email" required class="w-full p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500")
 
-      button(type="submit") Ingresar
+        div
+          label(for="Contrasenia" class="block text-sm font-medium mb-1 text-gray-700") Contraseña:
+          input(type="password" name="Contrasenia" required class="w-full p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500")
+
+        button(type="submit" class="w-full bg-blue-500 text-white font-semibold px-4 py-2 rounded-md hover:bg-blue-600 transition-colors") Ingresar

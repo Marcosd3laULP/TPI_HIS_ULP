@@ -1,24 +1,34 @@
-div(class="overflow-x-auto px-8")
-  table(class="min-w-full border border-gray-300 bg-white rounded shadow-md")
-    thead
-      tr(class="bg-sky-600 text-white text-left")
-        th(class="px-4 py-2") ID
-        th(class="px-4 py-2") Nombre
-        th(class="px-4 py-2") Apellido
-        th(class="px-4 py-2") DNI
-        th(class="px-4 py-2") Sexo
-        th(class="px-4 py-2") Acciones
-    tbody
-      each patient in pacientes
-        - const filaClass = patient.DNI === null ? "border-b bg-yellow-200 hover:bg-sky-50" : "border-b hover:bg-sky-50"
-        tr(class=filaClass)
-          td(class="px-4 py-2")= patient.ID_paciente
-          td(class="px-4 py-2")= patient.Nombre
-          td(class="px-4 py-2")= patient.Apellido
-          td(class="px-4 py-2")= patient.DNI
-          td(class="px-4 py-2")= patient.Sexo
-          td(class="px-4 py-2")
-            if patient.DNI === null
-              a(href=`/pacientes/internaciones/normalizar/${patient.ID_paciente}` class="text-blue-600 hover:underline") Normalizar
-            else
-              a(href=`/pacientes/edicion/${patient.ID_paciente}` class="text-blue-600 hover:underline") Editar
+extends ./utilitario/Layout
+
+block content
+  body.bg-gray-100.min-h-screen
+    include ./utilitario/navRecepcion.pug
+
+    //- Botón Volver arriba de la tabla
+    div.px-8.mt-6.mb-4
+      a(href="/pacientes" class="inline-block bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 transition") Volver
+
+    div(class="overflow-x-auto px-8")
+      table(class="min-w-full border border-gray-300 bg-white rounded shadow-md")
+        thead
+          tr(class="bg-sky-600 text-white text-left")
+            th(class="px-4 py-2") ID
+            th(class="px-4 py-2") Nombre
+            th(class="px-4 py-2") Apellido
+            th(class="px-4 py-2") DNI
+            th(class="px-4 py-2") Sexo
+            th(class="px-4 py-2") Acciones
+        tbody
+          each patient in pacientes
+            - const filaClass = patient.DNI === null ? "border-b bg-yellow-200 hover:bg-sky-50" : "border-b hover:bg-sky-50"
+            tr(class=filaClass)
+              td(class="px-4 py-2")= patient.ID_paciente
+              td(class="px-4 py-2")= patient.Nombre
+              td(class="px-4 py-2")= patient.Apellido
+              td(class="px-4 py-2")= patient.DNI
+              td(class="px-4 py-2")= patient.Sexo
+              td(class="px-4 py-2")
+                if patient.DNI === null
+                  a(href=`/pacientes/internaciones/normalizar/${patient.ID_paciente}` class="text-blue-600 hover:underline") Normalizar
+                else
+                  a(href=`/pacientes/edicion/${patient.ID_paciente}` class="text-blue-600 hover:underline") Editar

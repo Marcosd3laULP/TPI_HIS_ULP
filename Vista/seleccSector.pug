@@ -1,16 +1,12 @@
-doctype html
-html
-  head
-    title Seleccionar sector
-  body
-    h1 Seleccione el sector al que quiere ingresar
+extends utilitario/Layout
 
-    ul
-      li
-        a(href="/usuario/login?sector=recepcion") Recepción
-      li
-        a(href="/usuario/login?sector=enfermero") Enfermería
-      li
-        a(href="/usuario/login?sector=medico") Médicos
-      li
-        a(href="/usuario/login?sector=admin") Admin
+block content
+  .min-h-screen.flex.flex-col.items-center.justify-center.bg-gray-100
+    h1.text-3xl.font-bold.mb-10 Seleccione el sector al que quiere ingresar
+
+    .flex.space-x-6
+      a(href="/usuario/login?sector=recepcion" class="px-6 py-4 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-colors shadow-lg") Recepción
+      a(href="/usuario/login?sector=enfermero" class="px-6 py-4 rounded-lg bg-yellow-400 text-gray-800 font-semibold hover:bg-yellow-500 transition-colors shadow-lg") Enfermería
+      a(href="/usuario/login?sector=medico" class="px-6 py-4 rounded-lg bg-red-500 text-white font-semibold hover:bg-red-600 transition-colors shadow-lg") Médicos
+      a(href="/usuario/login?sector=admin" class="px-6 py-4 rounded-lg bg-white text-gray-800 border border-gray-300 font-semibold hover:bg-gray-100 transition-colors shadow-lg") Admin
+

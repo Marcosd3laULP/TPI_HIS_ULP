@@ -1,9 +1,12 @@
-extends ./utilitario/layout
+extends ./utilitario/Layout
 
 block content
+  body.bg-sky-100.min-h-screen
+    include ./utilitario/navRecepcion.pug
 
-   body.bg-sky-100.min-h-screen
-    include ./utilitario/barraDeNav.pug
+    //- Botón Volver arriba del título
+    div.px-4.mt-4
+      a(href="/pacientes" class="inline-block bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 transition") Volver
 
     h1.text-3xl.font-bold.text-center.text-gray-800.mt-8.mb-6 Sección de turnos 
 
@@ -12,6 +15,6 @@ block content
             img(src="/images/admitir.svg" alt="Admitir paciente" class="w-20 h-20 mb-4")
             p.text-center.text-gray-800.font-semibold.text-lg listar turnos
         
-        a(href= "turnos/paciente-y-turnos" class="bg-white rounded-2xl shadow-md py-10 px-6 w-80 flex flex-col items-center transition hover:shadow-xl")
+        a(href="turnos/paciente-y-turnos" class="bg-white rounded-2xl shadow-md py-10 px-6 w-80 flex flex-col items-center transition hover:shadow-xl")
             img(src="/images/admitir.svg" alt="Admitir paciente" class="w-20 h-20 mb-4")
             p.text-center.text-gray-800.font-semibold.text-lg nuevo turno

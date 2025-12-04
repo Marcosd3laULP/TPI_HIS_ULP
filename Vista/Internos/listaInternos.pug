@@ -2,34 +2,38 @@ extends ../utilitario/layout
 
 block content
   body.bg-sky-100.min-h-screen
-  include ../utilitario/barraDeNav.pug
+    //- Barra de navegación específica de internaciones
+    include ../utilitario/navRecepcion.pug
 
-  h1.text-2xl.font-bold.mb-6 Lista de Internados
+    //- Botón Volver
+    div.px-8.mt-6.mb-4
+      a(href="/pacientes/internaciones" class="inline-block bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 transition") Volver
 
-  table.w-full.table-auto.border-collapse
-    thead.bg-gray-200
-      tr
-        th.px-4.py-2.text-left ID Internación
-        th.px-4.py-2.text-left Habitación
-        th.px-4.py-2.text-left Cama
-        th.px-4.py-2.text-left Nombre
-        th.px-4.py-2.text-left Fecha de Ingreso
-        th.px-4.py-2.text-left Motivo
-        th.px-4.py-2.text-left Acciones
-    tbody
-      if internaciones.length === 0
+    h1.text-2xl.font-bold.mb-6 Lista de Internados
+
+    table.w-full.table-auto.border-collapse
+      thead.bg-gray-200
         tr
+          th.px-4.py-2.text-left Paciente
+          th.px-4.py-2.text-left Habitación
+          th.px-4.py-2.text-left Cama
+          th.px-4.py-2.text-left Fecha de Ingreso
+          th.px-4.py-2.text-left Motivo
+          th.px-4.py-2.text-left Acciones
+      tbody
+        if internaciones.length === 0
+          tr
             td(colspan="6", class="text-center py-4 text-gray-500") No hay pacientes internados actualmente.
-      else
-        each internacion in internaciones
-          tr.border-b
-            td.px-4.py-2= internacion.ID_internacion
-            td.px-4.py-2= internacion.Cama && internacion.Cama.Hab ? internacion.Cama.Hab.numero : 'Desconocida'
-            td.px-4.py-2= internacion.Cama ? internacion.Cama.Numero : 'Desconocida'
-            td.px-4.py-2= internacion.Paciente.Nombre
-            - const fecha = new Date(internacion.Fecha_ingreso)
-            td.px-4.py-2= isNaN(fecha) ? 'Fecha inválida' : fecha.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'})
-            td.px-4.py-2= internacion.Motivo
-            td.px-4.py-2
-              a(href=`/pacientes/internaciones/traslado/${internacion.ID_internacion}`) detalles
-
+        else
+          each internacion in internaciones
+            tr.border-b
+              //- Mostramos Nombre y Apellido del paciente
+              td.px-4.py-2= `${internacion.Paciente.Nombre} ${internacion.Paciente.Apellido}`
+              td.px-4.py-2= internacion.Cama && internacion.Cama.Hab ? internacion.Cama.Hab.numero : 'Desconocida'
+              td.px-4.py-2= internacion.Cama ? internacion.Cama.Numero : 'Desconocida'
+              - const fecha = new Date(internacion.Fecha_ingreso)
+              td.px-4.py-2= isNaN(fecha) ? 'Fecha inválida' : fecha.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'})
+              td.px-4.py-2= internacion.Motivo
+              td.px-4.py-2
+                //- Usamos ID de internacion en href pero no lo mostramos
+                a(href=`/pacientes/internaciones/traslado/${internacion.ID_internacion}` class="text-blue-600 hover:underline") Trasladar

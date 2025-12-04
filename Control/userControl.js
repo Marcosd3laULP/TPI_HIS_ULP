@@ -91,6 +91,6 @@ exports.ValidarLogin = async function (req, res) {
 // GET - Logout
 exports.SalirDeSesion = function(req, res) {
     req.session.destroy(() => {
-        res.redirect("/seleccSector");
+        res.redirect("/");
     });
 }

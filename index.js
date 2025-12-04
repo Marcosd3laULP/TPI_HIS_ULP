@@ -16,7 +16,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //AUTENTICACION:
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        "script-src": ["'self'", "https://cdn.tailwindcss.com"]
+      }
+    }
+  })
+);
 const limiter = rateLimit({windowMs: 5*60*1000, max:100});
 app.use(limiter);
 

@@ -1,27 +1,33 @@
 extends ../utilitario/layout
 
 block content
- body.bg-sky-100.min-h-screen
-  include ../utilitario/barraDeNav.pug
+  body.bg-sky-100.min-h-screen
+    //- Barra de navegación actualizada
+    include ../utilitario/navRecepcion.pug
 
-  h1.text-2xl.font-bold.mb-6 Lista de Pacientes
+    //- Botón Volver
+    div.px-8.mt-6.mb-4
+      a(href="/pacientes/internaciones" class="inline-block bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 transition") Volver
 
-  table.table-auto.w-full.border-collapse.border.border-gray-300
-    thead.bg-blue-600.text-white
-      tr
-        th.border.border-gray-300.px-4.py-2.text-left ID
-        th.border.border-gray-300.px-4.py-2.text-left Nombre
-        th.border.border-gray-300.px-4.py-2.text-left Apellido
-        th.border.border-gray-300.px-4.py-2.text-left DNI
-        th.border.border-gray-300.px-4.py-2.text-left Sexo
-        th.border.border-gray-300.px-4.py-2.text-left Acciones
-    tbody
-      each paciente in pacientes
-        tr.hover(bg-gray-100)
-          td.border.border-gray-300.px-4.py-2= paciente.ID_paciente
-          td.border.border-gray-300.px-4.py-2= paciente.Nombre
-          td.border.border-gray-300.px-4.py-2= paciente.Apellido
-          td.border.border-gray-300.px-4.py-2= paciente.DNI
-          td.border.border-gray-300.px-4.py-2= paciente.Sexo
-          td.border.border-gray-300.px-4.py-2
-            a.text-blue-600.hover(underline.font-semibold, href=`internar/${paciente.ID_paciente}`) Internar
+    h1.text-2xl.font-bold.mb-6.text-center Lista de Pacientes
+
+    div.overflow-x-auto.px-8
+      table.table-auto.w-full.border-collapse.border.border-gray-300.rounded-lg.overflow-hidden.shadow-md
+        thead.bg-blue-600.text-white
+          tr
+            th.border.border-gray-300.px-4.py-2.text-left.rounded-tl-lg ID
+            th.border.border-gray-300.px-4.py-2.text-left Nombre
+            th.border.border-gray-300.px-4.py-2.text-left Apellido
+            th.border.border-gray-300.px-4.py-2.text-left DNI
+            th.border.border-gray-300.px-4.py-2.text-left Sexo
+            th.border.border-gray-300.px-4.py-2.text-left.rounded-tr-lg Acciones
+        tbody
+          each paciente in pacientes
+            tr(class="hover:bg-gray-100 transition")
+              td.border.border-gray-300.px-4.py-2.rounded-l-lg= paciente.ID_paciente
+              td.border.border-gray-300.px-4.py-2= paciente.Nombre
+              td.border.border-gray-300.px-4.py-2= paciente.Apellido
+              td.border.border-gray-300.px-4.py-2= paciente.DNI
+              td.border.border-gray-300.px-4.py-2= paciente.Sexo
+              td.border.border-gray-300.px-4.py-2.rounded-r-lg
+                a(class="text-blue-600 font-semibold hover:underline" href=`internar/${paciente.ID_paciente}`) Internar

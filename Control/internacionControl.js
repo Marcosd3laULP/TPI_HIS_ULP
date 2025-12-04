@@ -5,6 +5,7 @@ const {Paciente} = require("../Modelo/relaciones/asociaciones");
 const {Ala} = require("../Modelo/relaciones/asociaciones");
 const {Cama} = require("../Modelo/relaciones/asociaciones");
 const {Turno} = require("../Modelo/relaciones/asociaciones");
+const { Traslado } = require("../Modelo/relaciones/asociaciones");
 const { where } = require("sequelize");
 
 /*exports.internacionInterfaz = async function (req, res) {
@@ -424,9 +425,9 @@ exports.guardarRegistroAnonimo = async function(req, res) {
 
 exports.realizarTraslado = async function(req, res) {
   try {
-    const { idInternacion, idPaciente, camaActual, idNuevaCama, motivo, responsable } = req.body;
+    const { idInternacion, idPaciente, camaActual, idNuevaCama, motivo } = req.body;
 
-    if (!motivo || !responsable) {
+    if (!motivo) {
       const internacion = await Internacion.findByPk(idInternacion, {
         include: [
           { model: Paciente, as: 'Paciente' },
@@ -474,7 +475,6 @@ exports.realizarTraslado = async function(req, res) {
       ID_internacion: idInternacion,
       ID_cama: idNuevaCama,
       Fecha_traslado: new Date(),
-      Responsable: responsable,
       Motivo: motivo
     });
 
@@ -485,7 +485,7 @@ exports.realizarTraslado = async function(req, res) {
 
     await internacionUtils.cambiarEstadoCama(idNuevaCama, paciente.Sexo);
 
-    res.redirect('/pacientes/lista-internados');
+    res.redirect('/pacientes/internaciones/lista-internados');
 
   } catch (error) {
     console.error("Error realizando traslado:", error);

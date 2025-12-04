@@ -4,7 +4,11 @@ block content
   head
     title= modo === 'confirmacion' ? 'Confirmación de datos del paciente' : 'Edición de paciente'
   body
-    include ./utilitario/barraDeNav.pug
+    include ./utilitario/navRecepcion.pug
+
+    //- Botón Volver
+    div.px-8.mt-6.mb-4
+      a(href="/pacientes/lista-pacientes" class="inline-block bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-600 transition") Volver
 
     h1.text-2xl.font-bold.text-center.my-6
       = modo === 'confirmacion' ? 'Confirmación de datos del paciente' : 'Edición de datos del paciente'
@@ -14,6 +18,8 @@ block content
 
     div(class="max-w-xl mx-auto bg-sky-200 p-6 rounded-lg shadow-md mt-10")
       form(action=`/pacientes/${modo}/${paciente.ID_paciente}` method="POST" class="flex flex-col space-y-4")
+        //- CSRF token
+        input(type="hidden" name="_csrf" value=csrfToken)
 
         label(for="Nombre" class="font-bold text-lg text-black") Nombre:
         input(type="text" name="Nombre" id="Nombre" value=paciente.Nombre class="p-2 rounded border border-gray-300")

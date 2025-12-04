@@ -1,11 +1,11 @@
-extends ./utilitario/layout
+extends utilitario/Layout
 
 block content
   head
     title Sección Pacientes
 
   body.bg-sky-100.min-h-screen
-    include ./utilitario/barraDeNav.pug
+    include utilitario/navRecepcion.pug
 
     h1.text-3xl.font-bold.text-center.text-gray-800.mt-8.mb-6 Sección Pacientes
 
@@ -21,3 +21,7 @@ block content
       a(href="/pacientes/lista-pacientes" class="bg-white rounded-2xl shadow-md py-10 px-6 w-80 flex flex-col items-center transition hover:shadow-xl")
         img(src="/images/listarP.svg" alt="Listar pacientes" class="w-20 h-20 mb-4")
         p.text-center.text-gray-800.font-semibold.text-lg Listar Pacientes
+
+      a(href="/pacientes/internaciones" class="bg-white rounded-2xl shadow-md py-10 px-6 w-80 flex flex-col items-center transition hover:shadow-xl")
+        img(src="/images/listarP.svg" alt="Listar pacientes" class="w-20 h-20 mb-4")
+        p.text-center.text-gray-800.font-semibold.text-lg Internaciones
