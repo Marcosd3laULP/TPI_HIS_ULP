@@ -1,8 +1,13 @@
 block content
+
+  a(href="/prestador/medicos") Volver
+
   h1 Cargar nuevo tratamiento
 
   form(action="/medicos/guardarTratamiento" method="POST")
-    
+    // CSRF token
+    input(type="hidden" name="_csrf" value=csrfToken)
+
     div
       label(for="medicoSelect") Seleccione un médico:
       select#medicoSelect(name="ID_Profesional" required)
@@ -14,11 +19,9 @@ block content
       label
         input(type="radio", name="busquedaMedico", value="id")
         | Buscar por ID
-
       label
         input(type="radio", name="busquedaMedico", value="nombre")
         | Buscar por Nombre
-
 
     div
     h3 Paciente
@@ -43,15 +46,13 @@ block content
         option(value="tratamiento") Tratamiento
         option(value="terapia") Terapia
 
+    div
+      label(for="FechaInicio") Fecha de inicio:
+      input(type="date" id="FechaInicio" name="FechaInicio" required)
 
     div
-        label(for="FechaInicio") Fecha de inicio:
-        input(type="date" id="FechaInicio" name="FechaInicio" required)
-
-
-    div
-        label(for="FechaFin") Fecha de finalización:
-        input(type="date" id="FechaFin" name="FechaFin")
+      label(for="FechaFin") Fecha de finalización:
+      input(type="date" id="FechaFin" name="FechaFin")
 
     div 
       label(for="Observaciones") Observaciones: 
@@ -70,18 +71,13 @@ script.
     const medicoSelect = document.getElementById("medicoSelect");
     const radioButtons = document.querySelectorAll("input[name='busquedaMedico']");
 
-    // FILTRO BÁSICO (ID o Nombre)
     radioButtons.forEach(rb => {
       rb.addEventListener("change", () => {
         const modo = rb.value;
-        const opciones = [...medicoSelect.options];
-
-        // NO filtra aún la lista, solo muestra el modo activo en consola
-        console.log("Modo de búsqueda de médico seleccionado:", modo);
+        console.log("Modo de búsqueda:", modo);
       });
     });
 
-    // OPCIONAL: loguear la selección
     medicoSelect.addEventListener("change", () => {
       console.log("Médico seleccionado:", medicoSelect.value);
     });

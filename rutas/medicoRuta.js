@@ -10,6 +10,7 @@ router.get("/evaMedica", soloMedico, prestadorControl.vistaEvaMedica);
 router.post("/guardarEvaluacionMedica", soloMedico, prestadorControl.guardarEvaluacionMedica);
 router.get("/nuevoPedido", soloMedico, prestadorControl.vistaSolicitudPedido);
 router.get("/gestionPedidos", soloMedico, prestadorControl.vistaDePedidosDeUnPaciente);
+router.get("/detallePedido/:idPedido", soloMedico, prestadorControl.detallePedido);
 router.post("/guardarPedido", soloMedico, prestadorControl.guardarPedido);
 router.get("/listaPedidos", soloMedico, prestadorControl.vistaListadoDePedidos);
 router.get("/realizarPedido", soloMedico, prestadorControl.vistaRealizacionDeUnPedido);

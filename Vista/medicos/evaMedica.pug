@@ -1,6 +1,7 @@
-
-
 block content
+
+  a(href="/prestador/medicos") Volver
+
   div
     h3 Medico
     p Nombre: #{medico.Nombre}
@@ -12,31 +13,28 @@ block content
     p ID: #{interno.Paciente.ID_paciente}
 
   form(action="/medicos/guardarEvaluacionMedica" method="POST")
+
+    // CSRF token
+    input(type="hidden" name="_csrf" value=csrfToken)
+
     input(type="hidden" name="ID_internacion" value=interno.ID_internacion)
     input(type="hidden" name="ID_Profesional" value=medico.ID_Profesional)
 
-    h4 Evaluacion medica Inicial
-    label(for="Enfermedad") Sintomas:
+    h4 Evaluacion médica inicial
+
+    label(for="Enfermedad") Síntomas:
     input(type="text" name="Enfermedad" placeholder="Ej: Fiebre")
 
     label(for="Tipo") Tipo:
     input(type="text" name="Tipo" placeholder="Crónica / Aguda / Alergia...")
 
-    label(for="Diag_teorico") Diagnostico teorico:
-    input(type="text" name="Diag_teorico" placeholder="Ej: Posible infección")
-
-    label(for="Diag_real") Diagnostico real:
-    input(type="text" name="Diag_real" placeholder="Ej: fractura")
-
-    h4 Medicación a recetar
-    label(for="Medicina") Nombre del medicamento:
-    input(type="text" name="Medicina" placeholder="Ej: Losartán")
+    label(for="Diagnostico") Diagnóstico real:
+    input(type="text" name="Diagnostico" placeholder="Ej: fractura")
 
     label(for="Indicaciones") Indicaciones:
-    input(type="text" name="Indicaciones" placeholder="Como tratar al paciente ")
+    input(type="text" name="Indicaciones" placeholder="Cómo tratar al paciente")
 
     label(for="Descripcion") Observaciones:
-    input(type="text" name="Descripcion" placeholder="Añada detalles utiles...")
+    input(type="text" name="Descripcion" placeholder="Detalles adicionales...")
 
-    button(type="submit" onclick="console.log('FORM ENVIADO')") Guardar evaluación
-
+    button(type="submit") Guardar evaluación

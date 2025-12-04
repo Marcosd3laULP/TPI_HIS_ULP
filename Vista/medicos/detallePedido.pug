@@ -1,0 +1,52 @@
+doctype html
+html
+  head
+    title Detalle del Pedido
+  body
+
+    a(href="/medicos/listaPedidos") Volver
+
+    h1 Detalle del Pedido
+
+    if pedido
+      h2 Datos del Pedido
+      p ID del Pedido: 
+        | #{pedido.IdPedido}
+
+      p ID Evaluación Médica: 
+        | #{pedido.IDMedEva}
+
+      p ID Profesional Solicitante: 
+        | #{pedido.ID_Profesional}
+
+      p Tipo de Estudio: 
+        | #{pedido.ID_tipoEstudio}
+
+      p Fecha: 
+        | #{pedido.Fecha}
+
+      p Prioridad: 
+        | #{pedido.Prioridad}
+
+      p Indicaciones: 
+        | #{pedido.Indicaciones}
+
+      p Estado: 
+        | #{pedido.Estado}
+
+      hr
+
+      h2 Resultado
+      if pedido.Resultado
+        p ID Resultado: 
+          | #{pedido.Resultado.IdResultado}
+
+        p Fecha Resultado: 
+          | #{pedido.Resultado.Fecha}
+
+        p Informe: 
+          | #{pedido.Resultado.InformeTextual}
+      else
+        p Todavía no se cargaron los resultados de este pedido.
+    else
+      p No se encontró el pedido solicitado.

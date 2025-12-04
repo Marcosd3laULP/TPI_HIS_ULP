@@ -22,6 +22,37 @@ exports.mostrarOpPrestador = function(req, res){
     res.render("prestadores");
 };
 
+exports.detallePedido = async (req, res) => {
+  try {
+    const { idPedido } = req.params;
+
+    if (!idPedido) {
+      return res.status(400).send("Falta el parámetro idPedido.");
+    }
+
+    const pedido = await PedidoMed.findOne({
+      where: { IdPedido: idPedido },
+      include: [
+        {
+          model: ResultadoEst,
+          as: "Resultado",
+          required: false // LEFT JOIN → permite que no exista resultado
+        }
+      ]
+    });
+
+    if (!pedido) {
+      return res.status(404).send("Pedido no encontrado.");
+    }
+
+    res.render("medicos/detallePedido", { pedido });
+
+  } catch (error) {
+    console.error("Error al obtener detalle del pedido:", error.message);
+    res.status(500).send("No se pudo obtener el detalle del pedido.");
+  }
+};
+
 exports.vistaPrestadores = async function (req, res) {
     try {
         const medicos = await buscarTodosPrestadores();
@@ -301,7 +332,7 @@ exports.guardarAlta = async (req, res) => {
         });
 
         // Cambiar estado de internación
-        internacion.Estado = false;
+        internacion.Activo = false;
         await internacion.save();
 
         // Liberar cama
@@ -321,12 +352,10 @@ exports.guardarEvaluacionMedica = async function (req, res) {
     try {
 
         await registrarAntecedente(req.body);
-        
-        await registrarMedicinaMedica(req.body);
 
         await registrarEvaluacionMedica(req.body);
         //console.log("DEBUG nuevaEvalMedica:", nuevaEvalMedica);
-        res.redirect(`/medicos/seccionInternos`);
+        res.redirect(`/medicos/gestionInternos`);
     }catch (error){
         console.error("Error al guardar la evaluacion medica: ", error.message);
         res.status(500).send("Error al registrar la evaluación del paciente");
@@ -619,14 +648,14 @@ async function buscarInternadosConPlan() {
 async function obtenerIdPacienteDesdeInternacion(idInternacion) {
     const internacion = await Internacion.findOne({
         where: { ID_Internacion: idInternacion },
-        attributes: ["ID_Paciente"]
+        attributes: ["ID_paciente"]
     });
 
     if (!internacion) {
         throw new Error("No se encontró la internación");
     }
 
-    return internacion.ID_Paciente;
+    return internacion.ID_paciente;
 }
 
 async function obtenerTipoEstudioParaSelect() {
@@ -646,7 +675,13 @@ async function obtenerEvaluacionMedicaPorId(idEva) {
 async function registrarAntecedente(datos) {
     const {ID_internacion, Enfermedad, Tipo, Observaciones } = datos;
     
+    console.log("DEBUG: datos que llegan:", datos);
+    console.log("DEBUG: ID_internacion:", ID_internacion);
+
     const ID_Paciente = await obtenerIdPacienteDesdeInternacion(ID_internacion);
+
+    console.log("DEBUG: ID_Paciente calculado:", ID_Paciente);
+
 
     const nuevoAntecedente = await Antecedente.create({
         ID_Paciente,
@@ -674,14 +709,13 @@ async function registrarMedicinaMedica(datos) {
 
 
 async function registrarEvaluacionMedica(datos) {
-    const {ID_internacion, ID_Profesional, Diag_teorico, Diag_real, Indicaciones, Descripcion} = datos;
+    const {ID_internacion, ID_Profesional, Diagnostico, Indicaciones, Descripcion} = datos;
 
     const nuevaEvaMedica = await EvaluacionMed.create({
         ID_internacion,
         ID_Profesional,
         Fecha: new Date(),
-        Diag_teorico,
-        Diag_real,
+        Diagnostico,
         Indicaciones,
         Descripcion
     });

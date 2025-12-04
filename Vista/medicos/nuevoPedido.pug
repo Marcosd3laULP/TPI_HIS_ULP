@@ -1,19 +1,19 @@
-// archivo: views/medicos/nuevoPedido.pug
-
 block content
 
-  // Información de evaluación
+  a(href="/prestador/medicos") Volver
+
   div
     h3 Evaluación Médica
     p ID de Evaluación: #{evaluacion.IDMedEva}
 
-  // Formulario principal
   form(action="/medicos/guardarPedido" method="POST")
+    
+    // CSRF token
+    input(type="hidden" name="_csrf" value=csrfToken)
 
     // Campo oculto obligatorio
     input(type="hidden" name="IDMedEva" value=evaluacion.IDMedEva)
 
-    // Selección de médico
     div
       label(for="medicoSelect") Seleccione un médico:
       select#medicoSelect(name="ID_Profesional" required)
@@ -21,7 +21,6 @@ block content
         each med in medicos
           option(value=med.ID_Profesional)= `${med.Nombre} ${med.Apellido} (ID: ${med.ID_Profesional})`
 
-    // Radios de búsqueda
     div
       label
         input(type="radio" name="busquedaMedico" value="id")
@@ -30,10 +29,8 @@ block content
         input(type="radio" name="busquedaMedico" value="nombre")
         | Buscar por Nombre
 
-    // Título
     h4 Nuevo Pedido de Estudio
 
-    // Prioridad
     div
       label(for="Prioridad") Prioridad:
       select(name="Prioridad" required)
@@ -41,7 +38,6 @@ block content
         option(value="Urgente") Urgente
         option(value="Particular") Particular
 
-    // Tipo de Estudio
     div
       label(for="ID_tipoEstudio") Tipo de Estudio:
       select(name="ID_tipoEstudio" required)
@@ -49,15 +45,12 @@ block content
         each tipo in tiposEstudios
           option(value=tipo.ID_tipoEstudio)= tipo.Nombre
 
-    // Indicaciones
     div
       label(for="Indicaciones") Indicaciones:
       input(type="text" name="Indicaciones" placeholder="Notas para el estudio...")
 
-    // Botón
     button(type="submit") Crear Pedido
 
-// Scripts
 script.
   document.addEventListener("DOMContentLoaded", () => {
     const medicoSelect = document.getElementById("medicoSelect");
@@ -65,7 +58,7 @@ script.
 
     radioButtons.forEach(rb => {
       rb.addEventListener("change", () => {
-        console.log("Modo de búsqueda de médico seleccionado:", rb.value);
+        console.log("Modo:", rb.value);
       });
     });
 

@@ -35,6 +35,7 @@ html
     form(action="/medicos/guardarResultado" method="POST")
       // ID oculto para saber qué pedido estamos completando
       input(type="hidden" name="IdPedido" value=pedido.IdPedido)
+      input(type="hidden" name="_csrf" value=csrfToken)
 
       label(for="InformeTextual") Informe textual:
       textarea#InformeTextual(name="InformeTextual" rows="6" cols="50" required)

@@ -24,12 +24,7 @@ const EvaluacionMed = sequelize.define('EvaluacionMed', {
         allowNull: false
     },
 
-    Diag_teorico: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-
-    Diag_real: {
+    Diagnostico: {
         type: DataTypes.STRING,
         allowNull: false
     },

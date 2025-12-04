@@ -9,7 +9,7 @@ exports.checkNotLoggedIn = (req, res, next) => {
 
 exports.checkLoggedIn = (req, res, next) => {
     if(!req.session.user) {
-        return res.redirect("/login");
+        return res.redirect("/");
     }
     next();
 };
@@ -39,7 +39,7 @@ exports.validateLoginData = [
 exports.checkRole = (...rolesPermitidos) => {
     return (req, res, next) => {
         if (!req.session.user) {
-            return res.redirect("/login");
+            return res.redirect("/");
         }
 
         const rol = req.session.user.Rol;

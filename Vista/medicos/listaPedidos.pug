@@ -1,6 +1,6 @@
 body
   h1 Lista de Pedidos de Estudio
-
+  a(href="/prestador/medicos") Volver
   table(border="1" cellpadding="5" cellspacing="0")
     thead
       tr
@@ -26,7 +26,7 @@ body
           td
             if pedido.Estado === "Realizado"
               // Botón alternativo cuando YA está realizado
-              a(href=`/medicos/verPedidoRealizado?IdPedido=${pedido.IdPedido}`) Detalles 
+              a(href=`/medicos/detallePedido/${pedido.IdPedido}`) detalles 
             else
               // Botón normal cuando AÚN no se realizó
               a(href=`/medicos/realizarPedido?IdPedido=${pedido.IdPedido}`) Realizar un nuevo pedido

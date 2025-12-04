@@ -56,8 +56,8 @@ PedidoMed.belongsTo(EvaluacionMed, {foreignKey: "IDMedEva", as: 'EvaluacionMedic
 Prestador.hasMany(PedidoMed, {foreignKey: "ID_Profesional", as: 'Pedidos'});
 PedidoMed.belongsTo(Prestador, {foreignKey: "ID_Profesional", as: "Profesional"});
 
-PedidoMed.hasOne(ResultadoEst, {foreignKey: "IdPedido", as: 'PedidoR'});
-ResultadoEst.belongsTo(PedidoMed, {foreignKey: "IdPedido", as: 'Resultado'});
+PedidoMed.hasOne(ResultadoEst, {foreignKey: "IdPedido", as: 'Resultado'});
+ResultadoEst.belongsTo(PedidoMed, {foreignKey: "IdPedido", as: 'Pedido'});
 
 Estudio.hasMany(PedidoMed, {foreignKey: "ID_tipoEstudio", as: "Pedidos"});
 PedidoMed.belongsTo(Estudio, {foreignKey: "ID_tipoEstudio", as: "TipoEstudio"});
