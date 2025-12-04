@@ -49,14 +49,11 @@ const prestadorRutas = require("./rutas/prestadorRuta");
 const medicoRutas = require("./rutas/medicoRuta");
 const enfermeroRutas = require("./rutas/enfermeroRuta");
 const turnoRutas = require("./rutas/turnoRuta");
-const apiRutas = require("./rutas/apiRuta");
-
 
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "./Vista"));
 
-app.use("/api", apiRutas);
 app.use('/', rutas);       
 app.use('/usuario', userRutas);
 app.use('/pacientes', pacientesRutas);

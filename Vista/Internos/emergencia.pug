@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title Internación por emergencia
+  body
+    h2 Internación por emergencia
+
+    form(action="/pacientes/internaciones/emergencia/registrarEmergencia" method="POST")
+      input(type="hidden" name="_csrf" value=csrfToken)
+
+      label Seleccione el sexo:
+      select(name="sexo" required)
+        option(value="masculino") Masculino
+        option(value="femenino") Femenino
+
+      br
+      button(type="submit") Internar

@@ -1,0 +1,29 @@
+block content
+  h1.text-2xl.font-bold.text-center.my-6 Confirmar datos del paciente
+
+  form(method="POST", action="/pacientes/internaciones/confirmar/guardar" class="flex flex-col gap-3 w-full max-w-md mx-auto")
+    input(type="hidden", name="_csrf", value=csrfToken)
+    input(type="hidden", name="idPacienteEmergencia", value=idPacienteEmergencia)
+    input(type="hidden", name="idPacienteNormal", value=idPacienteNormal)
+
+    label(for="nombre") Nombre:
+    input(type="text", name="nombre", value=pacienteNormal.Nombre required class="border px-2 py-1 rounded")
+
+    label(for="apellido") Apellido:
+    input(type="text", name="apellido", value=pacienteNormal.Apellido required class="border px-2 py-1 rounded")
+
+    label(for="dni") DNI:
+    input(type="text", name="dni", value=pacienteNormal.DNI required class="border px-2 py-1 rounded")
+
+    label(for="sexo") Sexo:
+    select(name="sexo" required class="border px-2 py-1 rounded")
+      option(value="femenino" selected=(pacienteNormal.Sexo === 'femenino')) Femenino
+      option(value="masculino" selected=(pacienteNormal.Sexo === 'masculino')) Masculino
+
+    label(for="domicilio") Domicilio:
+    input(type="text", name="domicilio", value=pacienteNormal.Domicilio class="border px-2 py-1 rounded")
+
+    label(for="telefono") Teléfono:
+    input(type="text", name="telefono", value=pacienteNormal.Telefono class="border px-2 py-1 rounded")
+
+    button(type="submit" class="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700") Confirmar

@@ -1,51 +1,24 @@
-extends ./utilitario/layout
-
-block content
-  head
-    title Lista de pacientes
-  body
-    include ./utilitario/barraDeNav.pug
-
-    h1.text-2xl.font-bold.text-center.my-6 Lista de pacientes
-
-    if error
-        p.text-red-600.font-semibold.mb-4.text-center= error
-
-    div(class="px-8 mb-6")
-      form(action="/pacientes/lista-pacientes" method="GET" class="flex flex-col md:flex-row items-center gap-4 bg-white p-4 rounded shadow-md")
-        p.font-medium Seleccione una forma de buscar al paciente:
-        div.flex.gap-4
-          label.flex.items-center.gap-1
-            input(type="radio" name="criterio" value="id" required)
-            | ID
-          label.flex.items-center.gap-1
-            input(type="radio" name="criterio" value="dni")
-            | DNI
-          label.flex.items-center.gap-1
-            input(type="radio" name="criterio" value="nombre")
-            | Nombre
-        input(type="text" name="valor" placeholder="Ingrese valor..." class="border border-gray-300 px-2 py-1 rounded w-full md:w-auto")
-        button(type="submit" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700") Buscar
-
-
-
-    div(class="overflow-x-auto px-8")
-      table(class="min-w-full border border-gray-300 bg-white rounded shadow-md")
-        thead
-          tr(class="bg-sky-600 text-white text-left")
-            th(class="px-4 py-2") ID
-            th(class="px-4 py-2") Nombre
-            th(class="px-4 py-2") Apellido
-            th(class="px-4 py-2") DNI
-            th(class="px-4 py-2") Sexo
-            th(class="px-4 py-2") Acciones
-        tbody
-          each patient in pacientes
-            tr(class="border-b hover:bg-sky-50")
-              td(class="px-4 py-2")= patient.ID_paciente
-              td(class="px-4 py-2")= patient.Nombre
-              td(class="px-4 py-2")= patient.Apellido
-              td(class="px-4 py-2")= patient.DNI
-              td(class="px-4 py-2")= patient.Sexo
-              td(class="px-4 py-2")
-                a(href=`/pacientes/edicion/${patient.ID_paciente}` class="text-blue-600 hover:underline") Editar
+div(class="overflow-x-auto px-8")
+  table(class="min-w-full border border-gray-300 bg-white rounded shadow-md")
+    thead
+      tr(class="bg-sky-600 text-white text-left")
+        th(class="px-4 py-2") ID
+        th(class="px-4 py-2") Nombre
+        th(class="px-4 py-2") Apellido
+        th(class="px-4 py-2") DNI
+        th(class="px-4 py-2") Sexo
+        th(class="px-4 py-2") Acciones
+    tbody
+      each patient in pacientes
+        - const filaClass = patient.DNI === null ? "border-b bg-yellow-200 hover:bg-sky-50" : "border-b hover:bg-sky-50"
+        tr(class=filaClass)
+          td(class="px-4 py-2")= patient.ID_paciente
+          td(class="px-4 py-2")= patient.Nombre
+          td(class="px-4 py-2")= patient.Apellido
+          td(class="px-4 py-2")= patient.DNI
+          td(class="px-4 py-2")= patient.Sexo
+          td(class="px-4 py-2")
+            if patient.DNI === null
+              a(href=`/pacientes/internaciones/normalizar/${patient.ID_paciente}` class="text-blue-600 hover:underline") Normalizar
+            else
+              a(href=`/pacientes/edicion/${patient.ID_paciente}` class="text-blue-600 hover:underline") Editar

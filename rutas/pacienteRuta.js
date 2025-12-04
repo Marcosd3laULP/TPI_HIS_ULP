@@ -22,5 +22,17 @@ router.post("/confirmacion/:id",soloRecepcion, pacienteControl.ConfirmarDatosPac
 router.get("/internaciones/internar/:id",soloRecepcion, internacionControl.interfazInternacion);
 router.post("/internaciones/realizar-internacion",soloRecepcion, internacionControl.realizarInternacion);
 router.get("/internaciones/lista-internados",soloRecepcion, internacionControl.buscarTodoInternados);
-router.post('/internaciones/cancelar/:id',soloRecepcion, internacionControl.cancelarInternacion);
+//LOGICA DE EMERGENCIAS:
+router.get("/internaciones/emergencia", soloRecepcion, internacionControl.vistaEmergencia);
+router.post("/internaciones/emergencia/registrarEmergencia", soloRecepcion, internacionControl.registrarEmergencia);
+router.get("/internaciones/emergenciaInternacion/:id", soloRecepcion, internacionControl.vistaEmergenciaInternacion);
+router.post("/internaciones/realizarInternacionDeEmergencia", soloRecepcion, internacionControl.realizarInternacionDeEmergencia);
+
+router.get("/internaciones/normalizar/:id", soloRecepcion, internacionControl.vistaNormalizar);
+router.post("/internaciones/normalizar/buscar", soloRecepcion, internacionControl.procesarBusqueda);
+router.get("/internaciones/confirmar/:idPacienteNormal/:idPacienteEmergencia", soloRecepcion, internacionControl.mostrarConfirmar);
+router.post("/internaciones/confirmar/guardar", soloRecepcion, internacionControl.confirmarDatosPaciente);
+router.get("/internaciones/registroAnonimo/:idPacienteEmergencia", soloRecepcion, internacionControl.mostrarRegistroAnonimo);
+router.post("/internaciones/anonimo/guardar", soloRecepcion, internacionControl.guardarRegistroAnonimo);
+
 module.exports = router;

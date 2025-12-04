@@ -80,11 +80,11 @@ Cama.hasMany(Traslado, { foreignKey: 'ID_cama', as: "Traslados" });
 Traslado.belongsTo(Cama, { foreignKey: 'ID_cama', as: "Cama" });
 
 //ALA Y HABITACION:
-Ala.hasMany(Habitacion, { foreignKey: 'ID_ala', as: "Habs" });
+Ala.hasMany(Habitacion, { foreignKey: 'ID_ala', as: "habitaciones" });
 Habitacion.belongsTo(Ala, { foreignKey: 'ID_ala', as: "Ala" });
 
 //HABITACION Y CAMAS:
-Habitacion.hasMany(Cama, { foreignKey: 'ID_hab', as: "Camas" });
+Habitacion.hasMany(Cama, { foreignKey: 'ID_hab', as: "camas" });
 Cama.belongsTo(Habitacion, { foreignKey: 'ID_hab', as: "Hab" });
 
 //PACIENTE Y OBRA SOCIAL:

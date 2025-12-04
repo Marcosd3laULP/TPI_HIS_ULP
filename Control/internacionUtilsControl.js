@@ -62,49 +62,51 @@ exports.liberarCama = async function (idCama) {
     
 }
 
-exports.verificarSexo = async function (req, res) {
-  const { idCama, sexoPaciente } = req.params;
-
-
+exports.verificarSexo = async function (idCama, sexoPaciente) {
+  
   try {
+    // 1. Traemos la cama donde quiere internar
     const cama = await Cama.findByPk(idCama);
     if (!cama) {
-      return res.status(404).json({ error: "Cama no encontrada" });
+      throw new Error("Cama no encontrada");
     }
 
-
-
-    const camasHabitacion = await Cama.findAll({
+    // 2. Buscamos todas las camas de esa habitación con internaciones activas
+    const camasOcupadas = await Cama.findAll({
       where: { ID_hab: cama.ID_hab },
       include: {
-        model: Internacion, as: 'Internaciones',
+        model: Internacion,
+        as: "Internaciones",
         where: { Activo: true },
-        required: false,
+        required: true,
         include: {
-          model: Paciente, as: 'Paciente',
-          attributes: ['Sexo']
+          model: Paciente,
+          as: "Paciente",
+          attributes: ["Sexo"]
         }
       }
     });
 
+    // 3. Si no hay camas ocupadas, es compatible
+    if (camasOcupadas.length === 0) {
+      return { compatible: true };
+    }
 
-    for (const camaH of camasHabitacion) {
-      if (camaH.Internaciones.length > 0) {
-        const pacienteSexo = camaH.Internaciones[0].Paciente.Sexo;
+    // 4. Verificamos el sexo existente en la habitación
+    for (const camaOcupada of camasOcupadas) {
+      const sexoExistente = camaOcupada.Internaciones[0].Paciente.Sexo;
 
-        if (pacienteSexo !== sexoPaciente) {
-    
-          return res.json({ compatible: false });
-        }
+      if (sexoExistente !== sexoPaciente) {
+        return { compatible: false, sexoExistente };
       }
     }
 
-   
-    return res.json({ compatible: true });
+    return { compatible: true };
 
   } catch (error) {
-    console.error("Error inesperado:", error);
-    return res.status(500).json({ error: "Error en el servidor" });
+    console.error("Error en verificación de sexo:", error);
+    throw error;
   }
 };
+
 

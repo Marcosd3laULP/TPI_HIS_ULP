@@ -9,6 +9,11 @@ const Habitacion = sequelize.define("Habitacion", {
         allowNull: false
     },
 
+    ID_ala: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+
     numero: {
         type: DataTypes.INTEGER,
         allowNull: false

@@ -23,8 +23,8 @@ const Paciente = sequelize.define('pacientes', {
     },
 
     DNI: {
-        type: DataTypes.BIGINT,
-        allowNull: false,
+        type: DataTypes.INTEGER,
+        allowNull: true,
         unique: true
     },
 
@@ -35,12 +35,12 @@ const Paciente = sequelize.define('pacientes', {
 
     Domicilio: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
 
     Telefono: {
         type: DataTypes.BIGINT,
-        allowNull: false
+        allowNull: true
     }
     }, {
     timestamps: false  // Desactivar los campos createdAt y updatedAt

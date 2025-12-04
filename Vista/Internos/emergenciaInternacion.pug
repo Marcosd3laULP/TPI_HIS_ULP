@@ -1,5 +1,5 @@
 block content
-  h1 Internación de Paciente
+  h1 Internación de Emergencia
 
   // Mostrar mensaje de error si existe
   if error
@@ -17,9 +17,8 @@ block content
 
   hr
 
-  h2 Alojamientos disponibles
+  h2 Alojamientos disponibles en Emergencia
 
-  // Lista de alas
   if alas && alas.length
     each ala in alas
       h3 Ala #{ala.Sector} (ID: #{ala.ID_ala})
@@ -38,11 +37,11 @@ block content
 
                   // Si la cama está libre mostramos el formulario para internar
                   if cama.Estado === 'Libre'
-                    form.form-internar(method="POST", action="/pacientes/internaciones/realizar-internacion", style="margin-top:5px;")
+                    form.form-internar(method="POST", action="/pacientes/internaciones/realizarInternacionDeEmergencia", style="margin-top:5px;")
                       input(type="hidden", name="_csrf", value=csrfToken)
                       input(type="hidden", name="idCama", value=cama.ID_cama)
-                      input(type="hidden", name="idPaciente", value=paciente.ID_paciente)
-                      input(type="hidden", name="sexoPaciente", value=paciente.Sexo)
+                      input(type="hidden", name="idPaciente", value=paciente ? paciente.ID_paciente : '')
+                      input(type="hidden", name="sexoPaciente", value=paciente ? paciente.Sexo : '')
                       
                       label(for="motivo") Motivo:
                       input(type="text", name="motivo", required)
@@ -57,7 +56,7 @@ block content
 
       hr
   else
-    p No se encontraron alas registradas.
+    p No se encontraron alas de emergencia registradas.
 
   // Token CSRF (por si luego agregás más formularios globales)
   input(type="hidden", name="_csrf", value=csrfToken)

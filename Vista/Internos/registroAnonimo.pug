@@ -1,0 +1,28 @@
+block content
+  h1.text-2xl.font-bold.text-center.my-6 Registro de paciente anónimo
+
+  form(method="POST", action="/pacientes/internaciones/anonimo/guardar" class="flex flex-col gap-3 w-full max-w-md mx-auto")
+    input(type="hidden", name="_csrf", value=csrfToken)
+    input(type="hidden", name="idPacienteEmergencia", value=idPacienteEmergencia)
+
+    label(for="nombre") Nombre:
+    input(type="text", name="nombre" required class="border px-2 py-1 rounded")
+
+    label(for="apellido") Apellido:
+    input(type="text", name="apellido" required class="border px-2 py-1 rounded")
+
+    label(for="dni") DNI:
+    input(type="text", name="dni" required class="border px-2 py-1 rounded")
+
+    label(for="sexo") Sexo:
+    select(name="sexo" required class="border px-2 py-1 rounded")
+      option(value="femenino") Femenino
+      option(value="masculino") Masculino
+
+    label(for="domicilio") Domicilio:
+    input(type="text", name="domicilio" class="border px-2 py-1 rounded")
+
+    label(for="telefono") Teléfono:
+    input(type="text", name="telefono" class="border px-2 py-1 rounded")
+
+    button(type="submit" class="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700") Guardar

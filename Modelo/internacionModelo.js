@@ -9,7 +9,12 @@ const Internacion = sequelize.define("Internacion", {
         allowNull: false
     },
 
-    ID_Paciente: {
+    ID_paciente: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+    },
+
+    ID_cama: {
     type: DataTypes.INTEGER,
     allowNull: false
     },
