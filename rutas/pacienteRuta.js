@@ -35,4 +35,9 @@ router.post("/internaciones/confirmar/guardar", soloRecepcion, internacionContro
 router.get("/internaciones/registroAnonimo/:idPacienteEmergencia", soloRecepcion, internacionControl.mostrarRegistroAnonimo);
 router.post("/internaciones/anonimo/guardar", soloRecepcion, internacionControl.guardarRegistroAnonimo);
 
+//FLUJO DE TRASLADO:
+
+router.get('/internaciones/traslado/:idInternacion', soloRecepcion, internacionControl.vistaTraslado);
+router.post('/internaciones/trasladar', soloRecepcion, internacionControl.realizarTraslado);
+
 module.exports = router;

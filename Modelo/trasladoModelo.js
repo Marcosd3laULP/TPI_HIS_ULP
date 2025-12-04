@@ -9,13 +9,18 @@ const Traslado = sequelize.define("Traslado", {
     allowNull: false
   },
 
-  Fecha_traslado: {
-    type: DataTypes.DATEONLY,
+  ID_internacion: {
+    type: DataTypes.STRING,
     allowNull: false
   },
 
-  Responsable: {
+  ID_cama: {
     type: DataTypes.STRING,
+    allowNull: false
+  },
+
+  Fecha_traslado: {
+    type: DataTypes.DATEONLY,
     allowNull: false
   },
 

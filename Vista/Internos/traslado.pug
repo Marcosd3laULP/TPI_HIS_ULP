@@ -1,0 +1,22 @@
+block content
+  h1.text-2xl.font-bold.text-center.my-6 Traslado de paciente
+
+  p Paciente: #{paciente.Nombre} #{paciente.Apellido} (ID: #{paciente.ID_paciente})
+  p Cama actual: #{internacion.Cama.Numero} - Habitación #{internacion.Cama.Hab.numero} - Ala #{internacion.Cama.Hab.Ala.Sector}
+
+  form(method="POST", action="/pacientes/internaciones/trasladar")
+    input(type="hidden", name="_csrf", value=csrfToken)
+    input(type="hidden", name="idInternacion", value=internacion.ID_internacion)
+    input(type="hidden", name="idPaciente", value=paciente.ID_paciente)
+    input(type="hidden", name="camaActual", value=internacion.ID_cama)
+
+    label(for="nuevaCama") Seleccione nueva cama:
+    select(name="idNuevaCama" required)
+      each cama in camasLibres
+        option(value=cama.ID_cama)
+          | Cama #{cama.Numero} - Habitación #{cama.Hab.numero} - Ala #{cama.Hab.Ala.Sector}
+
+    label(for="motivo") Motivo del traslado:
+    input(type="text", name="motivo" required)
+
+    button(type="submit" class="bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700") Trasladar

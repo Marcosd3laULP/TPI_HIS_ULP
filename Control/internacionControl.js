@@ -281,12 +281,56 @@ exports.mostrarRegistroAnonimo = async function(req, res) {
   }
 };
 
+exports.vistaTraslado = async function(req, res) {
+  try {
+    const { idInternacion } = req.params;
+    const csrfToken = req.csrfToken();
+
+    const internacion = await Internacion.findByPk(idInternacion, {
+      include: [
+        { model: Paciente, as: 'Paciente' },
+        { 
+          model: Cama, 
+          as: 'Cama', 
+          include: { 
+            model: Habitacion, 
+            as: 'Hab',
+            include: { model: Ala, as: 'Ala' }
+          }
+        }
+      ]
+    });
+
+    if (!internacion) return res.status(404).send("Internación no encontrada");
+
+    const camasLibres = await Cama.findAll({
+      where: { Estado: 'Libre' },
+      include: { 
+        model: Habitacion, 
+        as: 'Hab',
+        include: { model: Ala, as: 'Ala' }
+      }
+    });
+
+    res.render('Internos/traslado', {
+      csrfToken,
+      paciente: internacion.Paciente,
+      internacion,
+      camasLibres
+    });
+
+  } catch (error) {
+    console.error("Error mostrando traslado:", error);
+    res.status(500).send("Error mostrando traslado");
+  }
+};
+
+
 //POST
 exports.registrarEmergencia = async function (req, res) {
         const { sexo } = req.body
     try {
         const paciente = await crearPacienteEnEmergencia(sexo);
-        //console.log(paciente)
         res.redirect(`/pacientes/internaciones/emergenciaInternacion/${paciente.ID_paciente}`);
     } catch (error) {
         console.error("Error al cargar el paciente anonimo:", error.message);
@@ -299,7 +343,6 @@ exports.procesarBusqueda = async function(req, res) {
     const { dni, idPacienteEmergencia } = req.body;
     const csrfToken = req.csrfToken();
 
-    // Buscamos al paciente
     const paciente = await buscarPacientePorDNI(dni);
 
     let mensaje;
@@ -307,12 +350,11 @@ exports.procesarBusqueda = async function(req, res) {
 
     if (paciente) {
       mensaje = "Este paciente está en la base de datos";
-      idPacienteNormal = paciente.ID_paciente; // llenamos input oculto
+      idPacienteNormal = paciente.ID_paciente; 
     } else {
       mensaje = "Este paciente no se encuentra cargado";
     }
 
-    // Renderizamos la misma vista con el mensaje y el input actualizado
     res.render('Internos/normalizar', {
       csrfToken,
       idPacienteEmergencia,
@@ -379,6 +421,79 @@ exports.guardarRegistroAnonimo = async function(req, res) {
     res.status(500).send("Error guardando registro anónimo");
   }
 };
+
+exports.realizarTraslado = async function(req, res) {
+  try {
+    const { idInternacion, idPaciente, camaActual, idNuevaCama, motivo, responsable } = req.body;
+
+    if (!motivo || !responsable) {
+      const internacion = await Internacion.findByPk(idInternacion, {
+        include: [
+          { model: Paciente, as: 'Paciente' },
+          { model: Cama, as: 'Cama', include: { model: Habitacion, as: 'Hab', include: { model: Ala, as: 'Ala' } } }
+        ]
+      });
+      const camasLibres = await Cama.findAll({
+        where: { Estado: 'Libre' },
+        include: { model: Habitacion, as: 'Hab', include: { model: Ala, as: 'Ala' } }
+      });
+
+      return res.status(400).render('Internos/traslado', {
+        csrfToken: req.csrfToken(),
+        paciente: internacion.Paciente,
+        internacion,
+        camasLibres,
+        error: "Debe completar el motivo y el responsable"
+      });
+    }
+
+    const paciente = await Paciente.findByPk(idPaciente);
+    const resultadoSexo = await internacionUtils.verificarSexo(idNuevaCama, paciente.Sexo);
+    if (!resultadoSexo.compatible) {
+      const internacion = await Internacion.findByPk(idInternacion, {
+        include: [
+          { model: Paciente, as: 'Paciente' },
+          { model: Cama, as: 'Cama', include: { model: Habitacion, as: 'Hab', include: { model: Ala, as: 'Ala' } } }
+        ]
+      });
+      const camasLibres = await Cama.findAll({
+        where: { Estado: 'Libre' },
+        include: { model: Habitacion, as: 'Hab', include: { model: Ala, as: 'Ala' } }
+      });
+
+      return res.status(400).render('Internos/traslado', {
+        csrfToken: req.csrfToken(),
+        paciente: internacion.Paciente,
+        internacion,
+        camasLibres,
+        error: `La habitación ya tiene un paciente de sexo ${resultadoSexo.sexoExistente}. No se puede mezclar.`
+      });
+    }
+
+    await Traslado.create({
+      ID_internacion: idInternacion,
+      ID_cama: idNuevaCama,
+      Fecha_traslado: new Date(),
+      Responsable: responsable,
+      Motivo: motivo
+    });
+
+    const internacion = await Internacion.findByPk(idInternacion);
+    await internacion.update({ ID_cama: idNuevaCama });
+
+    await internacionUtils.liberarCama(camaActual);
+
+    await internacionUtils.cambiarEstadoCama(idNuevaCama, paciente.Sexo);
+
+    res.redirect('/pacientes/lista-internados');
+
+  } catch (error) {
+    console.error("Error realizando traslado:", error);
+    res.status(500).send("Error realizando traslado");
+  }
+};
+
+
 //LOGICA
 
 async function crearPacienteEnEmergencia(sexo) {
