@@ -50,13 +50,12 @@ script.
 
     formularios.forEach(form => {
       form.addEventListener("submit", function(e) {
-        const idMedico = medicoSelect.value; // Captura el valor del select
+        const idMedico = medicoSelect.value;
         console.log("ID medico seleccionado:", idMedico);
         if (!idMedico) {
           e.preventDefault();
           alert("Debe seleccionar un medico antes de evaluar");
         } else {
-          // Asigna el valor al input hidden dentro del formulario que se envía
           form.querySelector("input[name='idMedico']").value = idMedico;
         }
       });
